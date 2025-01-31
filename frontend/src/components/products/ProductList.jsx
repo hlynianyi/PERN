@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { productsApi } from "../../api/products";
+import AdminMenu from "../AdminMenu";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -74,8 +75,9 @@ const ProductList = () => {
           colorScheme="blue"
           onClick={() => navigate("/admin/products/create")}
         >
-          Add Product
+          Добавить товар
         </Button>
+        <AdminMenu colorScheme="yellow"></AdminMenu>
       </Flex>
       <Table variant="simple">
         <Thead>

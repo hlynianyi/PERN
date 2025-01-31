@@ -1,4 +1,3 @@
-# Backend Dockerfile
 # ./backend/Dockerfile
 FROM node:18-alpine
 

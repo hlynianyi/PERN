@@ -12,10 +12,11 @@ import {
   Image,
   Flex,
   useToast,
+  Badge,
+  Text,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { productsApi } from "../../api/products";
-import AdminMenu from "../AdminMenu";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -24,6 +25,7 @@ const ProductList = () => {
 
   useEffect(() => {
     loadProducts();
+    console.log(products);
   }, []);
 
   const loadProducts = async () => {
@@ -32,7 +34,7 @@ const ProductList = () => {
       setProducts(data);
     } catch (error) {
       toast({
-        title: "Error loading products",
+        title: "Ошибка при загрузке продуктов",
         status: "error",
         duration: 3000,
       });
@@ -44,13 +46,13 @@ const ProductList = () => {
       await productsApi.delete(id);
       loadProducts();
       toast({
-        title: "Product deleted",
+        title: "Продукт удален",
         status: "success",
         duration: 3000,
       });
     } catch (error) {
       toast({
-        title: "Error deleting product",
+        title: "Ошибка при удалении продукта",
         status: "error",
         duration: 3000,
       });
@@ -60,39 +62,35 @@ const ProductList = () => {
   // Функция для получения изображения продукта
   const getProductImage = (product) => {
     if (!product.images || product.images.length === 0) return null;
-    
-    // Ищем основное изображение
-    const primaryImage = product.images.find(img => img.is_primary);
-    
-    // Возвращаем основное изображение или первое из массива
+    const primaryImage = product.images.find((img) => img.is_primary);
     return primaryImage || product.images[0];
   };
 
   return (
-    <Box p={5}>
-      <Flex justifyContent="space-between" mb={5}>
+    <Box p={0}>
+      <Flex justifyContent="flex-end" p="4">
         <Button
           colorScheme="blue"
           onClick={() => navigate("/admin/products/create")}
         >
-          Добавить товар
+          Добавить продукт
         </Button>
-        <AdminMenu colorScheme="yellow"></AdminMenu>
       </Flex>
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>Image</Th>
-            <Th>Name</Th>
-            <Th>Description</Th>
-            <Th>Price</Th>
-            <Th>Actions</Th>
+            <Th>Изображение</Th>
+            <Th>Название</Th>
+            <Th>Категория</Th>
+            <Th>Цена</Th>
+            <Th>Статус</Th>
+            <Th>Действия</Th>
           </Tr>
         </Thead>
         <Tbody>
           {products.map((product) => {
             const productImage = getProductImage(product);
-            
+
             return (
               <Tr key={product.id}>
                 <Td>
@@ -105,23 +103,44 @@ const ProductList = () => {
                     />
                   )}
                 </Td>
-                <Td>{product.name}</Td>
-                <Td>{product.description}</Td>
-                <Td>${product.price}</Td>
                 <Td>
-                  <Button
-                    colorScheme="yellow"
-                    mr={2}
-                    onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </Button>
+                  <Text>{product.name}</Text>
+                  {product.is_new && (
+                    <Badge colorScheme="green" mt="2">
+                      Новинка
+                    </Badge>
+                  )}
+                </Td>
+                <Td>{product.category}</Td>
+                <Td>{product.price} руб.</Td>
+                <Td>
+                  {product.status === "in_stock"
+                    ? "В наличии"
+                    : "Нет в наличии"}
+                </Td>
+                <Td>
+                  <Flex flexDirection="column" gap="1">
+                    <Button
+                      colorScheme="teal"
+                      onClick={() => navigate(`/products/${product.id}`)}
+                    >
+                      Просмотр
+                    </Button>
+                    <Button
+                      colorScheme="yellow"
+                      onClick={() =>
+                        navigate(`/admin/products/edit/${product.id}`)
+                      }
+                    >
+                      Редактировать
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Удалить
+                    </Button>
+                  </Flex>
                 </Td>
               </Tr>
             );

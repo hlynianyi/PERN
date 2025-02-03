@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   frontend:
@@ -28,7 +28,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    restart: always
 
   postgres:
     image: postgres:17-alpine
@@ -45,7 +44,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: always
 
   nginx:
     image: nginx:alpine
@@ -53,10 +51,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/uploads:/uploads
     depends_on:
       - frontend
       - backend
 
 volumes:
   postgres_data:
-    name: shop_postgres_data

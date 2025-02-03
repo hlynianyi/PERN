@@ -8,28 +8,49 @@ import {
   Input,
   Textarea,
   VStack,
+  HStack,
   Image,
   useToast,
-  HStack,
   IconButton,
   Text,
+  Select,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
   Badge
 } from '@chakra-ui/react';
 import { DeleteIcon, StarIcon } from '@chakra-ui/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { productsApi } from '../../api/products';
+import { productsApi, PRODUCT_STATUSES } from '../../api/products';
 
 const ProductEdit = () => {
   const { id } = useParams();
   const [formData, setFormData] = useState({
     name: '',
+    category: '',
     description: '',
     price: '',
+    steel: '',
+    handle: '',
+    length: '',
+    status: 'in_stock'
   });
+
   const [currentImages, setCurrentImages] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+  const [currentCertificates, setCurrentCertificates] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState({
+    images: [],
+    certificates: []
+  });
+  const [previewUrls, setPreviewUrls] = useState({
+    images: [],
+    certificates: []
+  });
   const [deletedImageIds, setDeletedImageIds] = useState([]);
+  const [deletedCertificateIds, setDeletedCertificateIds] = useState([]);
+
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -40,12 +61,19 @@ const ProductEdit = () => {
   const loadProduct = async () => {
     try {
       const product = await productsApi.getOne(id);
+      console.log('Loaded product:', product);
       setFormData({
         name: product.name,
+        category: product.category,
         description: product.description,
         price: product.price,
+        steel: product.steel || '',
+        handle: product.handle || '',
+        length: product.length || '',
+        status: product.status
       });
       setCurrentImages(product.images || []);
+      setCurrentCertificates(product.certificates || []);
     } catch (error) {
       toast({
         title: 'Ошибка при загрузке продукта',
@@ -56,45 +84,59 @@ const ProductEdit = () => {
     }
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = (type, e) => {
     const files = Array.from(e.target.files);
-    const totalImages = currentImages.length - deletedImageIds.length + selectedFiles.length + files.length;
+    const currentFiles = type === 'images' ? currentImages : currentCertificates;
+    const maxFiles = type === 'images' ? 10 : 5;
+    const deletedIds = type === 'images' ? deletedImageIds : deletedCertificateIds;
     
-    if (totalImages > 10) {
+    if (currentFiles.length - deletedIds.length + selectedFiles[type].length + files.length > maxFiles) {
       toast({
         title: 'Ошибка',
-        description: 'Можно загрузить максимум 10 изображений',
+        description: `Можно загрузить максимум ${maxFiles} ${type === 'images' ? 'изображений' : 'сертификатов'}`,
         status: 'error',
         duration: 3000,
       });
       return;
     }
 
-    setSelectedFiles([...selectedFiles, ...files]);
+    setSelectedFiles(prev => ({
+      ...prev,
+      [type]: [...prev[type], ...files]
+    }));
 
-    // Создаем превью для новых файлов
     const newPreviewUrls = files.map(file => URL.createObjectURL(file));
-    setPreviewUrls([...previewUrls, ...newPreviewUrls]);
+    setPreviewUrls(prev => ({
+      ...prev,
+      [type]: [...prev[type], ...newPreviewUrls]
+    }));
   };
 
-  const handleRemoveFile = (index) => {
-    const newFiles = selectedFiles.filter((_, i) => i !== index);
-    const newPreviews = previewUrls.filter((_, i) => i !== index);
-    
-    URL.revokeObjectURL(previewUrls[index]);
-    
-    setSelectedFiles(newFiles);
-    setPreviewUrls(newPreviews);
+  const handleRemoveFile = (type, index) => {
+    setSelectedFiles(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
+
+    URL.revokeObjectURL(previewUrls[type][index]);
+    setPreviewUrls(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
   };
 
-  const handleRemoveCurrentImage = (imageId) => {
-    setDeletedImageIds([...deletedImageIds, imageId]);
+  const handleRemoveCurrentFile = (type, fileId) => {
+    if (type === 'images') {
+      setDeletedImageIds(prev => [...prev, fileId]);
+    } else {
+      setDeletedCertificateIds(prev => [...prev, fileId]);
+    }
   };
 
   const handleSetPrimaryImage = async (imageId) => {
     try {
       await productsApi.setPrimaryImage(id, imageId);
-      loadProduct(); // Перезагружаем продукт для обновления статусов изображений
+      loadProduct();
       toast({
         title: 'Основное изображение обновлено',
         status: 'success',
@@ -110,23 +152,29 @@ const ProductEdit = () => {
     }
   };
 
+  // frontend/src/components/products/ProductEdit.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('price', formData.price);
+      // Создаем объект с данными вместо FormData
+      const updateData = {
+        name: formData.name,
+        category: formData.category,
+        description: formData.description,
+        price: formData.price,
+        status: formData.status,
+        steel: formData.steel || '',
+        handle: formData.handle || '',
+        length: formData.length || '',
+        deletedImages: deletedImageIds,
+        deletedCertificates: deletedCertificateIds,
+        images: selectedFiles.images,
+        certificates: selectedFiles.certificates
+      };
+  
+      console.log('Sending update data:', updateData);
+      await productsApi.update(id, updateData);
       
-      if (deletedImageIds.length > 0) {
-        formDataToSend.append('deletedImages', JSON.stringify(deletedImageIds));
-      }
-
-      selectedFiles.forEach((file) => {
-        formDataToSend.append('images', file);
-      });
-
-      await productsApi.update(id, formDataToSend);
       toast({
         title: 'Продукт обновлен',
         status: 'success',
@@ -134,6 +182,7 @@ const ProductEdit = () => {
       });
       navigate('/admin/products');
     } catch (error) {
+      console.error('Error updating product:', error);
       toast({
         title: 'Ошибка при обновлении продукта',
         description: error.message,
@@ -148,10 +197,9 @@ const ProductEdit = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Очищаем URL превью при размонтировании компонента
   useEffect(() => {
     return () => {
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      [...previewUrls.images, ...previewUrls.certificates].forEach(url => URL.revokeObjectURL(url));
     };
   }, []);
 
@@ -168,6 +216,16 @@ const ProductEdit = () => {
             />
           </FormControl>
 
+          <FormControl isRequired>
+            <FormLabel>Категория</FormLabel>
+            <Input
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Введите категорию"
+            />
+          </FormControl>
+
           <FormControl>
             <FormLabel>Описание</FormLabel>
             <Textarea
@@ -179,15 +237,66 @@ const ProductEdit = () => {
 
           <FormControl isRequired>
             <FormLabel>Цена</FormLabel>
-            <Input
-              name="price"
-              type="number"
-              step="0.01"
+            <NumberInput
+              min={0}
               value={formData.price}
+              onChange={(valueString) => setFormData(prev => ({ ...prev, price: valueString }))}
+            >
+              <NumberInputField name="price" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Сталь</FormLabel>
+            <Input
+              name="steel"
+              value={formData.steel}
               onChange={handleChange}
             />
           </FormControl>
 
+          <FormControl>
+            <FormLabel>Рукоять</FormLabel>
+            <Input
+              name="handle"
+              value={formData.handle}
+              onChange={handleChange}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Длина (см)</FormLabel>
+            <NumberInput
+              min={0}
+              value={formData.length}
+              onChange={(valueString) => setFormData(prev => ({ ...prev, length: valueString }))}
+            >
+              <NumberInputField name="length" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Статус</FormLabel>
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              {Object.entries(PRODUCT_STATUSES).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Текущие изображения */}
           {currentImages.length > 0 && (
             <Box>
               <Text mb={2}>Текущие изображения:</Text>
@@ -209,7 +318,7 @@ const ProductEdit = () => {
                         position="absolute"
                         top={1}
                         right={1}
-                        onClick={() => handleRemoveCurrentImage(image.id)}
+                        onClick={() => handleRemoveCurrentFile('images', image.id)}
                       />
                       <IconButton
                         icon={<StarIcon />}
@@ -237,21 +346,61 @@ const ProductEdit = () => {
             </Box>
           )}
 
+          {/* Текущие сертификаты */}
+          {currentCertificates.length > 0 && (
+            <Box>
+              <Text mb={2}>Текущие сертификаты:</Text>
+              <HStack spacing={4} overflowX="auto" p={2}>
+                {currentCertificates
+                  .filter(cert => !deletedCertificateIds.includes(cert.id))
+                  .map((cert) => (
+                    <Box key={cert.id} position="relative">
+                      <Box
+                        border="1px solid"
+                        borderColor="gray.200"
+                        p={2}
+                        borderRadius="md"
+                      >
+                        <Text>Сертификат {cert.id}</Text>
+                        <Button
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => window.open(`http://localhost:5002${cert.certificate_url}`, '_blank')}
+                        >
+                          Просмотр
+                        </Button>
+                      </Box>
+                      <IconButton
+                        icon={<DeleteIcon />}
+                        size="sm"
+                        colorScheme="red"
+                        position="absolute"
+                        top={1}
+                        right={1}
+                        onClick={() => handleRemoveCurrentFile('certificates', cert.id)}
+                      />
+                    </Box>
+                  ))}
+              </HStack>
+            </Box>
+          )}
+
+          {/* Загрузка новых изображений */}
           <FormControl>
-            <FormLabel>Добавить новые изображения</FormLabel>
+            <FormLabel>Добавить изображения (до 10 штук)</FormLabel>
             <Input
               type="file"
               accept="image/*"
               multiple
-              onChange={handleFileSelect}
+              onChange={(e) => handleFileSelect('images', e)}
             />
           </FormControl>
 
-          {previewUrls.length > 0 && (
+          {previewUrls.images.length > 0 && (
             <Box>
               <Text mb={2}>Новые изображения:</Text>
               <HStack spacing={4} overflowX="auto" p={2}>
-                {previewUrls.map((url, index) => (
+                {previewUrls.images.map((url, index) => (
                   <Box key={index} position="relative">
                     <Image
                       src={url}
@@ -266,7 +415,47 @@ const ProductEdit = () => {
                       position="absolute"
                       top={1}
                       right={1}
-                      onClick={() => handleRemoveFile(index)}
+                      onClick={() => handleRemoveFile('images', index)}
+                    />
+                  </Box>
+                ))}
+              </HStack>
+            </Box>
+          )}
+
+          {/* Загрузка новых сертификатов */}
+          <FormControl>
+            <FormLabel>Добавить сертификаты (до 5 штук)</FormLabel>
+            <Input
+              type="file"
+              accept=".pdf,image/*"
+              multiple
+              onChange={(e) => handleFileSelect('certificates', e)}
+            />
+          </FormControl>
+
+          {previewUrls.certificates.length > 0 && (
+            <Box>
+              <Text mb={2}>Новые сертификаты:</Text>
+              <HStack spacing={4} overflowX="auto" p={2}>
+                {previewUrls.certificates.map((url, index) => (
+                  <Box key={index} position="relative">
+                    <Box
+                      border="1px solid"
+                      borderColor="gray.200"
+                      p={2}
+                      borderRadius="md"
+                    >
+                      <Text>{selectedFiles.certificates[index].name}</Text>
+                    </Box>
+                    <IconButton
+                      icon={<DeleteIcon />}
+                      size="sm"
+                      colorScheme="red"
+                      position="absolute"
+                      top={1}
+                      right={1}
+                      onClick={() => handleRemoveFile('certificates', index)}
                     />
                   </Box>
                 ))}

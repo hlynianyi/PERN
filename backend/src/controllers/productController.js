@@ -30,15 +30,39 @@ const productController = {
   },
 
   async createProduct(req, res) {
+    console.log('Files received:', req.files);
+    console.log('Body received:', req.body);
     try {
-      const files = req.files || [];
-      const product = await Product.create(req.body, files);
+      const productData = {
+        name: req.body.name,
+        category: req.body.category,
+        description: req.body.description,
+        price: req.body.price,
+        steel: req.body.steel || null,
+        handle: req.body.handle || null,
+        length: req.body.length || null,
+        status: req.body.status || 'in_stock'
+      };
+
+      const files = {
+        images: req.files?.images || [],
+        certificates: req.files?.certificates || []
+      };
+
+      const product = await Product.create(productData, files);
       res.status(201).json(product);
     } catch (error) {
       // В случае ошибки удаляем загруженные файлы
       if (req.files) {
-        for (const file of req.files) {
-          await deleteFile(`/uploads/${file.filename}`);
+        if (req.files.images) {
+          for (const file of req.files.images) {
+            await deleteFile(`/uploads/images/${file.filename}`);
+          }
+        }
+        if (req.files.certificates) {
+          for (const file of req.files.certificates) {
+            await deleteFile(`/uploads/certificates/${file.filename}`);
+          }
         }
       }
       console.error('Ошибка при создании продукта:', error);
@@ -46,17 +70,47 @@ const productController = {
     }
   },
 
+  
   async updateProduct(req, res) {
     try {
       const { id } = req.params;
-      const files = req.files || [];
-      const product = await Product.update(id, req.body, files);
+      const productData = {
+        name: req.body.name,
+        category: req.body.category,
+        description: req.body.description,
+        price: req.body.price,
+        steel: req.body.steel || null,
+        handle: req.body.handle || null,
+        length: req.body.length || null,
+        status: req.body.status,
+        deletedImages: req.body.deletedImages ? JSON.parse(req.body.deletedImages) : [],
+        deletedCertificates: req.body.deletedCertificates ? JSON.parse(req.body.deletedCertificates) : []
+      };
+  
+      console.log('Update data:', {
+        ...productData,
+        files: req.files || {}
+      });
+  
+      const files = {
+        images: req.files?.images || [],
+        certificates: req.files?.certificates || []
+      };
+  
+      const product = await Product.update(id, productData, files);
       res.json(product);
     } catch (error) {
       // В случае ошибки удаляем новые загруженные файлы
       if (req.files) {
-        for (const file of req.files) {
-          await deleteFile(`/uploads/${file.filename}`);
+        if (req.files.images) {
+          for (const file of req.files.images) {
+            await deleteFile(`/uploads/images/${file.filename}`);
+          }
+        }
+        if (req.files.certificates) {
+          for (const file of req.files.certificates) {
+            await deleteFile(`/uploads/certificates/${file.filename}`);
+          }
         }
       }
       console.error('Ошибка при обновлении продукта:', error);
@@ -75,13 +129,48 @@ const productController = {
     }
   },
 
-  async setPrimaryImage(req, res) {
+  async updateProductStatus(req, res) {
     try {
-      const { productId, imageId } = req.params;
-      const image = await Product.setPrimaryImage(productId, imageId);
-      res.json(image);
+      const { id } = req.params;
+      const { status } = req.body;
+      const product = await Product.updateStatus(id, status);
+      res.json(product);
     } catch (error) {
-      console.error('Ошибка при установке основной фотографии:', error);
+      console.error('Ошибка при обновлении статуса продукта:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Контроллеры для работы с отзывами
+  async addReview(req, res) {
+    try {
+      const { productId } = req.params;
+      const review = await Product.addReview(productId, req.body);
+      res.status(201).json(review);
+    } catch (error) {
+      console.error('Ошибка при добавлении отзыва:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async updateReview(req, res) {
+    try {
+      const { reviewId } = req.params;
+      const review = await Product.updateReview(reviewId, req.body);
+      res.json(review);
+    } catch (error) {
+      console.error('Ошибка при обновлении отзыва:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async deleteReview(req, res) {
+    try {
+      const { reviewId } = req.params;
+      await Product.deleteReview(reviewId);
+      res.status(204).send();
+    } catch (error) {
+      console.error('Ошибка при удалении отзыва:', error);
       res.status(500).json({ error: error.message });
     }
   }

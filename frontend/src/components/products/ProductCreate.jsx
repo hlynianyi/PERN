@@ -1,5 +1,5 @@
 // frontend/src/components/products/ProductCreate.jsx
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -8,70 +8,97 @@ import {
   Input,
   Textarea,
   VStack,
-  useToast,
-  Image,
   HStack,
+  Image,
+  useToast,
   IconButton,
-  Text
+  Text,
+  Select,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-import { productsApi } from '../../api/products';
+import { productsApi, PRODUCT_STATUSES } from '../../api/products';
 
 const ProductCreate = () => {
   const [formData, setFormData] = useState({
     name: '',
+    category: '',
     description: '',
     price: '',
+    steel: '',
+    handle: '',
+    length: '',
+    status: 'in_stock'
   });
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+
+  const [selectedFiles, setSelectedFiles] = useState({
+    images: [],
+    certificates: []
+  });
+
+  const [previewUrls, setPreviewUrls] = useState({
+    images: [],
+    certificates: []
+  });
+
   const navigate = useNavigate();
   const toast = useToast();
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = (type, e) => {
     const files = Array.from(e.target.files);
-    if (files.length + selectedFiles.length > 10) {
+    const maxFiles = type === 'images' ? 10 : 5;
+    
+    if (files.length + selectedFiles[type].length > maxFiles) {
       toast({
         title: 'Ошибка',
-        description: 'Можно загрузить максимум 10 изображений',
+        description: `Можно загрузить максимум ${maxFiles} ${type === 'images' ? 'изображений' : 'сертификатов'}`,
         status: 'error',
         duration: 3000,
       });
       return;
     }
 
-    setSelectedFiles([...selectedFiles, ...files]);
+    setSelectedFiles(prev => ({
+      ...prev,
+      [type]: [...prev[type], ...files]
+    }));
 
     // Создаем превью для новых файлов
     const newPreviewUrls = files.map(file => URL.createObjectURL(file));
-    setPreviewUrls([...previewUrls, ...newPreviewUrls]);
+    setPreviewUrls(prev => ({
+      ...prev,
+      [type]: [...prev[type], ...newPreviewUrls]
+    }));
   };
 
-  const handleRemoveFile = (index) => {
-    const newFiles = selectedFiles.filter((_, i) => i !== index);
-    const newPreviews = previewUrls.filter((_, i) => i !== index);
-    
-    // Освобождаем URL для предотвращения утечек памяти
-    URL.revokeObjectURL(previewUrls[index]);
-    
-    setSelectedFiles(newFiles);
-    setPreviewUrls(newPreviews);
+  const handleRemoveFile = (type, index) => {
+    setSelectedFiles(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
+
+    URL.revokeObjectURL(previewUrls[type][index]);
+    setPreviewUrls(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('price', formData.price);
+      const dataToSend = {
+        ...formData,
+        images: selectedFiles.images,
+        certificates: selectedFiles.certificates
+      };
 
-      selectedFiles.forEach((file) => {
-        formDataToSend.append('images', file);
-      });
-
-      await productsApi.create(formDataToSend);
+      await productsApi.create(dataToSend);
       toast({
         title: 'Продукт создан',
         status: 'success',
@@ -96,7 +123,7 @@ const ProductCreate = () => {
   // Очищаем URL превью при размонтировании компонента
   useEffect(() => {
     return () => {
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      [...previewUrls.images, ...previewUrls.certificates].forEach(url => URL.revokeObjectURL(url));
     };
   }, []);
 
@@ -113,6 +140,16 @@ const ProductCreate = () => {
             />
           </FormControl>
 
+          <FormControl isRequired>
+            <FormLabel>Категория</FormLabel>
+            <Input
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Введите категорию"
+            />
+          </FormControl>
+
           <FormControl>
             <FormLabel>Описание</FormLabel>
             <Textarea
@@ -124,13 +161,63 @@ const ProductCreate = () => {
 
           <FormControl isRequired>
             <FormLabel>Цена</FormLabel>
-            <Input
-              name="price"
-              type="number"
-              step="0.01"
+            <NumberInput
+              min={0}
               value={formData.price}
+              onChange={(valueString) => setFormData(prev => ({ ...prev, price: valueString }))}
+            >
+              <NumberInputField name="price" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Сталь</FormLabel>
+            <Input
+              name="steel"
+              value={formData.steel}
               onChange={handleChange}
             />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Рукоять</FormLabel>
+            <Input
+              name="handle"
+              value={formData.handle}
+              onChange={handleChange}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Длина (см)</FormLabel>
+            <NumberInput
+              min={0}
+              value={formData.length}
+              onChange={(valueString) => setFormData(prev => ({ ...prev, length: valueString }))}
+            >
+              <NumberInputField name="length" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Статус</FormLabel>
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              {Object.entries(PRODUCT_STATUSES).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </Select>
           </FormControl>
 
           <FormControl>
@@ -139,15 +226,15 @@ const ProductCreate = () => {
               type="file"
               accept="image/*"
               multiple
-              onChange={handleFileSelect}
+              onChange={(e) => handleFileSelect('images', e)}
             />
           </FormControl>
 
-          {previewUrls.length > 0 && (
+          {previewUrls.images.length > 0 && (
             <Box>
               <Text mb={2}>Выбранные изображения:</Text>
               <HStack spacing={4} overflowX="auto" p={2}>
-                {previewUrls.map((url, index) => (
+                {previewUrls.images.map((url, index) => (
                   <Box key={index} position="relative">
                     <Image
                       src={url}
@@ -162,7 +249,46 @@ const ProductCreate = () => {
                       position="absolute"
                       top={1}
                       right={1}
-                      onClick={() => handleRemoveFile(index)}
+                      onClick={() => handleRemoveFile('images', index)}
+                    />
+                  </Box>
+                ))}
+              </HStack>
+            </Box>
+          )}
+
+          <FormControl>
+            <FormLabel>Сертификаты (до 5 штук)</FormLabel>
+            <Input
+              type="file"
+              accept=".pdf,image/*"
+              multiple
+              onChange={(e) => handleFileSelect('certificates', e)}
+            />
+          </FormControl>
+
+          {previewUrls.certificates.length > 0 && (
+            <Box>
+              <Text mb={2}>Выбранные сертификаты:</Text>
+              <HStack spacing={4} overflowX="auto" p={2}>
+                {previewUrls.certificates.map((url, index) => (
+                  <Box key={index} position="relative">
+                    <Box
+                      border="1px solid"
+                      borderColor="gray.200"
+                      p={2}
+                      borderRadius="md"
+                    >
+                      <Text>{selectedFiles.certificates[index].name}</Text>
+                    </Box>
+                    <IconButton
+                      icon={<DeleteIcon />}
+                      size="sm"
+                      colorScheme="red"
+                      position="absolute"
+                      top={1}
+                      right={1}
+                      onClick={() => handleRemoveFile('certificates', index)}
                     />
                   </Box>
                 ))}

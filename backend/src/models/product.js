@@ -5,29 +5,43 @@ const { deleteFile } = require('../utils/fileHelpers');
 class Product {
   static async initTable() {
     try {
-      // Удаляем старое ограничение, если оно существует
+      await pool.query(`
+        DROP TABLE IF EXISTS product_reviews CASCADE;
+        DROP TABLE IF EXISTS product_certificates CASCADE;
+        DROP TABLE IF EXISTS product_images CASCADE;
+        DROP TABLE IF EXISTS products CASCADE;
+      `);
+  
+      // Удаляем enum type
+      await pool.query(`
+        DROP TYPE IF EXISTS product_category CASCADE;
+      `);
+      // Создаем enum для статуса товара
       await pool.query(`
         DO $$ BEGIN
-          ALTER TABLE IF EXISTS product_images 
-            DROP CONSTRAINT IF EXISTS one_primary_image;
+          CREATE TYPE product_status AS ENUM ('in_stock', 'out_of_stock');
         EXCEPTION
-          WHEN undefined_table THEN
-            NULL;
+          WHEN duplicate_object THEN null;
         END $$;
       `);
 
-      // Создаем таблицу продуктов
+      // Создаем таблицу продуктов с новыми полями
       await pool.query(`
         CREATE TABLE IF NOT EXISTS products (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
-          description TEXT,
-          price DECIMAL(10,2),
+          category VARCHAR(100) NOT NULL,
+          description TEXT NOT NULL,
+          price DECIMAL(10) NOT NULL,
+          status product_status NOT NULL DEFAULT 'in_stock',
+          steel VARCHAR(100),
+          handle VARCHAR(100),
+          length DECIMAL(10,2),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
-      // Создаем таблицу изображений
+      // Таблица изображений
       await pool.query(`
         CREATE TABLE IF NOT EXISTS product_images (
           id SERIAL PRIMARY KEY,
@@ -38,7 +52,30 @@ class Product {
         );
       `);
 
-      // Добавляем триггер для управления основным изображением
+      // Таблица сертификатов
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS product_certificates (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+          certificate_url VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Таблица отзывов
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS product_reviews (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+          user_name VARCHAR(100) NOT NULL,
+          rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+          comment TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Триггер для управления основным изображением
       await pool.query(`
         CREATE OR REPLACE FUNCTION manage_primary_image()
         RETURNS TRIGGER AS $$
@@ -53,13 +90,32 @@ class Product {
         $$ LANGUAGE plpgsql;
       `);
 
-      // Создаем триггер
+      // Триггер для обновления updated_at в отзывах
+      await pool.query(`
+        CREATE OR REPLACE FUNCTION update_review_timestamp()
+        RETURNS TRIGGER AS $$
+        BEGIN
+          NEW.updated_at = CURRENT_TIMESTAMP;
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+      `);
+
+      // Создаем триггеры
       await pool.query(`
         DROP TRIGGER IF EXISTS manage_primary_image_trigger ON product_images;
         CREATE TRIGGER manage_primary_image_trigger
         BEFORE INSERT OR UPDATE ON product_images
         FOR EACH ROW
         EXECUTE FUNCTION manage_primary_image();
+      `);
+
+      await pool.query(`
+        DROP TRIGGER IF EXISTS update_review_timestamp_trigger ON product_reviews;
+        CREATE TRIGGER update_review_timestamp_trigger
+        BEFORE UPDATE ON product_reviews
+        FOR EACH ROW
+        EXECUTE FUNCTION update_review_timestamp();
       `);
 
     } catch (error) {
@@ -72,15 +128,25 @@ class Product {
     const { rows } = await pool.query(`
       SELECT 
         p.*,
-        json_agg(
-          json_build_object(
-            'id', pi.id,
-            'image_url', pi.image_url,
-            'is_primary', pi.is_primary
-          )
-        ) as images
+        json_agg(DISTINCT jsonb_build_object(
+          'id', pi.id,
+          'image_url', pi.image_url,
+          'is_primary', pi.is_primary
+        )) FILTER (WHERE pi.id IS NOT NULL) as images,
+        json_agg(DISTINCT jsonb_build_object(
+          'id', pc.id,
+          'certificate_url', pc.certificate_url
+        )) FILTER (WHERE pc.id IS NOT NULL) as certificates,
+        COUNT(DISTINCT pr.id) as review_count,
+        COALESCE(AVG(pr.rating), 0) as average_rating,
+        CASE 
+          WHEN p.created_at >= NOW() - INTERVAL '30 days' THEN true 
+          ELSE false 
+        END as is_new
       FROM products p
       LEFT JOIN product_images pi ON p.id = pi.product_id
+      LEFT JOIN product_certificates pc ON p.id = pc.product_id
+      LEFT JOIN product_reviews pr ON p.id = pr.product_id
       GROUP BY p.id
       ORDER BY p.created_at DESC
     `);
@@ -91,15 +157,33 @@ class Product {
     const { rows } = await pool.query(`
       SELECT 
         p.*,
-        json_agg(
-          json_build_object(
-            'id', pi.id,
-            'image_url', pi.image_url,
-            'is_primary', pi.is_primary
-          )
-        ) as images
+        json_agg(DISTINCT jsonb_build_object(
+          'id', pi.id,
+          'image_url', pi.image_url,
+          'is_primary', pi.is_primary
+        )) FILTER (WHERE pi.id IS NOT NULL) as images,
+        json_agg(DISTINCT jsonb_build_object(
+          'id', pc.id,
+          'certificate_url', pc.certificate_url
+        )) FILTER (WHERE pc.id IS NOT NULL) as certificates,
+        json_agg(DISTINCT jsonb_build_object(
+          'id', pr.id,
+          'user_name', pr.user_name,
+          'rating', pr.rating,
+          'comment', pr.comment,
+          'created_at', pr.created_at,
+          'updated_at', pr.updated_at
+        )) FILTER (WHERE pr.id IS NOT NULL) as reviews,
+        COUNT(DISTINCT pr.id) as review_count,
+        COALESCE(AVG(pr.rating), 0) as average_rating,
+        CASE 
+          WHEN p.created_at >= NOW() - INTERVAL '30 days' THEN true 
+          ELSE false 
+        END as is_new
       FROM products p
       LEFT JOIN product_images pi ON p.id = pi.product_id
+      LEFT JOIN product_certificates pc ON p.id = pc.product_id
+      LEFT JOIN product_reviews pr ON p.id = pr.product_id
       WHERE p.id = $1
       GROUP BY p.id
     `, [id]);
@@ -108,95 +192,158 @@ class Product {
 
   static async create(productData, files) {
     return await withTransaction(async (client) => {
-      const { name, description, price } = productData;
+      const { name, category, description, price, steel, handle, length, status = 'in_stock' } = productData;
       
-      // Проверяем количество файлов
-      if (files.length > 10) {
-        throw new Error('Максимальное количество изображений - 10');
-      }
-
       const { rows: [product] } = await client.query(
-        'INSERT INTO products (name, description, price) VALUES ($1, $2, $3) RETURNING *',
-        [name, description, price]
+        `INSERT INTO products 
+         (name, category, description, price, steel, handle, length, status) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+         RETURNING *`,
+        [name, category, description, price, steel, handle, length, status]
       );
-
-      for (let i = 0; i < files.length; i++) {
-        const imageUrl = `/uploads/${files[i].filename}`;
+  
+      // Загружаем изображения
+      for (let i = 0; i < files.images.length; i++) {
+        const imageUrl = `/uploads/images/${files.images[i].filename}`;
         await client.query(
           'INSERT INTO product_images (product_id, image_url, is_primary) VALUES ($1, $2, $3)',
-          [product.id, imageUrl, i === 0] // Первое изображение становится основным
+          [product.id, imageUrl, i === 0]
         );
       }
-
+  
+      // Загружаем сертификаты
+      for (const cert of files.certificates) {
+        const certUrl = `/uploads/certificates/${cert.filename}`;
+        await client.query(
+          'INSERT INTO product_certificates (product_id, certificate_url) VALUES ($1, $2)',
+          [product.id, certUrl]
+        );
+      }
+  
       return this.findById(product.id);
     });
   }
 
+  // В методе update класса Product
   static async update(id, productData, files) {
     return await withTransaction(async (client) => {
-      const { name, description, price, deletedImages } = productData;
-
-      // Обновляем основную информацию о продукте
-      const { rows: [product] } = await client.query(
-        'UPDATE products SET name = $1, description = $2, price = $3 WHERE id = $4 RETURNING *',
-        [name, description, price, id]
-      );
-
-      if (!product) {
-        throw new Error('Продукт не найден');
-      }
-
-      // Получаем текущее количество изображений
-      const { rows: currentImages } = await client.query(
-        'SELECT COUNT(*) as count FROM product_images WHERE product_id = $1',
+      console.log('Updating product with data:', productData);
+      
+      // Сначала получаем текущие данные продукта
+      const { rows: [currentProduct] } = await client.query(
+        'SELECT * FROM products WHERE id = $1',
         [id]
       );
-
-      const deletedCount = deletedImages ? JSON.parse(deletedImages).length : 0;
-      const remainingCount = currentImages[0].count - deletedCount;
-      
-      if (remainingCount + files.length > 10) {
+  
+      if (!currentProduct) {
+        throw new Error('Продукт не найден');
+      }
+  
+      // Объединяем текущие данные с новыми, сохраняя текущие значения если новые не предоставлены
+      const updatedData = {
+        name: productData.name || currentProduct.name,
+        category: productData.category || currentProduct.category,
+        description: productData.description || currentProduct.description,
+        price: productData.price || currentProduct.price,
+        steel: productData.steel || currentProduct.steel,
+        handle: productData.handle || currentProduct.handle,
+        length: productData.length || currentProduct.length,
+        status: productData.status || currentProduct.status
+      };
+  
+      // Обновляем продукт с проверенными данными
+      const { rows: [product] } = await client.query(
+        `UPDATE products 
+         SET name = $1, category = $2, description = $3, price = $4, 
+             steel = $5, handle = $6, length = $7, status = $8
+         WHERE id = $9 
+         RETURNING *`,
+        [
+          updatedData.name,
+          updatedData.category,
+          updatedData.description,
+          updatedData.price,
+          updatedData.steel,
+          updatedData.handle,
+          updatedData.length,
+          updatedData.status,
+          id
+        ]
+      );
+  
+      // Обработка изображений
+      const images = files.images || [];
+      const deletedImages = Array.isArray(productData.deletedImages) 
+        ? productData.deletedImages 
+        : [];
+  
+      if (images.length + (await this.getCurrentImagesCount(client, id)) - deletedImages.length > 10) {
         throw new Error('Максимальное количество изображений - 10');
       }
-
-      // Удаляем выбранные изображения
-      if (deletedImages) {
-        const imagesToDelete = JSON.parse(deletedImages);
-        for (const imageId of imagesToDelete) {
+  
+      // Удаляем помеченные изображения
+      if (deletedImages.length > 0) {
+        for (const imageId of deletedImages) {
           const { rows } = await client.query(
-            'DELETE FROM product_images WHERE id = $1 RETURNING image_url',
-            [imageId]
+            'DELETE FROM product_images WHERE id = $1 AND product_id = $2 RETURNING image_url',
+            [imageId, id]
           );
           if (rows[0]) {
             await deleteFile(rows[0].image_url);
           }
         }
       }
-
-      // Проверяем, есть ли основное изображение после удаления
-      const { rows: primaryCheck } = await client.query(
-        'SELECT EXISTS(SELECT 1 FROM product_images WHERE product_id = $1 AND is_primary = true) as has_primary',
-        [id]
-      );
-      const needsPrimaryImage = !primaryCheck[0].has_primary;
-
+  
+      // Обработка сертификатов
+      const certificates = files.certificates || [];
+      const deletedCertificates = Array.isArray(productData.deletedCertificates) 
+        ? productData.deletedCertificates 
+        : [];
+  
+      // Удаляем помеченные сертификаты
+      if (deletedCertificates.length > 0) {
+        for (const certId of deletedCertificates) {
+          const { rows } = await client.query(
+            'DELETE FROM product_certificates WHERE id = $1 AND product_id = $2 RETURNING certificate_url',
+            [certId, id]
+          );
+          if (rows[0]) {
+            await deleteFile(rows[0].certificate_url);
+          }
+        }
+      }
+  
       // Добавляем новые изображения
-      for (let i = 0; i < files.length; i++) {
-        const imageUrl = `/uploads/${files[i].filename}`;
+      for (const file of images) {
+        const imageUrl = `/uploads/images/${file.filename}`;
         await client.query(
-          'INSERT INTO product_images (product_id, image_url, is_primary) VALUES ($1, $2, $3)',
-          [id, imageUrl, needsPrimaryImage && i === 0] // Делаем первое изображение основным, если нет основного
+          'INSERT INTO product_images (product_id, image_url, is_primary) VALUES ($1, $2, false)',
+          [id, imageUrl]
         );
       }
-
+  
+      // Добавляем новые сертификаты
+      for (const cert of certificates) {
+        const certUrl = `/uploads/certificates/${cert.filename}`;
+        await client.query(
+          'INSERT INTO product_certificates (product_id, certificate_url) VALUES ($1, $2)',
+          [id, certUrl]
+        );
+      }
+  
       return this.findById(id);
     });
   }
 
   static async delete(id) {
     return await withTransaction(async (client) => {
+      // Получаем все файлы для удаления
       const { rows: images } = await client.query(
         'SELECT image_url FROM product_images WHERE product_id = $1',
+        [id]
+      );
+      const { rows: certificates } = await client.query(
+        'SELECT certificate_url FROM product_certificates WHERE product_id = $1',
         [id]
       );
 
@@ -209,35 +356,85 @@ class Product {
         throw new Error('Продукт не найден');
       }
 
-      // Удаляем файлы изображений
+      // Удаляем файлы
       for (const image of images) {
         await deleteFile(image.image_url);
+      }
+      for (const cert of certificates) {
+        await deleteFile(cert.certificate_url);
       }
 
       return rows[0];
     });
   }
 
-  static async setPrimaryImage(productId, imageId) {
-    return await withTransaction(async (client) => {
-      // Сначала снимаем отметку основного изображения со всех изображений продукта
-      await client.query(
-        'UPDATE product_images SET is_primary = false WHERE product_id = $1',
-        [productId]
-      );
+  // Методы для работы с отзывами
+  static async addReview(productId, reviewData) {
+    const { user_name, rating, comment } = reviewData;
+    const { rows: [review] } = await pool.query(
+      `INSERT INTO product_reviews (product_id, user_name, rating, comment)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [productId, user_name, rating, comment]
+    );
+    return review;
+  }
 
-      // Устанавливаем новое основное изображение
-      const { rows } = await client.query(
-        'UPDATE product_images SET is_primary = true WHERE id = $1 AND product_id = $2 RETURNING *',
-        [imageId, productId]
-      );
+  static async updateReview(reviewId, reviewData) {
+    const { rating, comment } = reviewData;
+    const { rows: [review] } = await pool.query(
+      `UPDATE product_reviews
+       SET rating = $1, comment = $2
+       WHERE id = $3
+       RETURNING *`,
+      [rating, comment, reviewId]
+    );
+    if (!review) {
+      throw new Error('Отзыв не найден');
+    }
+    return review;
+  }
 
-      if (rows.length === 0) {
-        throw new Error('Фотография не найдена');
-      }
+  static async deleteReview(reviewId) {
+    const { rows } = await pool.query(
+      'DELETE FROM product_reviews WHERE id = $1 RETURNING *',
+      [reviewId]
+    );
+    if (rows.length === 0) {
+      throw new Error('Отзыв не найден');
+    }
+    return rows[0];
+  }
 
-      return rows[0];
-    });
+  // Вспомогательные методы
+  static async getCurrentImagesCount(client, productId) {
+    const { rows } = await client.query(
+      'SELECT COUNT(*) as count FROM product_images WHERE product_id = $1',
+      [productId]
+    );
+    return parseInt(rows[0].count);
+  }
+
+  static async deleteFiles(client, table, ids) {
+    const { rows } = await client.query(
+      `DELETE FROM ${table} WHERE id = ANY($1) RETURNING *`,
+      [ids]
+    );
+    for (const row of rows) {
+      const url = row.image_url || row.certificate_url;
+      await deleteFile(url);
+    }
+  }
+
+  static async updateStatus(id, status) {
+    const { rows: [product] } = await pool.query(
+      'UPDATE products SET status = $1 WHERE id = $2 RETURNING *',
+      [status, id]
+    );
+    if (!product) {
+      throw new Error('Продукт не найден');
+    }
+    return product;
   }
 }
 

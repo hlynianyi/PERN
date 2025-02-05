@@ -5,17 +5,17 @@ const { deleteFile } = require('../utils/fileHelpers');
 class Product {
   static async initTable() {
     try {
-      await pool.query(`
-        DROP TABLE IF EXISTS product_reviews CASCADE;
-        DROP TABLE IF EXISTS product_certificates CASCADE;
-        DROP TABLE IF EXISTS product_images CASCADE;
-        DROP TABLE IF EXISTS products CASCADE;
-      `);
+      // await pool.query(`
+      //   DROP TABLE IF EXISTS product_reviews CASCADE;
+      //   DROP TABLE IF EXISTS product_certificates CASCADE;
+      //   DROP TABLE IF EXISTS product_images CASCADE;
+      //   DROP TABLE IF EXISTS products CASCADE;
+      // `);
   
-      // Удаляем enum type
-      await pool.query(`
-        DROP TYPE IF EXISTS product_category CASCADE;
-      `);
+      // // Удаляем enum type
+      // await pool.query(`
+      //   DROP TYPE IF EXISTS product_category CASCADE;
+      // `);
       // Создаем enum для статуса товара
       await pool.query(`
         DO $$ BEGIN

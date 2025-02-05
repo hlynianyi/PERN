@@ -1,15 +1,29 @@
 // src/store/index.js
 import { categoriesReducer } from "./slices/categoriesSlice";
+import { productsReducer } from "./slices/productsSlice";
 
 function rootReducer(state = {}, action) {
   return {
     categories: categoriesReducer(state.categories, action),
+    products: productsReducer(state.products, action),
   };
 }
 
+const initialState = {
+  categories: {
+    items: [],
+    isLoaded: false,
+  },
+  products: {
+    items: [],
+    isLoaded: false,
+    error: null,
+  },
+};
+
 class Store {
   constructor(reducer) {
-    this.state = reducer(undefined, {});
+    this.state = reducer(initialState, {});
     this.reducer = reducer;
     this.listeners = [];
   }

@@ -19,7 +19,7 @@ import { ImageSection } from "./ImageSection";
 import { CertificateSection } from "./CertificateSection";
 import { ProductForm } from "./ProductForm";
 
-const ProductEdit = () => {
+const AdminProductEdit = () => {
   const { id } = useParams();
   const [formData, setFormData] = useState({
     name: "",
@@ -257,4 +257,4 @@ const ProductEdit = () => {
   );
 };
 
-export default ProductEdit;
+export default AdminProductEdit;

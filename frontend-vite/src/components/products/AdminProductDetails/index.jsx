@@ -11,7 +11,7 @@ import { ImageGallery } from "./ImageGallery";
 import { Reviews } from "./Reviews";
 import { ReviewForm } from "./ReviewForm";
 
-export const ProductDetails = () => {
+export const AdminProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -226,4 +226,4 @@ export const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default AdminProductDetails;

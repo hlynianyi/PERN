@@ -3,28 +3,35 @@ import { NavigationMenu } from "radix-ui";
 import classNames from "classnames";
 import { CaretDownIcon } from "@radix-ui/react-icons";
 import { useLoadCategories } from "../hooks/useLoadCategories";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 const Navbar = () => {
   const categories = useLoadCategories();
 
-  useEffect(() => {
-    console.log("Categories in Navbar:", categories);
-  }, [categories]);
-
   return (
-    <NavigationMenu.Root className="relative z-10 flex w-screen justify-center">
-      <NavigationMenu.List className="center m-0 flex list-none rounded-md bg-white p-1 shadow-[0_2px_10px] shadow-blackA4">
+    <NavigationMenu.Root className="pt-2 relative z-10 flex w-screen justify-center">
+      <NavigationMenu.List className="center m-0 flex list-none rounded-md bg-b p-1 shadow-[0_2px_10px] shadow-blackA4">
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="group flex select-none items-center justify-between gap-0.5 rounded px-3 py-2 text-[15px] font-medium leading-none text-violet11 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7">
+          <NavigationMenu.Link
+            className="block select-none rounded px-3 py-2 text-[15px] font-medium leading-none text-black no-underline outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7"
+            href="/"
+          >
+            Главная
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Trigger className="group flex select-none items-center justify-between gap-0.5 rounded px-3 py-2 text-[15px] font-medium leading-none text-black outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7">
             Каталог{" "}
             <CaretDownIcon
-              className="relative top-px text-violet10 transition-transform duration-[250] ease-in group-data-[state=open]:-rotate-180"
+              className="relative top-px text-black transition-transform duration-[250] ease-in group-data-[state=open]:-rotate-180"
               aria-hidden
             />
           </NavigationMenu.Trigger>
           <NavigationMenu.Content className="absolute left-0 top-0 w-full data-[motion=from-end]:animate-enterFromRight data-[motion=from-start]:animate-enterFromLeft data-[motion=to-end]:animate-exitToRight data-[motion=to-start]:animate-exitToLeft sm:w-auto">
             <ul className="one m-0 grid list-none gap-x-2.5 p-[22px] sm:w-[500px] sm:grid-cols-[0.75fr_1fr]">
+              <ListItem title="Все товары" href={`/products`}>
+                Каталог товаров без определенной категории
+              </ListItem>
               {categories.length > 0 ? (
                 categories.map((category) => (
                   <ListItem
@@ -32,7 +39,7 @@ const Navbar = () => {
                     title={category}
                     href={`/products/${category}`}
                   >
-                    Смотреть товары в категории {category}
+                    Смотреть товары в категории "{category}"
                   </ListItem>
                 ))
               ) : (
@@ -46,10 +53,10 @@ const Navbar = () => {
         </NavigationMenu.Item>
 
         <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="group flex select-none items-center justify-between gap-0.5 rounded px-3 py-2 text-[15px] font-medium leading-none text-violet11 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7">
+          <NavigationMenu.Trigger className="group flex select-none items-center justify-between gap-0.5 rounded px-3 py-2 text-[15px] font-medium leading-none text-black outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7">
             Информация{" "}
             <CaretDownIcon
-              className="relative top-px text-violet10 transition-transform duration-[250] ease-in group-data-[state=open]:-rotate-180"
+              className="relative top-px text-black transition-transform duration-[250] ease-in group-data-[state=open]:-rotate-180"
               aria-hidden
             />
           </NavigationMenu.Trigger>
@@ -79,15 +86,15 @@ const Navbar = () => {
 
         <NavigationMenu.Item>
           <NavigationMenu.Link
-            className="block select-none rounded px-3 py-2 text-[15px] font-medium leading-none text-violet11 no-underline outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7"
+            className="block select-none rounded px-3 py-2 text-[15px] font-medium leading-none text-black no-underline outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7"
             href="/reviews"
           >
             Отзывы
           </NavigationMenu.Link>
         </NavigationMenu.Item>
-        <NavigationMenu.Item>
+        <NavigationMenu.Item className="mobile:hidden tablet:block">
           <NavigationMenu.Link
-            className="block select-none rounded px-3 py-2 text-[15px] font-medium leading-none text-violet11 no-underline outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7"
+            className="block select-none rounded px-3 py-2 text-[15px] font-medium leading-none text-black no-underline outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] focus:shadow-violet7"
             href="/admin/products"
           >
             Админ-панель

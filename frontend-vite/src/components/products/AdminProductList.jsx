@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { productsApi } from "../../api/products";
 
-const ProductList = () => {
+const AdminProductList = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -144,4 +144,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default AdminProductList;

@@ -16,7 +16,7 @@ import { X } from "lucide-react";
 import { useLoadCategories } from "@/hooks/useLoadCategories";
 import { productsApi, PRODUCT_STATUSES } from "../../api/products";
 
-const ProductCreate = () => {
+const AdminProductCreate = () => {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -325,4 +325,4 @@ const ProductCreate = () => {
   );
 };
 
-export default ProductCreate;
+export default AdminProductCreate;

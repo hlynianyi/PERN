@@ -18,7 +18,6 @@ export function categoriesReducer(state = initialState, action) {
 }
 
 export const setCategories = (categories) => {
-  console.log("Setting categories in slice:", categories); // Отладочный вывод
   return {
     type: "categories/SET_CATEGORIES",
     payload: categories,

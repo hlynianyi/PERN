@@ -16,6 +16,8 @@ import { X } from "lucide-react";
 import { useLoadCategories } from "@/hooks/useLoadCategories";
 import { productsApi, PRODUCT_STATUSES } from "../../api/products";
 
+const MarkRequired = () => <span className="text-lg text-red-600">*</span>;
+
 const AdminProductCreate = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -26,6 +28,11 @@ const AdminProductCreate = () => {
     handle: "",
     length: "",
     status: "in_stock",
+    sheath: "",
+    blade_length: "",
+    blade_thickness: "",
+    hardness: "",
+    notes: "",
   });
 
   const [selectedFiles, setSelectedFiles] = useState({
@@ -127,7 +134,10 @@ const AdminProductCreate = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Название</Label>
+            <Label>
+              <MarkRequired />
+              Название
+            </Label>
             <Input
               name="name"
               value={formData.name}
@@ -138,7 +148,8 @@ const AdminProductCreate = () => {
 
           <div className="space-y-2">
             <Label>
-              Категория{" "}
+              <MarkRequired />
+              Категория
               <span className="font-normal">
                 (не допускайте ошибок, в каталоге выводятся уникальные значения
                 категорий введенные в этом поле)
@@ -186,7 +197,10 @@ const AdminProductCreate = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Цена</Label>
+            <Label>
+              <MarkRequired />
+              Цена
+            </Label>
             <Input
               type="number"
               name="price"
@@ -216,7 +230,7 @@ const AdminProductCreate = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Длина (см)</Label>
+            <Label>Длина общая (мм)</Label>
             <Input
               type="number"
               name="length"
@@ -225,7 +239,62 @@ const AdminProductCreate = () => {
               min="0"
             />
           </div>
+          {/* New fields */}
+          <div className="space-y-2">
+            <Label>Длина клинка (мм)</Label>
+            <Input
+              type="number"
+              name="blade_length"
+              value={formData.blade_length}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              placeholder="Длина клинка в миллиметрах"
+            />
+          </div>
 
+          <div className="space-y-2">
+            <Label>Толщина клинка (мм)</Label>
+            <Input
+              type="number"
+              name="blade_thickness"
+              value={formData.blade_thickness}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              placeholder="Толщина клинка в миллиметрах"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Твердость</Label>
+            <Input
+              name="hardness"
+              value={formData.hardness}
+              onChange={handleChange}
+              placeholder="Значение твердости по шкале HRC"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Ножны</Label>
+            <Input
+              name="sheath"
+              value={formData.sheath}
+              onChange={handleChange}
+              placeholder="Материал и описание ножен"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Примечание</Label>
+            <Textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              className="min-h-[100px]"
+              placeholder="Дополнительная информация о товаре"
+            />
+          </div>
+          {/* New fields ends*/}
           <div className="space-y-2">
             <Label>Статус</Label>
             <Select

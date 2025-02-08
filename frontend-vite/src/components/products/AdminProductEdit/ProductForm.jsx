@@ -79,6 +79,60 @@ export const ProductForm = ({ formData, handleChange }) => {
       </div>
 
       <div className="space-y-2">
+        <Label>Длина клинка (мм)</Label>
+        <Input
+          type="number"
+          name="blade_length"
+          value={formData.blade_length}
+          onChange={handleChange}
+          min="0"
+          step="0.1"
+          placeholder="Длина клинка в миллиметрах"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Толщина клинка (мм)</Label>
+        <Input
+          type="number"
+          name="blade_thickness"
+          value={formData.blade_thickness}
+          onChange={handleChange}
+          min="0"
+          step="0.1"
+          placeholder="Толщина клинка в миллиметрах"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Твердость</Label>
+        <Input
+          name="hardness"
+          value={formData.hardness}
+          onChange={handleChange}
+          placeholder="Значение твердости по шкале HRC"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Ножны</Label>
+        <Input
+          name="sheath"
+          value={formData.sheath}
+          onChange={handleChange}
+          placeholder="Материал и описание ножен"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Примечание</Label>
+        <Textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          className="min-h-[100px]"
+          placeholder="Дополнительная информация о товаре"
+        />
+      </div>
+      <div className="space-y-2">
         <Label>Статус</Label>
         <Select
           name="status"

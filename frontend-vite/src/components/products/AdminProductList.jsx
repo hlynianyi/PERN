@@ -94,27 +94,34 @@ const AdminProductList = () => {
                 </TableCell>
                 <TableCell>
                   <p>{product.name}</p>
-                  {product.is_new && (
-                    <Badge variant="success" className="mt-2">
-                      Новинка
-                    </Badge>
-                  )}
                 </TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>{product.price} руб.</TableCell>
                 <TableCell>
-                  {product.status === "in_stock" ? (
-                    <Badge>В наличии</Badge>
-                  ) : (
-                    <Badge variant="secondary">Нет в наличии</Badge>
-                  )}
+                  <div className="h-full flex flex-col gap-2">
+                    {product.status === "in_stock" ? (
+                      <Badge className="flex justify-center">В наличии</Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="flex justify-center"
+                      >
+                        Нет в наличии
+                      </Badge>
+                    )}
+                    {product.is_new && (
+                      <Badge className="flex justify-center " variant="success">
+                        Новинка
+                      </Badge>
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-2">
                     <Button
                       variant="outline"
                       onClick={() =>
-                        navigate(`/admin/products/details/${product.id}`)
+                        navigate(`/products/details/${product.id}`)
                       }
                     >
                       Просмотр

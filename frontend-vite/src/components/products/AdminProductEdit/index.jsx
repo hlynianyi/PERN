@@ -30,6 +30,11 @@ const AdminProductEdit = () => {
     handle: "",
     length: "",
     status: "in_stock",
+    sheath: "",
+    blade_length: "",
+    blade_thickness: "",
+    hardness: "",
+    notes: "",
   });
 
   const [currentImages, setCurrentImages] = useState([]);
@@ -64,6 +69,11 @@ const AdminProductEdit = () => {
         handle: product.handle || "",
         length: product.length || "",
         status: product.status,
+        sheath: product.sheath || "",
+        blade_length: product.blade_length || "",
+        blade_thickness: product.blade_thickness || "",
+        hardness: product.hardness || "",
+        notes: product.notes || "",
       });
       setCurrentImages(product.images || []);
       setCurrentCertificates(product.certificates || []);

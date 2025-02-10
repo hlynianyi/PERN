@@ -12,16 +12,22 @@ import AdminProductList from "./products/AdminProductList";
 import AdminProductCreate from "./products/AdminProductCreate";
 import AdminProductEdit from "./products/AdminProductEdit";
 import AdminProductDetails from "./products/ProductDetails";
-import CompanyEdit from "./company/CompanyEdit";
+import AdminFaqEdit from "./faq/AdminFaqEdit";
+import AdminPartnershipEdit from "./partnership/AdminPartnershipEdit";
+import AdminCompanyEdit from "./company/AdminCompanyEdit";
 import CompanyDetails from "../pages/CompanyDetails";
 import AdminLogin from "../pages/AdminLogin";
 import Navbar from "./navigation/Navbar";
 import Catalog from "../pages/Catalog";
+import Faq from "@/pages/Faq";
+import Partnership from "@/pages/Partnership";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "../context/AuthContext";
 import { AuthProvider } from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeProvider";
 import { Toaster } from "./ui/toaster";
+import Reviews from "@/pages/Reviews";
+import AdminReviewsEdit from "./reviews/AdminReviewsEdit";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -51,16 +57,20 @@ function App() {
           <div className="min-h-screen bg-background font-mono">
             <Navbar />
             <Separator />
-            {/* <Breadcrumbs /> */}
+            {/* Public Pages */}
             <Routes>
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/products" element={<Catalog />} />
               <Route path="/company" element={<CompanyDetails />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/partnership" element={<Partnership />} />
+              <Route path="/reviews" element={<Reviews />} />
+
               <Route
                 path="products/details/:id"
                 element={<AdminProductDetails />}
               />
-              {/* protected routes for administartor */}
+              {/* PROTECTED ROUTES FOR ADMINISTARTOR */}
               <Route
                 path="/admin"
                 element={
@@ -83,9 +93,16 @@ function App() {
                   element={<AdminProductEdit />}
                 />
 
-                <Route path="company/edit" element={<CompanyEdit />} />
+                <Route path="faq/edit" element={<AdminFaqEdit />} />
+                <Route path="company/edit" element={<AdminCompanyEdit />} />
+                <Route
+                  path="partnership/edit"
+                  element={<AdminPartnershipEdit />}
+                />
+                <Route path="reviews/edit" element={<AdminReviewsEdit />} />
               </Route>
             </Routes>
+            {/* PROTECTED ROUTES FOR ADMINISTARTOR BOTTOM */}
             <Toaster />
           </div>
         </ThemeProvider>

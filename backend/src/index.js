@@ -1,16 +1,17 @@
 // src/index.js
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const routes = require("./routes");
+const { retryConnection } = require("./utils/database");
 const Product = require("./models/product");
 const Company = require("./models/company");
-const { retryConnection } = require("./utils/database");
+const FAQ = require("./models/faq");
+const Partnership = require("./models/partnership");
+const Review = require("./models/review");
 
 const app = express();
 const port = process.env.PORT || 5002;
 
-// Middleware
 app.use(
   cors({
     origin: [
@@ -39,6 +40,9 @@ async function initDB() {
 
     await Product.initTable();
     await Company.initTable();
+    await FAQ.initTable();
+    await Partnership.initTable();
+    await Review.initTable();
     console.log("База данных успешно инициализирована");
   } catch (error) {
     console.error("Ошибка при инициализации базы данных:", error.message);

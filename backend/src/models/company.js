@@ -7,11 +7,11 @@ class Company {
   static async initTable() {
     try {
       // Удаляем существующие таблицы в правильном порядке
-      await pool.query(`
-        DROP TABLE IF EXISTS company_images CASCADE;
-        DROP TABLE IF EXISTS company_description_blocks CASCADE;
-        DROP TABLE IF EXISTS company CASCADE;
-      `);
+      // await pool.query(`
+      //   DROP TABLE IF EXISTS company_images CASCADE;
+      //   DROP TABLE IF EXISTS company_description_blocks CASCADE;
+      //   DROP TABLE IF EXISTS company CASCADE;
+      // `);
 
       // Создаем основную таблицу компании
       await pool.query(`

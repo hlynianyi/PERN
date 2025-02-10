@@ -105,17 +105,24 @@ const Navbar = () => {
                 <ListItem title="Контакты" href="/contacts">
                   Данные для связи с нами
                 </ListItem>
-                <ListItem title="Сотрудничество" href="/business">
+                <ListItem title="Сотрудничество" href="/partnership">
                   Для оптовых заказов или бизнес-предложений
                 </ListItem>
                 <ListItem title="Оплата" href="/payment">
                   О процессе и вариантах оплаты
                 </ListItem>
-                <ListItem title="Гарантия" href="/guarantees">
-                  Гарантийные условия на товар
+                <ListItem title="Доставка" href="/delivery">
+                  Условия доставки товаров
                 </ListItem>
                 <ListItem title="Вопрос-ответ" href="/faq">
                   Часто задаваемые вопросы
+                </ListItem>
+                <ListItem
+                  title="Отзывы"
+                  href="/reviews"
+                  className="tablet:hidden"
+                >
+                  Что о нас думают наши клиенты
                 </ListItem>
               </ul>
             </NavigationMenu.Content>
@@ -123,7 +130,7 @@ const Navbar = () => {
 
           <NavigationMenu.Item>
             <NavigationMenu.Link
-              className="block select-none rounded px-2 tablet:px-4 py-2 text-[18px] font-medium
+              className="hidden tablet:block select-none rounded px-2 tablet:px-4 py-2 text-[18px] font-medium
               leading-none text-slate-800 dark:text-slate-100 no-underline outline-none 
               hover:bg-slate-100 dark:hover:bg-slate-800 
               focus:shadow-[0_0_0_2px] focus:shadow-slate-200 dark:focus:shadow-slate-700

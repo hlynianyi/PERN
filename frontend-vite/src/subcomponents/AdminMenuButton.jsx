@@ -34,19 +34,19 @@ export default function AdminMenuButton() {
           <DropdownMenuItem onClick={() => navigate("/admin/company/edit")}>
             О компании
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/")}>
+          <DropdownMenuItem onClick={() => navigate("/admin/contacts/edit")}>
             Контакты
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/")}>
+          <DropdownMenuItem onClick={() => navigate("/admin/partnership/edit")}>
             Сотрудничество
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/reviews")}>
+          <DropdownMenuItem onClick={() => navigate("/admin/reviews/edit")}>
             Отзывы
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/")}>
+          <DropdownMenuItem onClick={() => navigate("/admin/payment/edit")}>
             Оплата
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/")}>
+          <DropdownMenuItem onClick={() => navigate("/admin/faq/edit")}>
             Вопрос-ответ
           </DropdownMenuItem>
         </DropdownMenuContent>

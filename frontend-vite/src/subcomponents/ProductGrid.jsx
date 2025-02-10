@@ -4,10 +4,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Star, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { CustomPagination } from "./CustomPagination";
 
 export default function ProductGrid({ products, isLoading, error }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
   const navigate = useNavigate();
+
   const productItems = products?.items || products || [];
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProducts = productItems.slice(startIndex, endIndex);
+
   console.log("🚀 ~ ProductGrid ~ products:", products);
 
   const getStatusBadge = (status) => {
@@ -54,8 +63,8 @@ export default function ProductGrid({ products, isLoading, error }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 qhd:grid-cols-4 gap-4">
-        {productItems.map((product) => (
+      <div className="mb-2 tablet:mb-4 grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 qhd:grid-cols-4 gap-4">
+        {currentProducts.map((product) => (
           <Card key={product.id} className="flex flex-col">
             <CardHeader className="flex-none">
               <div className="relative overflow-hidden">
@@ -164,6 +173,12 @@ export default function ProductGrid({ products, isLoading, error }) {
           </Card>
         ))}
       </div>
+      <CustomPagination
+        currentPage={currentPage}
+        totalItems={productItems.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+      />
     </>
   );
 }

@@ -59,7 +59,7 @@ export default function Breadcrumbs() {
   });
 
   return (
-    <Breadcrumb className="container px-0 ">
+    <Breadcrumb className="hidden tablet:block container px-0 ">
       <BreadcrumbList className="text-lg leading-6">
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;

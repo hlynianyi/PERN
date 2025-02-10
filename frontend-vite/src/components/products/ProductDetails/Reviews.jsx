@@ -1,10 +1,11 @@
-// components/products/ProductDetails/Reviews.jsx
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, Edit2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useAuth } from "@/context/AuthContext";
+import { CustomPagination } from "../../../subcomponents/CustomPagination";
 
 export const Reviews = ({
   reviews,
@@ -14,6 +15,13 @@ export const Reviews = ({
   onDeleteReview,
 }) => {
   const { isAuthenticated } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 1;
+
+  // Calculate pagination values
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentReviews = reviews?.slice(startIndex, endIndex) || [];
 
   return (
     <div className="space-y-4">
@@ -44,7 +52,7 @@ export const Reviews = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {reviews?.map((review) => (
+        {currentReviews.map((review) => (
           <Card key={review.id}>
             <CardContent className="pt-6 space-y-3">
               <div className="flex justify-between items-center">
@@ -90,6 +98,15 @@ export const Reviews = ({
           </Card>
         ))}
       </div>
+
+      {reviews?.length > itemsPerPage && (
+        <CustomPagination
+          currentPage={currentPage}
+          totalItems={reviews.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 };

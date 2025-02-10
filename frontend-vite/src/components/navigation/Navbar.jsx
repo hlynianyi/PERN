@@ -28,8 +28,8 @@ const Navbar = () => {
 
       {/* 2/2 */}
       <div className="flex flex-col items-center justify-between gap-4">
-        
         <NavbarMenu />
+        <SearchProducts />
         <div className="flex-1 max-w-xl"></div>
       </div>
 

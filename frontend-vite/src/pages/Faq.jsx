@@ -27,7 +27,7 @@ const FaqItem = ({ block, isOpen, onToggle }) => {
       >
         <div className="px-6 pb-6 pt-2">
           {block.description && (
-            <p className="text-sm  mt-1">{block.description}</p>
+            <p className="text-sm  my-1">{block.description}</p>
           )}
           {block.answers && block.answers.length > 0 && (
             <div className="space-y-4">
@@ -106,7 +106,7 @@ const FaqPage = () => {
           {faqData?.title || "Часто задаваемые вопросы"}
         </h1>
         <div className="h-1 w-20 bg-primary mx-auto mb-4"></div>
-        <p className="">
+        <p className="text-lg leading-relaxed">
           Найдите ответы на самые распространенные вопросы о наших продуктах и
           услугах
         </p>

@@ -136,7 +136,7 @@ const Reviews = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Имя *</FormLabel>
+                      <FormLabel className='text-[16px]'>Имя *</FormLabel>
                       <FormControl>
                         <Input placeholder="Введите ваше имя" {...field} />
                       </FormControl>
@@ -149,7 +149,7 @@ const Reviews = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className='text-[16px]'>Email</FormLabel>
                       <FormControl>
                         <Input placeholder="Введите email" {...field} />
                       </FormControl>
@@ -162,7 +162,7 @@ const Reviews = () => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Телефон</FormLabel>
+                      <FormLabel className='text-[16px]'>Телефон</FormLabel>
                       <FormControl>
                         <Input placeholder="+7 (___) ___-__-__" {...field} />
                       </FormControl>
@@ -175,7 +175,7 @@ const Reviews = () => {
                   name="text"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ваш отзыв *</FormLabel>
+                      <FormLabel className='text-[16px]'>Ваш отзыв *</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Напишите ваш отзыв"

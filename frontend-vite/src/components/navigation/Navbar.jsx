@@ -34,9 +34,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-4">
         <NavbarMenu />
-        <div className="flex min-h-[40px] items-center">
+        <div className="hidden tablet:flex min-h-[40px] items-center">
           <Breadcrumbs />
         </div>
       </div>

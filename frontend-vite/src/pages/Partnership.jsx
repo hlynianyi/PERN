@@ -58,7 +58,7 @@ const PartnershipPage = () => {
           <div className="h-1 w-20 bg-primary mx-auto"></div>
         </div>
 
-        <div className="prose prose-lg max-w-none">
+        <div className="text-lg leading-relaxed max-w-none">
           {text_blocks.map((block, index) => (
             <div
               key={block.id || index}

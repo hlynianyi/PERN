@@ -1,13 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   PhoneIncoming,
   Mail,
   Clock,
   ExternalLink,
   Map,
-  MapPin,
-  Contact,
-  Locate,
   CircleUserRound,
 } from "lucide-react";
 import {
@@ -22,51 +19,98 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { contactsApi } from "@/api/contacts";
 
 const NavbarContacts = () => {
+  const [contactsData, setContactsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadContacts = async () => {
+      try {
+        const data = await contactsApi.getContacts();
+        setContactsData(data);
+      } catch (err) {
+        setError("Не удалось загрузить контактную информацию");
+        console.error("Ошибка загрузки:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContacts();
+  }, []);
+
+  const hasAddress =
+    contactsData?.city?.trim() || contactsData?.address?.trim();
+  const hasPhones = contactsData?.phones?.length > 0;
+  const hasEmail = contactsData?.email?.trim();
+  const hasWorkSchedule =
+    contactsData?.work_days?.trim() || contactsData?.work_hours?.trim();
+
   const Content = () => (
-    <div className="space-y-1">
+    <div className="space-y-2">
       <h4 className="text-sm font-semibold">Свяжитесь с нами</h4>
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <PhoneIncoming size={20} className="text-muted-foreground" />
-          <a
-            href="tel:+79889955441"
-            className="text-foreground hover:text-primary transition-colors"
-          >
-            +7 (988) 99-55-441
-          </a>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <PhoneIncoming size={20} className="text-muted-foreground" />
-          <a
-            href="tel:+79889955442"
-            className="text-foreground hover:text-primary transition-colors"
-          >
-            +7 (988) 99-55-442
-          </a>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Mail size={20} className="text-muted-foreground" />
-          <a
-            href="mailto:info@example.com"
-            className="text-foreground hover:text-primary transition-colors"
-          >
-            info@example.com
-          </a>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <Clock size={20} className="text-muted-foreground" />
-          <span>Пн-Пт: 9:00 - 18:00</span>
-        </div>
+        {hasPhones && (
+          <div className="space-y-1">
+            {contactsData.phones
+              .filter((phone) => phone?.trim())
+              .map((phone, index) => (
+                <p key={index} className="flex flex-row gap-2 items-center">
+                  <PhoneIncoming size={20} className="text-muted-foreground" />
+
+                  <a
+                    href={`tel:${phone.replace(/\D/g, "")}`}
+                    className="hover:text-teal-600 transition-colors"
+                  >
+                    {phone}
+                  </a>
+                </p>
+              ))}
+          </div>
+        )}
+        {hasEmail && (
+          <div className="flex items-center gap-2 text-sm">
+            <Mail size={20} className="text-muted-foreground" />
+            <a
+              href={`mailto:${contactsData.email}`}
+              className="hover:text-teal-600 transition-colors"
+            >
+              {contactsData.email}
+            </a>
+          </div>
+        )}
+        {hasWorkSchedule && (
+          <div className="flex flex-row items-center gap-2 text-sm">
+            <Clock size={20} className="text-muted-foreground" />
+            <div className="flex flex-col">
+              {contactsData.work_days?.trim() && (
+                <p className="">{contactsData.work_days}</p>
+              )}
+              {contactsData.work_hours?.trim() && (
+                <p className="">{contactsData.work_hours}</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
+
   const LocationContent = () => (
     <div className="space-y-1">
       <h4 className="text-sm font-semibold">Наш адрес</h4>
       <div className="space-y-2">
-        <p className="text-sm">г. Кизляр, ул. Примерная, д. 123</p>
+        {hasAddress && (
+          <p className="">
+            {[contactsData.city, contactsData.address]
+              .filter(Boolean)
+              .map((item) => item.trim())
+              .join(", ")}
+          </p>
+        )}
         <a
           href="https://maps.google.com"
           target="_blank"
@@ -78,8 +122,9 @@ const NavbarContacts = () => {
       </div>
     </div>
   );
+
   return (
-    <div className="flex flex-row items-center gap-2">
+    <div className="flex flex-row items-center gap-2 ">
       {/* Contacts */}
       <div className="hidden laptop:block">
         <HoverCard>

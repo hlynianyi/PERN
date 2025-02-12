@@ -7,27 +7,32 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { useEffect } from "react";
+import Navbar from "./navigation/Navbar";
+import Catalog from "../pages/Catalog";
+import AdminLogin from "../pages/AdminLogin";
 import AdminMenu from "../subcomponents/AdminMenuButton";
 import AdminProductList from "./products/AdminProductList";
 import AdminProductCreate from "./products/AdminProductCreate";
 import AdminProductEdit from "./products/AdminProductEdit";
 import AdminProductDetails from "./products/ProductDetails";
-import AdminFaqEdit from "./faq/AdminFaqEdit";
-import AdminPartnershipEdit from "./partnership/AdminPartnershipEdit";
 import AdminCompanyEdit from "./company/AdminCompanyEdit";
 import CompanyDetails from "../pages/CompanyDetails";
-import AdminLogin from "../pages/AdminLogin";
-import Navbar from "./navigation/Navbar";
-import Catalog from "../pages/Catalog";
+import AdminFaqEdit from "./faq/AdminFaqEdit";
 import Faq from "@/pages/Faq";
+import AdminPartnershipEdit from "./partnership/AdminPartnershipEdit";
 import Partnership from "@/pages/Partnership";
-import { Separator } from "@/components/ui/separator";
-import { useAuth } from "../context/AuthContext";
-import { AuthProvider } from "../context/AuthContext";
-import { ThemeProvider } from "../context/ThemeProvider";
-import { Toaster } from "./ui/toaster";
 import Reviews from "@/pages/Reviews";
 import AdminReviewsEdit from "./reviews/AdminReviewsEdit";
+import Contacts from "@/pages/Contacts";
+import AdminContactsEdit from "./contacts/AdminContactsEdit";
+import { Separator } from "@/components/ui/separator";
+import { Toaster } from "./ui/toaster";
+import { useAuth } from "../context/AuthContext";
+import store from "../store";
+import { fetchContacts } from "../store/slices/contactsSlice";
+import { AuthProvider } from "../context/AuthContext";
+import { ThemeProvider } from "../context/ThemeProvider";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -50,6 +55,15 @@ function AdminLayout() {
 }
 
 function App() {
+  useEffect(() => {
+    store.dispatch(fetchContacts());
+    // Периодическое обновление каждые X минут
+    const interval = setInterval(() => {
+      store.dispatch(fetchContacts());
+    }, 20 * 60 * 1000); 
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Router>
       <AuthProvider>
@@ -65,6 +79,7 @@ function App() {
               <Route path="/faq" element={<Faq />} />
               <Route path="/partnership" element={<Partnership />} />
               <Route path="/reviews" element={<Reviews />} />
+              <Route path="/contacts" element={<Contacts />} />
 
               <Route
                 path="products/details/:id"
@@ -99,6 +114,8 @@ function App() {
                   path="partnership/edit"
                   element={<AdminPartnershipEdit />}
                 />
+                <Route path="contacts/edit" element={<AdminContactsEdit />} />
+
                 <Route path="reviews/edit" element={<AdminReviewsEdit />} />
               </Route>
             </Routes>

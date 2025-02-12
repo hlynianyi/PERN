@@ -1,11 +1,13 @@
 // src/store/index.js
 import { categoriesReducer } from "./slices/categoriesSlice";
 import { productsReducer } from "./slices/productsSlice";
+import { contactsReducer } from "./slices/contactsSlice";
 
 function rootReducer(state = {}, action) {
   return {
     categories: categoriesReducer(state.categories, action),
     products: productsReducer(state.products, action),
+    contacts: contactsReducer(state.contacts, action),
   };
 }
 
@@ -19,6 +21,11 @@ const initialState = {
     isLoaded: false,
     error: null,
   },
+  contacts: {
+    data: null,
+    isLoaded: false,
+    error: null,
+  }
 };
 
 class Store {
@@ -33,6 +40,10 @@ class Store {
   }
 
   dispatch(action) {
+    if (typeof action === 'function') {
+      return action(this.dispatch.bind(this), this.getState.bind(this));
+    }
+    
     this.state = this.reducer(this.state, action);
     this.listeners.forEach((listener) => listener());
     this.saveToLocalStorage();

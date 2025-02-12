@@ -28,10 +28,10 @@ const Navbar = () => {
         </div>
         <SearchProducts />
         <div className="flex flex-row gap-4 ">
-          <NavbarContacts />
-          <div className="hidden tablet:block">
+          <div className="hidden tablet:block ">
             <ThemeToggle />
           </div>
+          <NavbarContacts />
         </div>
       </div>
       <div className="flex flex-col gap-4 mb-4">

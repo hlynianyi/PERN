@@ -25,6 +25,8 @@ const breadcrumbNameMap = {
   faq: "Вопрос-ответ",
   login: "Авторизация",
   partnership: "Сотрудничество",
+  delivery: "Доставка",
+  warranty: "Гарантия",
 };
 
 export default function Breadcrumbs() {

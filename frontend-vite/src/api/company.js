@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:5002/api",
-});
+import { api } from "./route";
 
 export const companyApi = {
   getCompany: async () => {

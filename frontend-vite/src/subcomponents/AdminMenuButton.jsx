@@ -46,6 +46,9 @@ export default function AdminMenuButton() {
           <DropdownMenuItem onClick={() => navigate("/admin/payment/edit")}>
             Оплата
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/admin/delivery/edit")}>
+            Доставка
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/faq/edit")}>
             Вопрос-ответ
           </DropdownMenuItem>

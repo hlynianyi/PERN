@@ -1,9 +1,5 @@
 // frontend/src/api/products.js
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:5002/api",
-});
+import { api } from "./route";
 
 export const PRODUCT_STATUSES = {
   in_stock: "В наличии",

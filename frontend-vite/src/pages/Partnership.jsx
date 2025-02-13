@@ -50,7 +50,7 @@ const PartnershipPage = () => {
 
   return (
     <>
-      <div className="container max-w-3xl mx-auto px-4 py-8">
+      <div className="container max-w-4xl mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight mb-4">
             {partnershipData?.title || "Сотрудничество"}

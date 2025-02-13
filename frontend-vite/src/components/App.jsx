@@ -26,6 +26,10 @@ import Reviews from "@/pages/Reviews";
 import AdminReviewsEdit from "./reviews/AdminReviewsEdit";
 import Contacts from "@/pages/Contacts";
 import AdminContactsEdit from "./contacts/AdminContactsEdit";
+import Payment from "@/pages/Payment";
+import AdminPaymentEdit from "./payment/AdminPaymentEdit";
+import Delivery from "@/pages/Delivery";
+import AdminDeliveryEdit from "./delivery/AdminDeliveryEdit";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "./ui/toaster";
 import { useAuth } from "../context/AuthContext";
@@ -60,7 +64,7 @@ function App() {
     // Периодическое обновление каждые X минут
     const interval = setInterval(() => {
       store.dispatch(fetchContacts());
-    }, 20 * 60 * 1000); 
+    }, 20 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -80,6 +84,8 @@ function App() {
               <Route path="/partnership" element={<Partnership />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/contacts" element={<Contacts />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/delivery" element={<Delivery />} />
 
               <Route
                 path="products/details/:id"
@@ -117,6 +123,8 @@ function App() {
                 <Route path="contacts/edit" element={<AdminContactsEdit />} />
 
                 <Route path="reviews/edit" element={<AdminReviewsEdit />} />
+                <Route path="payment/edit" element={<AdminPaymentEdit />} />
+                <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
               </Route>
             </Routes>
             {/* PROTECTED ROUTES FOR ADMINISTARTOR BOTTOM */}

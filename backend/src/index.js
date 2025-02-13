@@ -9,6 +9,8 @@ const FAQ = require("./models/faq");
 const Partnership = require("./models/partnership");
 const Review = require("./models/review");
 const Contacts = require("./models/contacts");
+const Payment = require("./models/payment");
+const Delivery = require("./models/delivery");
 
 const app = express();
 const port = process.env.PORT || 5002;
@@ -45,6 +47,8 @@ async function initDB() {
     await Partnership.initTable();
     await Review.initTable();
     await Contacts.initTable();
+    await Payment.initTable();
+    await Delivery.initTable();
 
     console.log("База данных успешно инициализирована");
   } catch (error) {

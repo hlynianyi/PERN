@@ -37,6 +37,7 @@ import store from "../store";
 import { fetchContacts } from "../store/slices/contactsSlice";
 import { AuthProvider } from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeProvider";
+import Footer from "./navigation/Footer";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -72,7 +73,7 @@ function App() {
     <Router>
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <div className="min-h-screen bg-background font-mono">
+          <div className="min-h-screen bg-background ">
             <Navbar />
             <Separator />
             {/* Public Pages */}
@@ -128,6 +129,7 @@ function App() {
               </Route>
             </Routes>
             {/* PROTECTED ROUTES FOR ADMINISTARTOR BOTTOM */}
+            <Footer />
             <Toaster />
           </div>
         </ThemeProvider>

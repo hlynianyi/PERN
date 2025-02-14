@@ -15,9 +15,9 @@ const Navbar = () => {
               href="/admin/products"
               className="hidden tablet:flex font-serif text-lg  "
             >
-              <p className="text-4xl">М</p>
+              <p className="text-4xl text-primary">М</p>
               <div className="flex flex-col justify-center">
-                <p className="leading-3">астерская</p>
+                <p className="leading-3 text-primary">астерская</p>
                 <p className="leading-4">Поддубного</p>
               </div>
             </a>

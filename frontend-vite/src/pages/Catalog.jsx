@@ -86,7 +86,7 @@ const Catalog = () => {
     }
   };
   return (
-    <div className="container mx-auto py-8">
+    <div className=" mx-auto py-8">
       {/* Заголовок и мобильные фильтры */}
       <div className="desktop:hidden mb-3">
         <ProductFilters
@@ -103,7 +103,7 @@ const Catalog = () => {
       desktop:grid-cols-2 desktop:grid-cols-[220px_1fr]"
       >
         {/* Десктопные фильтры */}
-        <div className="hidden desktop:block  overflow-y-auto bg-card p-0 rounded-lg shadow-sm">
+        <div className="hidden desktop:flex desktop:flex-col desktop:p-4  overflow-y-auto bg-card p-0 rounded-lg shadow-sm">
           <ProductFilters
             categories={filterOptions.categories}
             handleTypes={filterOptions.handleTypes}

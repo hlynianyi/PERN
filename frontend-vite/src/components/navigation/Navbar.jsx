@@ -7,7 +7,7 @@ import Breadcrumbs from "@/subcomponents/Breadcrumbs";
 
 const Navbar = () => {
   return (
-    <div className="flex flex-col w-full justify-between py-2 mobile:px-2 tablet:px-4  gap-4 center">
+    <header className="container flex flex-col w-full justify-between py-2 mobile:px-2 tablet:px-4  gap-4 center">
       <div className="flex flex-row justify-between gap-3 w-full">
         <div className="hidden tablet:flex flex-col gap-4 ">
           <div className="flex gap-1 h-[42px] items-center">
@@ -34,13 +34,13 @@ const Navbar = () => {
           <NavbarContacts />
         </div>
       </div>
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="flex flex-col gap-4 mb-2 ">
         <NavbarMenu />
-        <div className="hidden tablet:flex min-h-[40px] items-center">
+        <div className="hidden tablet:flex min-h-[40px] items-center mt-2">
           <Breadcrumbs />
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

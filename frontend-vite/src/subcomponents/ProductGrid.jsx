@@ -77,8 +77,7 @@ export default function ProductGrid({ products, isLoading, error }) {
                 ) : (
                   <Skeleton className="h-48 w-full" />
                 )}
-                <div className="absolute top-1 left-1 flex gap-2 flex-col">
-                  {getStatusBadge(product.status)}
+                <div className="absolute top-2 left-2 flex gap-2 flex-col">
                   {product.is_new && (
                     <Badge
                       variant="secondary"
@@ -96,9 +95,9 @@ export default function ProductGrid({ products, isLoading, error }) {
                 {product.name}
               </CardTitle>
 
-              <div className="flex-1 space-y-2 text-sm text-muted-foreground mb-4">
+              <div className="flex-1 space-y-2 text-sm text-muted-foreground mb-2">
                 {product.category && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mb-4">
                     <Package className="h-4 w-4" />
                     {product.category}
                   </div>
@@ -157,6 +156,21 @@ export default function ProductGrid({ products, isLoading, error }) {
                         })()}
                       </span>
                     )}
+                  </div>
+                )}
+                {product.status && (
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`font-medium ${
+                        product.status === "in_stock"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {product.status === "in_stock"
+                        ? "В наличии"
+                        : "Нет в наличии"}
+                    </span>
                   </div>
                 )}
               </div>

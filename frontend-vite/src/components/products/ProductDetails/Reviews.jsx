@@ -16,7 +16,7 @@ export const Reviews = ({
 }) => {
   const { isAuthenticated } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
+  const itemsPerPage = 5;
 
   // Calculate pagination values
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -48,7 +48,7 @@ export const Reviews = ({
             </div>
           )}
         </div>
-        <Button onClick={onNewReview}>Оставить отзыв</Button>
+        <Button className='dark:text-secondary-foreground' onClick={onNewReview}>Оставить отзыв</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

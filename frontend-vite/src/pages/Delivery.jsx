@@ -79,7 +79,7 @@ const Delivery = () => {
 
   if (error) {
     return (
-      <div className="container max-w-3xl mx-auto px-4 py-8">
+      <div className=" max-w-3xl mx-auto px-4 py-8">
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -88,8 +88,8 @@ const Delivery = () => {
   }
 
   return (
-    <div className="container py-8">
-      <div className="text-center mb-12">
+    <div className="py-4 tablet:py-8">
+      <div className="text-center mb-6 tablet:mb-12">
         <h1 className="text-4xl font-bold tracking-tight mb-4">Доставка</h1>
         <div className="h-1 w-20 bg-primary mx-auto"></div>
       </div>

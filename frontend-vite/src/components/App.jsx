@@ -73,62 +73,64 @@ function App() {
     <Router>
       <AuthProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <div className="min-h-screen bg-background ">
+          <div className="flex flex-col min-h-screen bg-background ">
             <Navbar />
             <Separator />
             {/* Public Pages */}
-            <Routes>
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/products" element={<Catalog />} />
-              <Route path="/company" element={<CompanyDetails />} />
-              <Route path="/faq" element={<Faq />} />
-              <Route path="/partnership" element={<Partnership />} />
-              <Route path="/reviews" element={<Reviews />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/payment" element={<Payment />} />
-              <Route path="/delivery" element={<Delivery />} />
+            <main className="flex flex-col flex-1 container px-4">
+              <Routes>
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/products" element={<Catalog />} />
+                <Route path="/company" element={<CompanyDetails />} />
+                <Route path="/faq" element={<Faq />} />
+                <Route path="/partnership" element={<Partnership />} />
+                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/delivery" element={<Delivery />} />
 
-              <Route
-                path="products/details/:id"
-                element={<AdminProductDetails />}
-              />
-              {/* PROTECTED ROUTES FOR ADMINISTARTOR */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-              >
                 <Route
-                  index
-                  element={<Navigate to="/admin/products" replace />}
+                  path="products/details/:id"
+                  element={<AdminProductDetails />}
                 />
-                <Route path="products" element={<AdminProductList />} />
+                {/* PROTECTED ROUTES FOR ADMINISTARTOR */}
                 <Route
-                  path="products/create"
-                  element={<AdminProductCreate />}
-                />
-                <Route
-                  path="products/edit/:id"
-                  element={<AdminProductEdit />}
-                />
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route
+                    index
+                    element={<Navigate to="/admin/products" replace />}
+                  />
+                  <Route path="products" element={<AdminProductList />} />
+                  <Route
+                    path="products/create"
+                    element={<AdminProductCreate />}
+                  />
+                  <Route
+                    path="products/edit/:id"
+                    element={<AdminProductEdit />}
+                  />
 
-                <Route path="faq/edit" element={<AdminFaqEdit />} />
-                <Route path="company/edit" element={<AdminCompanyEdit />} />
-                <Route
-                  path="partnership/edit"
-                  element={<AdminPartnershipEdit />}
-                />
-                <Route path="contacts/edit" element={<AdminContactsEdit />} />
+                  <Route path="faq/edit" element={<AdminFaqEdit />} />
+                  <Route path="company/edit" element={<AdminCompanyEdit />} />
+                  <Route
+                    path="partnership/edit"
+                    element={<AdminPartnershipEdit />}
+                  />
+                  <Route path="contacts/edit" element={<AdminContactsEdit />} />
 
-                <Route path="reviews/edit" element={<AdminReviewsEdit />} />
-                <Route path="payment/edit" element={<AdminPaymentEdit />} />
-                <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
-              </Route>
-            </Routes>
-            {/* PROTECTED ROUTES FOR ADMINISTARTOR BOTTOM */}
+                  <Route path="reviews/edit" element={<AdminReviewsEdit />} />
+                  <Route path="payment/edit" element={<AdminPaymentEdit />} />
+                  <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
+                </Route>
+              </Routes>
+            </main>
+            <Separator />
             <Footer />
             <Toaster />
           </div>

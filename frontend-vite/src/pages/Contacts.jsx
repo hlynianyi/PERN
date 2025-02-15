@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContacts } from "@/hooks/useContacts";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Loader2,
@@ -9,12 +9,10 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { TgIcon, InstIcon, WsAppIcon, VkIcon } from "@/assets/SocialMediaIcons";
-import { contactsApi } from "@/api/contacts";
 
 const SocialLink = ({ href, icon: Icon, children }) => {
   if (!href?.trim()) return null;
 
-  // Функция для формирования правильного URL
   const getFormattedUrl = (type, username) => {
     const cleanUsername = username.replace(/^@/, "").trim();
 
@@ -37,7 +35,7 @@ const SocialLink = ({ href, icon: Icon, children }) => {
       href={getFormattedUrl(children, href)}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2  hover:text-teal-600 transition-colors"
+      className="flex items-center gap-2 hover:text-teal-600 transition-colors"
     >
       <Icon className="h-5 w-5" />
       <span>{children}</span>
@@ -60,27 +58,10 @@ const ContactBlock = ({ icon: Icon, title, children }) => {
 };
 
 const Contacts = () => {
-  const [contactsData, setContactsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
- 
-  useEffect(() => {
-    const loadContacts = async () => {
-      try {
-        const data = await contactsApi.getContacts();
-        setContactsData(data);
-      } catch (err) {
-        setError("Не удалось загрузить контактную информацию");
-        console.error("Ошибка загрузки:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const contacts = useContacts();
+  const contactsData = contacts?.data;
 
-    loadContacts();
-  }, []);
-
-  if (loading) {
+  if (!contactsData) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -88,11 +69,11 @@ const Contacts = () => {
     );
   }
 
-  if (error) {
+  if (contactsData.error) {
     return (
-      <div className="container max-w-3xl mx-auto px-4 py-8">
+      <div className=" max-w-3xl mx-auto px-4 py-8">
         <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{contactsData.error}</AlertDescription>
         </Alert>
       </div>
     );
@@ -112,10 +93,11 @@ const Contacts = () => {
     contactsData?.instagram?.trim(),
     contactsData?.vkontakte?.trim(),
   ].some(Boolean);
+
   return (
-    <div className="container  mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight  mb-4">Контакты</h1>
+    <div className="mx-auto px-4 py-4 tablet:py-8">
+      <div className="text-center mb-6 tablet:mb-12">
+        <h1 className="text-4xl font-bold tracking-tight mb-4">Контакты</h1>
         <div className="h-1 w-20 bg-primary mx-auto"></div>
       </div>
 
@@ -124,7 +106,7 @@ const Contacts = () => {
         <div className="space-y-6">
           {hasAddress && (
             <ContactBlock icon={MapPin} title="Адрес">
-              <p className="">
+              <p>
                 {[contactsData.city, contactsData.address]
                   .filter(Boolean)
                   .map((item) => item.trim())
@@ -139,7 +121,7 @@ const Contacts = () => {
                 {contactsData.phones
                   .filter((phone) => phone?.trim())
                   .map((phone, index) => (
-                    <p key={index} className="">
+                    <p key={index}>
                       <a
                         href={`tel:${phone.replace(/\D/g, "")}`}
                         className="hover:text-teal-600 transition-colors"
@@ -154,7 +136,7 @@ const Contacts = () => {
 
           {hasEmail && (
             <ContactBlock icon={Mail} title="Email">
-              <p className="">
+              <p>
                 <a
                   href={`mailto:${contactsData.email}`}
                   className="hover:text-teal-600 transition-colors"
@@ -168,10 +150,10 @@ const Contacts = () => {
           {hasWorkSchedule && (
             <ContactBlock icon={Clock} title="Режим работы">
               {contactsData.work_days?.trim() && (
-                <p className="">{contactsData.work_days}</p>
+                <p>{contactsData.work_days}</p>
               )}
               {contactsData.work_hours?.trim() && (
-                <p className="">{contactsData.work_hours}</p>
+                <p>{contactsData.work_hours}</p>
               )}
             </ContactBlock>
           )}
@@ -200,7 +182,6 @@ const Contacts = () => {
         <div className="relative">
           {hasDescription && (
             <div className="prose prose-gray max-w-none relative">
-              {/* Вертикальная черта, видимая только на tablet и больше */}
               <div className="hidden tablet:block absolute left-0 top-0 w-[2px] h-full bg-primary"></div>
               <p className="whitespace-pre-line text-balance tablet:pl-6">
                 {contactsData.description}
@@ -209,6 +190,7 @@ const Contacts = () => {
           )}
         </div>
       </div>
+
       <div className="relative">
         <iframe
           className="border-2 rounded-lg"

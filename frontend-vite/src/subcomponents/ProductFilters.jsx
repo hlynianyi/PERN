@@ -209,7 +209,7 @@ const ProductFilters = ({
 
   return (
     <>
-      <div className="flex justify-between gap-4 items-center">
+      <div className=" flex justify-between gap-4 items-center">
         <div className="text-base font-mono desktop:py-0 desktop:pb-4 desktop:flex desktop:justify-center">
           Количество товаров: {totalProducts}
         </div>
@@ -228,7 +228,10 @@ const ProductFilters = ({
               <SheetTitle className="flex flex-start">Фильтры</SheetTitle>
             </SheetHeader>
             <div className="mt-6">
-              <FilterContent {...filterProps} onClose={() => setIsOpen(false)} />
+              <FilterContent
+                {...filterProps}
+                onClose={() => setIsOpen(false)}
+              />
             </div>
           </SheetContent>
         </Sheet>

@@ -4,7 +4,7 @@ export const InstIcon = () => (
       width="24"
       height="24"
       src="https://img.icons8.com/fluency/48/instagram-new.png"
-      alt="instagram-new"
+      alt="instagram"
     />
   </>
 );
@@ -14,7 +14,7 @@ export const TgIcon = () => (
       width="24"
       height="24"
       src="https://img.icons8.com/color/48/telegram-app--v1.png"
-      alt="telegram-app--v1"
+      alt="telegram"
     />
   </>
 );
@@ -24,7 +24,7 @@ export const VkIcon = () => (
       width="24"
       height="24"
       src="https://img.icons8.com/color/48/vk-com.png"
-      alt="vk-com"
+      alt="vk.com"
     />
   </>
 );

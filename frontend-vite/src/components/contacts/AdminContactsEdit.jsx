@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, PlusCircle } from "lucide-react";
 import { contactsApi } from "@/api/contacts";
 import { fetchContacts } from "../../store/slices/contactsSlice";

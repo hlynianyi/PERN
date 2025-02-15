@@ -48,13 +48,11 @@ export const AdminProductDetails = () => {
   const getMainStats = () => {
     if (!product) return [];
 
-    let stats = [
-      { label: "Категория", value: product.category },
-      { label: "Статус", value: PRODUCT_STATUSES[product.status] },
-    ];
+    let stats = [{ label: "Категория", value: product.category }];
 
     const specifications = [
       { field: "steel", label: "Сталь" },
+      { field: "hardness", label: "Твердость" },
       { field: "handle", label: "Рукоять" },
       { field: "sheath", label: "Ножны" },
     ];
@@ -76,17 +74,6 @@ export const AdminProductDetails = () => {
         stats.push({ label, value: `${product[field]} ${unit}` });
       }
     });
-
-    if (product.hardness) {
-      stats.push({ label: "Твердость", value: product.hardness });
-    }
-
-    if (product.average_rating) {
-      stats.push({
-        label: "Средняя оценка",
-        value: `${parseFloat(product.average_rating).toFixed(1)} из 5`,
-      });
-    }
 
     return stats;
   };
@@ -146,37 +133,107 @@ export const AdminProductDetails = () => {
   }
 
   return (
-    <div className="container p-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="py-4 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 laptop:flex laptop:flex-col gap-4 laptop:gap-1">
         <div className="flex justify-between items-start flex-wrap gap-2">
-          <h1 className="text-xl font-medium font-serif">{product.name}</h1>
-          <div className="flex flex-row justify-between gap-4 items-center">
-            <div className="flex gap-2">
-              {product.is_new && <Badge variant="destructive">Новинка</Badge>}
+          <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-4">
+            {product.name}
+          </h1>
+          <div className="flex items-center ">
+            {product.is_new && (
               <Badge
-                variant={
-                  product.status === "in_stock" ? "secondary" : "destructive"
-                }
+                className="text-base laptop:text-lg px-4"
+                variant="destructive"
               >
-                {PRODUCT_STATUSES[product.status]}
+                Новинка
               </Badge>
-            </div>
-            <p className="text-xl font-medium">
-              {parseFloat(product.price).toLocaleString("ru-RU")} ₽
-            </p>
+            )}
           </div>
         </div>
-        <div>
+        <div className="w-full tablet:flex tablet:flex-row tablet:gap-4 tablet:border-[1px] rounded-md tablet:px-4">
           <ImageGallery
             images={product.images}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
           />
+          <div className="hidden tablet:flex tablet:flex-col w-full my-0 tablet:border-l-[1px] tablet:p-4 laptop:p-8 tablet:pr-0 laptop:pr-4">
+            <div className="flex flex-row justify-between  gap-2 grow">
+              <div>
+                <p className="text-3xl font-semibold">
+                  {parseFloat(product.price).toLocaleString("ru-RU")} ₽
+                </p>
+                <div>
+                  <span
+                    className={`font-medium text-xl ${
+                      product.status === "in_stock"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {product.status === "in_stock"
+                      ? "В наличии"
+                      : "Нет в наличии"}
+                  </span>
+                </div>
+              </div>
+              <div className="">
+                <button
+                  className={`w-full py-3 px-6 rounded-lg  font-medium text-lg laptop:text-xl
+          ${
+            product.status === "in_stock"
+              ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+                  disabled={product.status !== "in_stock"}
+                >
+                  В корзину
+                </button>
+              </div>
+            </div>
+
+            {product.notes && (
+              <div className="space-y-2 mt-6">
+                <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
+                  {product.notes}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <Separator />
+        <div className="tablet:hidden flex flex-row justify-between gap-4 items-center">
+          <div className="flex justify-between gap-4 w-full">
+            <div className="flex flex-col  gap-1">
+              <p className="text-3xl font-semibold">
+                {parseFloat(product.price).toLocaleString("ru-RU")} ₽
+              </p>
+              <span
+                className={`font-medium ${
+                  product.status === "in_stock"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {product.status === "in_stock" ? "В наличии" : "Нет в наличии"}
+              </span>
+            </div>
+            <div>
+              <button
+                className={`w-full py-3 px-6 rounded-lg  font-medium text-lg laptop:text-xl
+          ${
+            product.status === "in_stock"
+              ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+                disabled={product.status !== "in_stock"}
+              >
+                В корзину
+              </button>
+            </div>
+          </div>
+        </div>
 
+        <div className="flex flex-col gap-4">
           <Table>
             <TableBody>
               {getMainStats().map((stat, index) => (
@@ -189,37 +246,58 @@ export const AdminProductDetails = () => {
               ))}
             </TableBody>
           </Table>
-
+          <Separator />
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold">Описание</h2>
+            <h2 className="text-xl font-medium text-exo">Описание</h2>
             {product.description && (
-              <p className="whitespace-pre-wrap">{product.description}</p>
+              <p className="text-sm whitespace-pre-wrap ml-4">
+                {product.description}
+              </p>
             )}
           </div>
-          {/* Add new Notes section if notes exist */}
           {product.notes && (
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Примечание</h2>
-              <p className="whitespace-pre-wrap">{product.notes}</p>
+            <div className="space-y-2 tablet:hidden">
+              <h2 className="text-xl font-medium text-exo">Примечание</h2>
+              <p className="text-sm whitespace-pre-wrap ml-4 text-muted-foreground">
+                {product.notes}
+              </p>
             </div>
           )}
+          <Separator />
+
           {product.certificates?.length > 0 && (
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Сертификаты</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <h2 className="text-xl font-medium text-exo">Сертификаты</h2>
+              <div className="flex flex-row flex-wrap gap-4">
                 {product.certificates.map((cert, index) => (
-                  <Button
+                  <div
                     key={cert.id}
-                    variant="outline"
                     onClick={() =>
                       window.open(
                         `http://localhost:5002${cert.certificate_url}`,
                         "_blank"
                       )
                     }
+                    className="max-w-[175px] group relative aspect-[3/4] rounded-lg overflow-hidden border border-border hover:border-primary transition-colors cursor-pointer"
                   >
-                    Сертификат {index + 1}
-                  </Button>
+                    <img
+                      src={`http://localhost:5002${cert.certificate_url}`}
+                      alt={`Сертификат ${index + 1}`}
+                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 "
+                    />
+
+                    {/* Overlay with text */}
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-white font-medium text-sm">
+                        Просмотреть сертификат {index + 1}
+                      </p>
+                    </div>
+
+                    {/* Certificate number badge */}
+                    <div className="absolute top-2 right-2 bg-primary/90 text-white text-sm font-medium px-2 py-1 rounded">
+                      №{index + 1}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

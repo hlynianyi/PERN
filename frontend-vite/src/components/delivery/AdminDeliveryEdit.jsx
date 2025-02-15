@@ -184,7 +184,7 @@ const AdminDeliveryEdit = () => {
   };
 
   return (
-    <div className="container py-8">
+    <div className=" py-8">
       <h1 className="text-3xl font-bold mb-8">Редактирование доставки</h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">

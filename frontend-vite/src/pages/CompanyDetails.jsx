@@ -31,7 +31,7 @@ const CompanyDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className=" mx-auto px-4 py-8">
         <div className="space-y-4">
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-52 w-full" />
@@ -43,7 +43,7 @@ const CompanyDetails = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className=" mx-auto px-4 py-8">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Ошибка</AlertTitle>
@@ -55,7 +55,7 @@ const CompanyDetails = () => {
 
   if (!company) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className=" mx-auto px-4 py-8">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Информация</AlertTitle>
@@ -68,7 +68,7 @@ const CompanyDetails = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className=" mx-auto py-4 tablet:py-8">
       <div className="space-y-8">
         <h1 className="text-4xl text-center font-bold tracking-tight mb-4">
           {company?.title || "О компании"}

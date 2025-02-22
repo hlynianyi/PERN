@@ -30,6 +30,8 @@ import Payment from "@/pages/Payment";
 import AdminPaymentEdit from "./payment/AdminPaymentEdit";
 import Delivery from "@/pages/Delivery";
 import AdminDeliveryEdit from "./delivery/AdminDeliveryEdit";
+import Homepage from "@/pages/Homepage";
+import AdminHomepageEdit from "@/components/homepage/AdminHomepageEdit";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "./ui/toaster";
 import { useAuth } from "../context/AuthContext";
@@ -88,11 +90,12 @@ function App() {
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/delivery" element={<Delivery />} />
-
+                <Route path="/" element={<Homepage />} />
                 <Route
                   path="products/details/:id"
                   element={<AdminProductDetails />}
                 />
+
                 {/* PROTECTED ROUTES FOR ADMINISTARTOR */}
                 <Route
                   path="/admin"
@@ -123,10 +126,14 @@ function App() {
                     element={<AdminPartnershipEdit />}
                   />
                   <Route path="contacts/edit" element={<AdminContactsEdit />} />
-
+                  <Route
+                    path="homepage/edit"
+                    element={<AdminHomepageEdit />}
+                  />
                   <Route path="reviews/edit" element={<AdminReviewsEdit />} />
                   <Route path="payment/edit" element={<AdminPaymentEdit />} />
                   <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
+                  
                 </Route>
               </Routes>
             </main>

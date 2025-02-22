@@ -289,7 +289,7 @@ export const AdminProductDetails = () => {
                     {/* Overlay with text */}
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <p className="text-white font-medium text-sm">
-                        Просмотреть сертификат {index + 1}
+                        Посмотреть
                       </p>
                     </div>
 

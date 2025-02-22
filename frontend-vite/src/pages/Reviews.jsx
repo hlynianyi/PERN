@@ -116,7 +116,7 @@ const Reviews = () => {
 
   return (
     <>
-      <div className=" mx-auto py-4 tablet:py-8 qhd:px-0 grid laptop:grid-cols-2 gap-4 laptop:gap-8">
+      <div className="w-full mx-auto py-4 tablet:py-8 qhd:px-0 grid laptop:grid-cols-2 gap-4 laptop:gap-8">
         {/* Форма для создания отзыва */}
         <Card>
           <CardHeader>

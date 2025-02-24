@@ -28,6 +28,7 @@ const breadcrumbNameMap = {
   partnership: "Сотрудничество",
   delivery: "Доставка",
   warranty: "Гарантия",
+  homepage: 'Главная страница',
 };
 
 export default function Breadcrumbs() {

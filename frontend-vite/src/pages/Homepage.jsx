@@ -36,7 +36,8 @@ export default function Homepage() {
   }
 
   return (
-    <div className="py-4 tablet:py-8  mx-auto flex flex-col gap-6">
+    <div className=" max-w-5xl py-4 tablet:py-8  mx-auto flex flex-col gap-6">
+      {/* Title and Description Section */}
       <section className="text-center">
         <h1 className="text-4xl font-bold mb-6 text-primary">
           {homepageData.title}
@@ -55,7 +56,7 @@ export default function Homepage() {
       {/* Carousel Section */}
       {Array.isArray(homepageData.carousel_images) &&
         homepageData.carousel_images.length > 0 && (
-          <section className="w-full max-w-[1400px] mx-auto">
+          <section className="w-full mx-auto">
             <Carousel className="w-full">
               <CarouselContent>
                 {homepageData.carousel_images.map((image) => (
@@ -102,7 +103,6 @@ export default function Homepage() {
             </Carousel>
           </section>
         )}
-      {/* Title and Description Section */}
 
       {/* Popular Products Section */}
       {popularProducts.length > 0 && (

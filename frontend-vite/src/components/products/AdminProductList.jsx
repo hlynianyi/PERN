@@ -62,7 +62,10 @@ const AdminProductList = () => {
   return (
     <div className="p-0">
       <div className="flex justify-end p-4">
-        <Button onClick={() => navigate("/admin/products/create")}>
+        <Button
+          className="dark:text-secondary-foreground"
+          onClick={() => navigate("/admin/products/create")}
+        >
           Добавить продукт
         </Button>
       </div>

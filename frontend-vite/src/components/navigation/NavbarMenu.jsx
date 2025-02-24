@@ -8,16 +8,16 @@ const Navbar = () => {
   const categories = useLoadCategories();
 
   return (
-    <NavigationMenu.Root className="relative z-10 flex w-full">
+    <NavigationMenu.Root className="relative z-10 flex w-full ">
       <div className="flex justify-center w-full">
         <NavigationMenu.List
-          className="center m-0 flex list-none rounded-md p-1 
+          className="mobile:h-10 center m-0 flex list-none rounded-md p-1 
           bg-background text-foreground
           shadow-md dark:shadow-primary/25"
         >
           <NavigationMenu.Item>
             <NavigationMenu.Link
-              className="block select-none rounded px-2 tablet:px-4 py-2 tablet:text-lg 
+              className="block select-none rounded px-[6px] tablet:px-[12px] py-2 text-[15px] tablet:text-[16px] 
               font-medium font-exo leading-none text-foreground no-underline outline-none 
               hover:bg-accent hover:text-accent-foreground 
               focus:ring-2 focus:ring-ring focus:outline-none
@@ -31,7 +31,7 @@ const Navbar = () => {
           <NavigationMenu.Item>
             <NavigationMenu.Trigger
               className="group flex select-none items-center justify-between gap-0.5 rounded 
-              px-2 tablet:px-4 py-2 tablet:text-lg font-medium font-exo leading-none 
+              px-[6px] tablet:px-[12px] py-2 text-[15px] tablet:text-[16px] font-medium font-exo leading-none 
               text-foreground outline-none 
               hover:bg-accent hover:text-accent-foreground
               focus:ring-2 focus:ring-ring focus:outline-none
@@ -84,7 +84,7 @@ const Navbar = () => {
           <NavigationMenu.Item>
             <NavigationMenu.Trigger
               className="group flex select-none items-center justify-between gap-0.5 rounded 
-              px-2 tablet:px-4 py-2 tablet:text-lg font-medium font-exo leading-none 
+              px-[6px] tablet:px-[12px] py-2 text-[15px] tablet:text-[16px] font-medium font-exo leading-none 
               text-foreground outline-none 
               hover:bg-accent hover:text-accent-foreground
               focus:ring-2 focus:ring-ring focus:outline-none
@@ -136,7 +136,7 @@ const Navbar = () => {
 
           <NavigationMenu.Item>
             <NavigationMenu.Link
-              className="hidden tablet:block select-none rounded px-2 tablet:px-4 py-2 tablet:text-lg 
+              className="hidden tablet:block select-none rounded px-[6px] tablet:px-[12px] py-2 text-[15px] tablet:text-[16px] 
               font-medium font-exo leading-none text-foreground no-underline outline-none 
               hover:bg-accent hover:text-accent-foreground
               focus:ring-2 focus:ring-ring focus:outline-none
@@ -184,7 +184,7 @@ const ListItem = React.forwardRef(
       <NavigationMenu.Link asChild>
         <a
           className={classNames(
-            "block select-none rounded-md p-3 tablet:text-lg font-exo leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:outline-none",
+            "block select-none rounded-md p-3 text-[15px] tablet:text-[16px] font-exo leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:outline-none",
             className
           )}
           {...props}

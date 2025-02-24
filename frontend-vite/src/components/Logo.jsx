@@ -1,11 +1,31 @@
 import React from "react";
 
-const Logo = ({ className = "" }) => {
+const Logo = ({ className = "", width, height, variant = "mobile" }) => {
+  // Define size presets for different variants
+  const sizePresets = {
+    mobile: {
+      width: "36",
+      height: "42",
+    },
+    tablet: {
+      width: "50",
+      height: "60",
+    },
+    laptop: {
+      width: "60",
+      height: "68",
+    },
+  };
+
+  // Use provided dimensions or get from presets
+  const finalWidth = width || sizePresets[variant].width;
+  const finalHeight = height || sizePresets[variant].height;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="66.72px"
-      height="80px"
+      width={finalWidth}
+      height={finalHeight}
       style={{
         shapeRendering: "geometricPrecision",
         textRendering: "geometricPrecision",
@@ -13,7 +33,7 @@ const Logo = ({ className = "" }) => {
         fillRule: "evenodd",
         clipRule: "evenodd",
       }}
-      viewBox="0 0 90.058 108" // Keep original viewBox to maintain scaling
+      viewBox="0 0 90.058 108"
       className={className}
     >
       {/* Основной контур - использует вторичный цвет в светлой теме и белый в темной */}

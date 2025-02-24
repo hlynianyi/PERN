@@ -20,7 +20,7 @@ export default function AdminMenuButton() {
   };
 
   return (
-    <div className="px-4 pt-4 w-full flex gap-2 justify-end">
+    <div className="px-4 pt-4 w-full flex gap-2 justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="">
@@ -28,6 +28,9 @@ export default function AdminMenuButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => navigate("/admin/homepage/edit")}>
+            Главная
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/products")}>
             Товары
           </DropdownMenuItem>

@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { contactsApi } from "@/api/contacts";
+import { SearchProducts } from "@/subcomponents/SearchProducts";
 
 const NavbarContacts = () => {
   const [contactsData, setContactsData] = useState(null);
@@ -49,7 +50,7 @@ const NavbarContacts = () => {
   const hasWorkSchedule =
     contactsData?.work_days?.trim() || contactsData?.work_hours?.trim();
 
-  const Content = () => (
+  const ContactsContent = () => (
     <div className="space-y-2">
       <h4 className="text-sm font-semibold">Свяжитесь с нами</h4>
       <div className="space-y-2">
@@ -122,11 +123,70 @@ const NavbarContacts = () => {
       </div>
     </div>
   );
-
+  // new component for datya display
+  const TabletContentCommunication = () => (
+    <div className="text-[12px] tablet:text-sm tablet:flex gap-8">
+      <div className="space-y-2">
+        {hasEmail && (
+          <a
+            href={`mailto:${contactsData.email}`}
+            className="flex items-center gap-2 hover:text-teal-600 transition-colors"
+          >
+            <Mail size={16} />
+            {contactsData.email}
+          </a>
+        )}
+        {hasPhones && (
+          <div className="space-y-1">
+            {contactsData.phones
+              .filter((phone) => phone?.trim())
+              .map((phone, index) => (
+                <a
+                  key={index}
+                  href={`tel:${phone.replace(/\D/g, "")}`}
+                  className="flex items-center gap-2 hover:text-teal-600 transition-colors"
+                >
+                  <PhoneIncoming size={16} />
+                  {phone}
+                </a>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+  const TabletContentLocation = () => (
+    <div className="text-[12px] tablet:text-sm tablet:block space-y-2">
+      {hasAddress && (
+        <div className="flex items-center gap-2">
+          <Map size={16} />
+          <span className="text-balance">
+            {[contactsData.city, contactsData.address]
+              .filter(Boolean)
+              .map((item) => item.trim())
+              .join(", ")}
+          </span>
+        </div>
+      )}
+      {hasWorkSchedule && (
+        <div className="flex items-start gap-2">
+          <Clock size={16} className="mt-1" />
+          <div className="flex flex-col">
+            {contactsData.work_days?.trim() && (
+              <span>{contactsData.work_days}, </span>
+            )}
+            {contactsData.work_hours?.trim() && (
+              <span>{contactsData.work_hours}</span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
   return (
-    <div className="flex flex-row items-center gap-2 ">
+    <div className="flex flex-row w-full justify-between items-center gap-2 ">
       {/* Contacts */}
-      <div className="hidden laptop:block">
+      <div className="hidden tablet:hidden">
         <HoverCard>
           <HoverCardTrigger asChild>
             <CircleUserRound
@@ -137,12 +197,12 @@ const NavbarContacts = () => {
             />
           </HoverCardTrigger>
           <HoverCardContent className="w-80">
-            <Content />
+            <ContactsContent />
           </HoverCardContent>
         </HoverCard>
       </div>
 
-      <div className="laptop:hidden">
+      <div className="hidden tablet:hidden">
         <Dialog>
           <DialogTrigger asChild>
             <CircleUserRound
@@ -156,13 +216,14 @@ const NavbarContacts = () => {
             <DialogHeader>
               <DialogTitle>Контакты</DialogTitle>
             </DialogHeader>
-            <Content />
+            <ContactsContent />
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Location */}
-      <div className="hidden laptop:block">
+      <TabletContentLocation />
+
+      <div className="hidden tablet:hidden">
         <HoverCard>
           <HoverCardTrigger asChild>
             <Map
@@ -178,7 +239,7 @@ const NavbarContacts = () => {
         </HoverCard>
       </div>
 
-      <div className="laptop:hidden">
+      <div className="hidden tablet:hidden">
         <Dialog>
           <DialogTrigger asChild>
             <Map
@@ -196,6 +257,7 @@ const NavbarContacts = () => {
           </DialogContent>
         </Dialog>
       </div>
+      <TabletContentCommunication />
     </div>
   );
 };

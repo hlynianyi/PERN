@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Edit2 } from "lucide-react";
+import { Trash2, Edit2, AlertTriangle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "../ui/separator";
 
 export default function AdminHomepageEdit() {
   // Основное состояние формы
@@ -34,6 +36,7 @@ export default function AdminHomepageEdit() {
   const [previewUrls, setPreviewUrls] = useState([]); // URL для предпросмотра
   const [deletedImageIds, setDeletedImageIds] = useState([]); // ID удаленных изображений
   const [isLoading, setIsLoading] = useState(false);
+  const [fileInputKey, setFileInputKey] = useState(Date.now()); // Для сброса input file
 
   const { products } = useLoadProducts();
   const navigate = useNavigate();
@@ -67,11 +70,44 @@ export default function AdminHomepageEdit() {
     }
   };
 
+  // Проверка наличия необходимых данных для новых изображений
+  const validateNewImageData = (files) => {
+    // Проверяем, все ли новые изображения имеют заполненные данные
+    const isValid = newImageData.every(
+      (data) =>
+        data.name &&
+        data.name.trim() !== "" &&
+        data.product_link &&
+        data.product_link.trim() !== ""
+    );
+
+    if (!isValid) {
+      toast({
+        title: "Заполните обязательные поля",
+        description:
+          "У всех добавленных изображений должны быть указаны название и ссылка на товар",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
   // Обработка выбора файлов
   const handleFileSelect = (e) => {
+    // Проверяем, все ли предыдущие изображения имеют заполненные данные
+    if (newImageData.length > 0 && !validateNewImageData()) {
+      // Сбрасываем значение input, чтобы пользователь мог повторно выбрать те же файлы
+      setFileInputKey(Date.now());
+      return;
+    }
+
     const files = Array.from(e.target.files);
     const totalImages =
-      files.length + currentImages.length - deletedImageIds.length;
+      files.length +
+      currentImages.length -
+      deletedImageIds.length +
+      selectedFiles.length;
 
     if (totalImages > 5) {
       toast({
@@ -79,6 +115,7 @@ export default function AdminHomepageEdit() {
         description: "Максимальное количество изображений - 5",
         variant: "destructive",
       });
+      setFileInputKey(Date.now());
       return;
     }
 
@@ -137,6 +174,14 @@ export default function AdminHomepageEdit() {
     return (
       <div className="space-y-4 mb-6">
         <h3 className="text-lg font-semibold">Текущие изображения карусели:</h3>
+        <Alert variant="warning" className="mb-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Невозможно редактировать уже добавленные фотографии. Для изменения
+            данных удалите текущую фотографию и загрузите её заново с нужными
+            параметрами.
+          </AlertDescription>
+        </Alert>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {currentImages
             .filter((img) => !deletedImageIds.includes(img.id))
@@ -162,32 +207,21 @@ export default function AdminHomepageEdit() {
                     <Label>Название</Label>
                     <Input
                       value={image.name || ""}
-                      onChange={(e) =>
-                        handleImageDataChange(image.id, "name", e.target.value)
-                      }
+                      disabled
+                      className="bg-gray-100"
                       placeholder="Название изображения"
                     />
                     <Label>Ссылка на товар</Label>
-                    <Select
-                      value={image.product_link || ""}
-                      onValueChange={(value) =>
-                        handleImageDataChange(image.id, "product_link", value)
+                    <Input
+                      value={
+                        products?.find(
+                          (p) =>
+                            `/products/details/${p.id}` === image.product_link
+                        )?.name || "Товар не найден"
                       }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Выберите товар" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products?.map((product) => (
-                          <SelectItem
-                            key={product.id}
-                            value={`/products/details/${product.id}`}
-                          >
-                            {product.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      disabled
+                      className="bg-gray-100"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -224,22 +258,37 @@ export default function AdminHomepageEdit() {
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  <Label>Название</Label>
+                  <Label>
+                    Название <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     value={newImageData[index]?.name || ""}
                     onChange={(e) =>
                       handleImageDataChange(index, "name", e.target.value)
                     }
                     placeholder="Название изображения"
+                    required
+                    className={
+                      !newImageData[index]?.name ? "border-red-300" : ""
+                    }
                   />
-                  <Label>Ссылка на товар</Label>
+                  <Label>
+                    Ссылка на товар <span className="text-red-500">*</span>
+                  </Label>
                   <Select
                     value={newImageData[index]?.product_link || ""}
                     onValueChange={(value) =>
                       handleImageDataChange(index, "product_link", value)
                     }
+                    required
                   >
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={
+                        !newImageData[index]?.product_link
+                          ? "border-red-300"
+                          : ""
+                      }
+                    >
                       <SelectValue placeholder="Выберите товар" />
                     </SelectTrigger>
                     <SelectContent>
@@ -265,6 +314,12 @@ export default function AdminHomepageEdit() {
   // Обработка отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Проверяем заполнение данных для новых изображений
+    if (newImageData.length > 0 && !validateNewImageData()) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -272,17 +327,27 @@ export default function AdminHomepageEdit() {
         throw new Error("Заголовок обязателен для заполнения");
       }
 
+      // Фильтруем удаленные изображения
+      const remainingImages = currentImages.filter(
+        (img) => !deletedImageIds.includes(img.id)
+      );
+
       // Подготовка данных для отправки
       const dataToSend = {
         ...formData,
         selectedFiles,
         imageMetadata: JSON.stringify([
-          ...currentImages.map((img) => ({
-            name: img.name,
-            product_link: img.product_link,
+          ...remainingImages.map((img) => ({
+            id: img.id,
+            name: img.name || "",
+            product_link: img.product_link || "",
             order_index: img.order_index,
           })),
-          ...newImageData,
+          ...newImageData.map((data) => ({
+            name: data.name || "",
+            product_link: data.product_link || "",
+            order_index: data.order_index,
+          })),
         ]),
         deletedImageIds,
         popularProducts: formData.popularProducts.map((id) => Number(id)),
@@ -295,7 +360,15 @@ export default function AdminHomepageEdit() {
         description: "Данные главной страницы обновлены",
       });
 
-      navigate("/admin/homepage/edit");
+      // Очищаем состояние
+      setSelectedFiles([]);
+      setNewImageData([]);
+      setPreviewUrls([]);
+      setDeletedImageIds([]);
+      setFileInputKey(Date.now()); // Сбрасываем file input
+
+      // Перезагружаем данные
+      await loadHomepage();
     } catch (error) {
       toast({
         title: "Ошибка при сохранении",
@@ -310,7 +383,7 @@ export default function AdminHomepageEdit() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
+        <div className="space-y-8">
           <div>
             <Label>Заголовок</Label>
             <Input
@@ -321,7 +394,6 @@ export default function AdminHomepageEdit() {
               required
             />
           </div>
-
           <div>
             <Label>Описание</Label>
             <Textarea
@@ -335,8 +407,9 @@ export default function AdminHomepageEdit() {
               className="min-h-[100px]"
             />
           </div>
+          <Separator />
 
-          <div>
+          <div className="flex flex-col gap-4">
             <Label>Популярные товары (выберите до 5)</Label>
             <div className="flex flex-wrap gap-2">
               {products?.map((product) => (
@@ -381,13 +454,16 @@ export default function AdminHomepageEdit() {
               </p>
             )}
           </div>
+          <Separator />
 
           {renderExistingImages()}
           {renderNewImagePreviews()}
+          <Separator />
 
           <div>
             <Label>Загрузить новые изображения (максимум 5)</Label>
             <Input
+              key={fileInputKey}
               type="file"
               accept="image/*"
               multiple
@@ -395,7 +471,14 @@ export default function AdminHomepageEdit() {
               className="mt-2"
             />
             <p className="text-sm text-muted-foreground mt-1">
-              Поддерживаемые форматы: JPG, PNG, GIF, WebP
+              Поддерживаемые форматы: JPG, PNG, GIF, WebP 
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Ограничение по размеру до 10 МБ. 
+            </p>
+            <p className="text-sm text-red-500 mt-1">
+              * Для каждой фотографии необходимо указать название и выбрать
+              привязку к товару
             </p>
           </div>
         </div>

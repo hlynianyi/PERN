@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { reviewApi } from "@/api/reviews";
+import { MessageSquareCode } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 const SmallReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -112,8 +114,11 @@ const SmallReviews = () => {
             className="overflow-hidden border-primary/20 h-full flex flex-col"
           >
             <CardContent className="p-6 flex-1 flex flex-col">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-semibold text-lg">{review.name}</h3>
+              <div className="flex justify-start gap-[6px] items-center mb-2">
+                <MessageCircle />
+                <h3 className="font-semibold text-lg h-[30px]">
+                  {review.name}
+                </h3>
               </div>
               <div className="mt-2 text-muted-foreground flex-1 font-serif">
                 <p className="line-clamp-5 text-balance">{review.text}</p>

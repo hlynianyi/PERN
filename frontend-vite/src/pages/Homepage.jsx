@@ -37,26 +37,27 @@ export default function Homepage() {
   }
 
   return (
-    <div className=" max-w-5xl py-4 tablet:py-8  mx-auto flex flex-col gap-4 tablet:gap-6 laptop:gap-12">
+    <div className=" max-w-5xl py-4 tablet:py-8  mx-auto flex flex-col gap-4 tablet:gap-6 laptop:gap">
       {/* Title and Description Section */}
-      <section className="text-center">
+      <section className="">
         <div className="text-center mb-6 tablet:mb-8">
           <h2 className="text-3xl font-semibold tracking-tight mb-1">
             {homepageData.title}
           </h2>
-
           <div className="mt-4 h-1 w-20 bg-primary mx-auto mb-2"></div>
         </div>
-        <p className="text-lg text-muted-foreground mb-4 tablet:mb-6">
+        <p className=" text-center text-lg text-muted-foreground mb-4 tablet:mb-6">
           {homepageData.description}
         </p>
-        <Button
-          onClick={() => navigate("/company")}
-          size="lg"
-          className="min-w-[200px] dark:text-secondary-foreground"
-        >
-          Подробнее о компании
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            onClick={() => navigate("/company")}
+            size="lg"
+            className="min-w-[200px] dark:text-secondary-foreground"
+          >
+            Подробнее о компании
+          </Button>
+        </div>
       </section>
       {/* Carousel Section */}
       {Array.isArray(homepageData.carousel_images) &&

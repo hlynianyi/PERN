@@ -9,6 +9,7 @@ import { productsApi, PRODUCT_STATUSES } from "../../../api/products";
 import { ImageGallery } from "./ImageGallery";
 import { Reviews } from "./Reviews";
 import { ReviewForm } from "./ReviewForm";
+import { Star } from "lucide-react";
 
 export const AdminProductDetails = () => {
   const { id } = useParams();
@@ -41,6 +42,30 @@ export const AdminProductDetails = () => {
         description: error.message,
         variant: "destructive",
       });
+    }
+  };
+
+  const getReviewsText = (count) => {
+    // Handle undefined or null
+    if (!count) return "отзывов";
+
+    // Convert to number if it's a string
+    count = Number(count);
+
+    // Get the last digit
+    const lastDigit = count % 10;
+    // Get the last two digits
+    const lastTwoDigits = count % 100;
+
+    // Rules for Russian plural forms
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return "отзывов";
+    } else if (lastDigit === 1) {
+      return "отзыв";
+    } else if (lastDigit >= 2 && lastDigit <= 4) {
+      return "отзыва";
+    } else {
+      return "отзывов";
     }
   };
 
@@ -132,52 +157,77 @@ export const AdminProductDetails = () => {
   }
 
   return (
-    <div className="py-4 max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 laptop:flex laptop:flex-col gap-4 laptop:gap-1">
-        <div className="flex justify-between items-start flex-wrap gap-2">
-          <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-4">
-            {product.name}
-          </h1>
-          <div className="flex items-center ">
-            {product.is_new && (
-              <Badge
-                className="text-base laptop:text-lg px-4"
-                variant="destructive"
-              >
-                Новинка
-              </Badge>
-            )}
-          </div>
-        </div>
-        <div className="w-full tablet:flex tablet:flex-row tablet:gap-4 tablet:border-[1px] rounded-md tablet:px-4">
+    <div className="py-4 pb-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 laptop:flex laptop:flex-col gap-4 laptop:gap-2">
+        <div className=" w-full tablet:flex tablet:flex-row tablet:gap-4 tablet:border-[1px] rounded-md tablet:px-4">
           <ImageGallery
             images={product.images}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
+            product={product}
           />
-          <div className="hidden tablet:flex tablet:flex-col w-full my-0 tablet:border-l-[1px] tablet:p-4 laptop:p-8 tablet:pr-0 laptop:pr-4">
-            <div className="flex flex-row justify-between  gap-2 grow">
-              <div>
-                <p className="text-3xl font-semibold">
+          <div className="hidden tablet:flex tablet:flex-col w-full my-0 tablet:border-l-[1px]  tablet:p-4  tablet:pr-0 laptop:pr-4">
+            <div className="flex justify-between items-start flex-wrap gap-2">
+              <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-1">
+                {product.name}
+              </h1>
+            </div>
+            <div>
+              <span
+                className={`font-medium text-base ${
+                  product.status === "in_stock"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {product.status === "in_stock"
+                  ? "Есть в наличии"
+                  : "Нет в наличии"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              {product.average_rating > 0 ? (
+                <>
+                  <div className="flex items-center">
+                    <span className="mr-2 text-gray-600">
+                      {parseFloat(product.average_rating).toFixed(1)}
+                    </span>
+                    {[...Array(5)].map((_, index) => (
+                      <Star
+                        key={index}
+                        className={`w-5 h-5 ${
+                          index < Math.round(product.average_rating)
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <div className="text-sm text-muted-foreground border-l border-gray-300 pl-2">
+                    <span className="cursor-pointer hover:text-primary transition-colors">
+                      {product.review_count || 0}{" "}
+                      {getReviewsText(product.review_count)}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="text-sm text-muted-foreground">Нет отзывов</div>
+              )}
+            </div>
+            {product.notes && (
+              <div className="space-y-2 mt-4 mr-4 laptop:mr-24 grow flex flex-col justify-end mb-4">
+                <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
+                  {product.notes}
+                </p>
+              </div>
+            )}
+            <div className="flex flex-col laptop:flex-col  justify-start gap-4 laptop:gap-4 mb-2">
+              <div className="border-[1px] rounded-md px-4 py-2 flex flex-row justify-between">
+                <p className="tablet:w-full laptop:w-auto text-2xl font-medium text-start text-primary laptop:text-3xl laptop:text-start laptop:mt-0 tablet:leading-[44px]">
                   {parseFloat(product.price).toLocaleString("ru-RU")} ₽
                 </p>
-                <div>
-                  <span
-                    className={`font-medium text-base ${
-                      product.status === "in_stock"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {product.status === "in_stock"
-                      ? "Есть в наличии"
-                      : "Нет в наличии"}
-                  </span>
-                </div>
-              </div>
-              <div className="">
                 <button
-                  className={`w-full py-3 px-6 rounded-lg  font-medium text-lg laptop:text-xl
+                  className={`rounded-lg tablet:w-full  py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-[150px]
           ${
             product.status === "in_stock"
               ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
@@ -189,50 +239,76 @@ export const AdminProductDetails = () => {
                 </button>
               </div>
             </div>
-
-            {product.notes && (
-              <div className="space-y-2 mt-6 mr-4">
-                <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
-                  {product.notes}
-                </p>
-              </div>
-            )}
           </div>
         </div>
 
-        <div className="tablet:hidden flex flex-row justify-between gap-4 items-center">
-          <div className="flex justify-between gap-4 w-full">
+        <div className="tablet:hidden flex flex-row justify-between grow gap-4 items-center">
+          <div className="flex flex-col justify-between gap-4 w-full">
             <div className="flex flex-col  gap-1">
-              <p className="text-3xl font-semibold">
-                {parseFloat(product.price).toLocaleString("ru-RU")} ₽
-              </p>
-              <span
-                className={`font-medium ${
-                  product.status === "in_stock"
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {product.status === "in_stock" ? "В наличии" : "Нет в наличии"}
-              </span>
-            </div>
-            <div>
-              <button
-                className={`w-full py-3 px-6 rounded-lg  font-medium text-lg laptop:text-xl
+              <div className="flex justify-between mb-2">
+                <div>
+                  <span
+                    className={`font-medium ${
+                      product.status === "in_stock"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {product.status === "in_stock"
+                      ? "В наличии"
+                      : "Нет в наличии"}
+                  </span>
+                  <div className="flex items-center gap-2 mb-4">
+                    {product.average_rating > 0 ? (
+                      <>
+                        <div className="flex items-center">
+                          <span className="mr-2 text-gray-600">
+                            {parseFloat(product.average_rating).toFixed(1)}
+                          </span>
+                          {[...Array(5)].map((_, index) => (
+                            <Star
+                              key={index}
+                              className={`w-5 h-5 ${
+                                index < Math.round(product.average_rating)
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        Нет отзывов
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <p className="text-xl font-semibold text-primary">
+                  {parseFloat(product.price).toLocaleString("ru-RU")} ₽
+                </p>
+              </div>
+
+              <div>
+                <button
+                  className={`w-full py-2 px-4 rounded-lg  font-medium text-lg laptop:text-xl
           ${
             product.status === "in_stock"
               ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
               : "bg-gray-400 cursor-not-allowed"
           }`}
-                disabled={product.status !== "in_stock"}
-              >
-                В корзину
-              </button>
+                  disabled={product.status !== "in_stock"}
+                >
+                  В корзину
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-medium text-exo">Характеристики</h2>
+
           <Table>
             <TableBody>
               {getMainStats().map((stat, index) => (
@@ -245,7 +321,6 @@ export const AdminProductDetails = () => {
               ))}
             </TableBody>
           </Table>
-          <Separator />
           <div className="space-y-2">
             <h2 className="text-xl font-medium text-exo">Описание</h2>
             {product.description && (
@@ -256,16 +331,17 @@ export const AdminProductDetails = () => {
           </div>
           {product.notes && (
             <div className="space-y-2 tablet:hidden ">
-              <h2 className="text-xl font-medium text-exo">Примечание</h2>
+              <h2 className="text-xl font-medium text-exo text-muted-foreground">
+                Примечание
+              </h2>
               <p className="text-sm whitespace-pre-wrap ml-4 text-muted-foreground">
                 {product.notes}
               </p>
             </div>
           )}
-          <Separator />
 
           {product.certificates?.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-2 mb-4">
               <h2 className="text-xl font-medium text-exo">Сертификаты</h2>
               <div className="flex flex-row flex-wrap gap-4">
                 {product.certificates.map((cert, index) => (
@@ -303,8 +379,9 @@ export const AdminProductDetails = () => {
           )}
         </div>
       </div>
+      <Separator />
 
-      <div className="mt-8">
+      <div className="mt-4">
         <Reviews
           reviews={product.reviews}
           averageRating={product.average_rating}

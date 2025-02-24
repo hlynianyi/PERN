@@ -40,6 +40,7 @@ import { fetchContacts } from "../store/slices/contactsSlice";
 import { AuthProvider } from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeProvider";
 import Footer from "./navigation/Footer";
+import ScrollToTop from "@/subcomponents/ScrollToTop";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -126,20 +127,17 @@ function App() {
                     element={<AdminPartnershipEdit />}
                   />
                   <Route path="contacts/edit" element={<AdminContactsEdit />} />
-                  <Route
-                    path="homepage/edit"
-                    element={<AdminHomepageEdit />}
-                  />
+                  <Route path="homepage/edit" element={<AdminHomepageEdit />} />
                   <Route path="reviews/edit" element={<AdminReviewsEdit />} />
                   <Route path="payment/edit" element={<AdminPaymentEdit />} />
                   <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
-                  
                 </Route>
               </Routes>
             </main>
             <Separator />
             <Footer />
             <Toaster />
+            <ScrollToTop />
           </div>
         </ThemeProvider>
       </AuthProvider>

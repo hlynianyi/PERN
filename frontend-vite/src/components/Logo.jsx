@@ -38,7 +38,7 @@ const Logo = ({ className = "", width, height, variant = "mobile" }) => {
     >
       {/* Основной контур - использует вторичный цвет в светлой теме и белый в темной */}
       <path
-        className="fill-current text-secondary-foreground dark:text-primary transition-colors duration-200"
+        className="fill-current text-secondary-foreground/80 dark:text-primary transition-colors duration-200"
         d="M-0.058 -0.058h91.058v19.322a71.736 71.736 0 0 1 -4.223 4.165 0.281 0.281 0 0 0 -0.058 0.231q-0.263 0.002 -0.405 0.231 -0.145 32.194 0.058 64.331a130.86 130.86 0 0 0 4.628 4.628v19.091H-0.058v-19.091a70.347 70.347 0 0 0 4.744 -4.86q0.058 -32.079 -0.116 -64.099 -2.256 -2.372 -4.628 -4.628z"
       />
 

@@ -36,8 +36,14 @@ import {
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-export const ImageGallery = ({ images, selectedImage, setSelectedImage }) => {
+export const ImageGallery = ({
+  images,
+  selectedImage,
+  setSelectedImage,
+  product,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   // Mobile Carousel View
@@ -48,6 +54,16 @@ export const ImageGallery = ({ images, selectedImage, setSelectedImage }) => {
           {images?.map((image) => (
             <CarouselItem key={image.id}>
               <div className="relative aspect-square w-full bg-background">
+                <div className="flex items-center absolute top-2 left-2">
+                  {product.is_new && (
+                    <Badge
+                      className="text-base laptop:text-lg px-4"
+                      variant="destructive"
+                    >
+                      Новинка
+                    </Badge>
+                  )}
+                </div>
                 <img
                   src={`http://localhost:5002${image.image_url}`}
                   alt="Product"
@@ -68,16 +84,28 @@ export const ImageGallery = ({ images, selectedImage, setSelectedImage }) => {
 
   // Tablet and Desktop View
   const DesktopGallery = () => (
-    <div className="hidden tablet:flex tablet:flex-col tablet:space-y-4 max-w-[580px] tablet:max-w-[340px] tablet:justify-center">
+    <div className="hidden tablet:flex tablet:flex-col tablet:space-y-4 max-w-[580px] tablet:max-w-[340px] tablet:justify-between p-4">
       {/* Large Preview Image */}
-      <div className="w-full tablet:flex tablet:justify-center laptop:justify-start bg-background pt-4">
+      <div className="w-full h-full items-center tablet:flex tablet:justify-center laptop:justify-start bg-background ">
         {selectedImage && (
-          <img
-            src={`http://localhost:5002${selectedImage.image_url}`}
-            alt="Selected product"
-            className="w-full max-w-[580px] object-contain rounded-lg cursor-zoom-in dark:mix-blend-normal mix-blend-multiply"
-            onClick={() => setIsModalOpen(true)}
-          />
+          <div className="relative">
+            <img
+              src={`http://localhost:5002${selectedImage.image_url}`}
+              alt="Selected product"
+              className="w-full max-w-[580px] object-contain rounded-lg cursor-zoom-in dark:mix-blend-normal mix-blend-multiply"
+              onClick={() => setIsModalOpen(true)}
+            />
+            <div className="flex items-center absolute -top-0 -left-4">
+                  {product.is_new && (
+                    <Badge
+                      className="text-base laptop:text-lg px-4"
+                      variant="destructive"
+                    >
+                      Новинка
+                    </Badge>
+                  )}
+                </div>
+          </div>
         )}
       </div>
 
@@ -125,6 +153,16 @@ export const ImageGallery = ({ images, selectedImage, setSelectedImage }) => {
         <DialogClose className="absolute right-4 top-4 z-10">
           {/* <X className="h-6 w-6 text-white hover:text-red-500 transition-colors" /> */}
         </DialogClose>
+        <div className="flex items-center absolute top-2 left-2">
+          {product.is_new && (
+            <Badge
+              className="text-base laptop:text-lg px-4"
+              variant="destructive"
+            >
+              Новинка
+            </Badge>
+          )}
+        </div>
         <img
           src={`http://localhost:5002${selectedImage?.image_url}`}
           alt="Увеличенное изображение"

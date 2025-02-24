@@ -31,7 +31,7 @@ const FilterContent = ({
   onClose = () => {},
 }) => (
   <div className="flex flex-col space-y-6">
-    <div>
+    <div className="space-y-4">
       <Label htmlFor="category">Категория</Label>
       <Select
         value={filters.category}
@@ -78,7 +78,7 @@ const FilterContent = ({
 
     <Separator />
 
-    <div>
+    <div className="space-y-4">
       <Label htmlFor="handle">Рукоять</Label>
       <Select
         value={filters.handle}
@@ -98,7 +98,7 @@ const FilterContent = ({
       </Select>
     </div>
 
-    <div>
+    <div className="space-y-4">
       <Label htmlFor="steel">Сталь</Label>
       <Select
         value={filters.steel}

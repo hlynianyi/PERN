@@ -9,26 +9,37 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, Edit2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AdminHomepageEdit() {
+  // Основное состояние формы
   const [formData, setFormData] = useState({
     id: null,
     title: "",
     description: "",
     popularProducts: [],
-    images: [],
+    images: [], // Метаданные изображений
   });
 
-  const [currentImages, setCurrentImages] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
-  const [deletedImageIds, setDeletedImageIds] = useState([]);
+  // Состояние для управления изображениями
+  const [currentImages, setCurrentImages] = useState([]); // Существующие изображения
+  const [selectedFiles, setSelectedFiles] = useState([]); // Новые файлы
+  const [newImageData, setNewImageData] = useState([]); // Метаданные для новых изображений
+  const [previewUrls, setPreviewUrls] = useState([]); // URL для предпросмотра
+  const [deletedImageIds, setDeletedImageIds] = useState([]); // ID удаленных изображений
   const [isLoading, setIsLoading] = useState(false);
 
   const { products } = useLoadProducts();
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Загрузка данных при монтировании
   useEffect(() => {
     loadHomepage();
   }, []);
@@ -36,8 +47,6 @@ export default function AdminHomepageEdit() {
   const loadHomepage = async () => {
     try {
       const homepage = await homepageApi.getHomepage();
-      console.log("🚀 ~ loadHomepage ~ homepage:", homepage);
-
       if (homepage) {
         setFormData({
           id: homepage.id,
@@ -58,6 +67,7 @@ export default function AdminHomepageEdit() {
     }
   };
 
+  // Обработка выбора файлов
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
     const totalImages =
@@ -72,37 +82,55 @@ export default function AdminHomepageEdit() {
       return;
     }
 
-    const newImageMetadata = files.map((file) => ({
-      name: file.name,
+    // Создаем метаданные для новых изображений
+    const newImages = files.map((file) => ({
+      file,
+      name: "",
       product_link: "",
       order_index: currentImages.length + selectedFiles.length,
     }));
 
     setSelectedFiles((prev) => [...prev, ...files]);
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...newImageMetadata],
-    }));
+    setNewImageData((prev) => [...prev, ...newImages]);
 
+    // Создаем превью
     const newPreviewUrls = files.map((file) => URL.createObjectURL(file));
     setPreviewUrls((prev) => [...prev, ...newPreviewUrls]);
   };
 
+  // Обновление метаданных изображения
+  const handleImageDataChange = (index, field, value) => {
+    setNewImageData((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return updated;
+    });
+  };
+
+  // Удаление нового файла
   const handleRemoveFile = (index) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
+    setNewImageData((prev) => prev.filter((_, i) => i !== index));
     URL.revokeObjectURL(previewUrls[index]);
     setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Удаление существующего изображения
   const handleRemoveCurrentImage = (imageId) => {
+    // Mark the image for deletion but don't remove it from the server yet
     setDeletedImageIds((prev) => [...prev, imageId]);
+
+    // Visually hide the image in the UI
+    toast({
+      title: "Изображение отмечено для удаления",
+      description: "Изображение будет удалено при сохранении",
+    });
   };
 
-  // Section for displaying existing carousel images
+  // Отображение существующих изображений
   const renderExistingImages = () => {
     if (!currentImages.length) return null;
 
@@ -114,12 +142,12 @@ export default function AdminHomepageEdit() {
             .filter((img) => !deletedImageIds.includes(img.id))
             .map((image) => (
               <Card key={image.id} className="relative overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="relative aspect-video">
+                <CardContent className="p-4">
+                  <div className="relative aspect-video mb-4">
                     <img
                       src={`http://localhost:5002${image.image_url}`}
                       alt={image.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-md"
                     />
                     <Button
                       variant="destructive"
@@ -130,13 +158,36 @@ export default function AdminHomepageEdit() {
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="p-4">
-                    <p className="font-medium truncate">
-                      {image.name || "Без названия"}
-                    </p>
-                    <p className="text-sm text-muted-foreground truncate">
-                      {image.product_link || "Ссылка не указана"}
-                    </p>
+                  <div className="space-y-2">
+                    <Label>Название</Label>
+                    <Input
+                      value={image.name || ""}
+                      onChange={(e) =>
+                        handleImageDataChange(image.id, "name", e.target.value)
+                      }
+                      placeholder="Название изображения"
+                    />
+                    <Label>Ссылка на товар</Label>
+                    <Select
+                      value={image.product_link || ""}
+                      onValueChange={(value) =>
+                        handleImageDataChange(image.id, "product_link", value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите товар" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {products?.map((product) => (
+                          <SelectItem
+                            key={product.id}
+                            value={`/products/details/${product.id}`}
+                          >
+                            {product.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </CardContent>
               </Card>
@@ -145,10 +196,8 @@ export default function AdminHomepageEdit() {
       </div>
     );
   };
-  console.log("🚀 ~ renderExistingImages ~ currentImages:", currentImages);
-  console.log("🚀 ~ renderExistingImages ~ currentImages:", currentImages);
 
-  // Section for displaying new image previews
+  // Отображение новых изображений
   const renderNewImagePreviews = () => {
     if (!previewUrls.length) return null;
 
@@ -158,12 +207,12 @@ export default function AdminHomepageEdit() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {previewUrls.map((url, index) => (
             <Card key={index} className="relative overflow-hidden">
-              <CardContent className="p-0">
-                <div className="relative aspect-video">
+              <CardContent className="p-4">
+                <div className="relative aspect-video mb-4">
                   <img
                     src={url}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-md"
                   />
                   <Button
                     variant="destructive"
@@ -174,10 +223,36 @@ export default function AdminHomepageEdit() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="p-4">
-                  <p className="font-medium truncate">
-                    {selectedFiles[index]?.name || "Новое изображение"}
-                  </p>
+                <div className="space-y-2">
+                  <Label>Название</Label>
+                  <Input
+                    value={newImageData[index]?.name || ""}
+                    onChange={(e) =>
+                      handleImageDataChange(index, "name", e.target.value)
+                    }
+                    placeholder="Название изображения"
+                  />
+                  <Label>Ссылка на товар</Label>
+                  <Select
+                    value={newImageData[index]?.product_link || ""}
+                    onValueChange={(value) =>
+                      handleImageDataChange(index, "product_link", value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите товар" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products?.map((product) => (
+                        <SelectItem
+                          key={product.id}
+                          value={`/products/details/${product.id}`}
+                        >
+                          {product.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
             </Card>
@@ -187,6 +262,7 @@ export default function AdminHomepageEdit() {
     );
   };
 
+  // Обработка отправки формы
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -196,9 +272,18 @@ export default function AdminHomepageEdit() {
         throw new Error("Заголовок обязателен для заполнения");
       }
 
+      // Подготовка данных для отправки
       const dataToSend = {
         ...formData,
         selectedFiles,
+        imageMetadata: JSON.stringify([
+          ...currentImages.map((img) => ({
+            name: img.name,
+            product_link: img.product_link,
+            order_index: img.order_index,
+          })),
+          ...newImageData,
+        ]),
         deletedImageIds,
         popularProducts: formData.popularProducts.map((id) => Number(id)),
       };
@@ -297,10 +382,7 @@ export default function AdminHomepageEdit() {
             )}
           </div>
 
-          {/* Текущие изображения */}
           {renderExistingImages()}
-
-          {/* Новые изображения */}
           {renderNewImagePreviews()}
 
           <div>

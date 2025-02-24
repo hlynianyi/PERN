@@ -163,14 +163,14 @@ export const AdminProductDetails = () => {
                 </p>
                 <div>
                   <span
-                    className={`font-medium text-xl ${
+                    className={`font-medium text-base ${
                       product.status === "in_stock"
                         ? "text-green-600"
                         : "text-red-600"
                     }`}
                   >
                     {product.status === "in_stock"
-                      ? "В наличии"
+                      ? "Есть в наличии"
                       : "Нет в наличии"}
                   </span>
                 </div>
@@ -191,7 +191,7 @@ export const AdminProductDetails = () => {
             </div>
 
             {product.notes && (
-              <div className="space-y-2 mt-6">
+              <div className="space-y-2 mt-6 mr-4">
                 <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
                   {product.notes}
                 </p>
@@ -255,7 +255,7 @@ export const AdminProductDetails = () => {
             )}
           </div>
           {product.notes && (
-            <div className="space-y-2 tablet:hidden">
+            <div className="space-y-2 tablet:hidden ">
               <h2 className="text-xl font-medium text-exo">Примечание</h2>
               <p className="text-sm whitespace-pre-wrap ml-4 text-muted-foreground">
                 {product.notes}

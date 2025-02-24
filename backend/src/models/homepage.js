@@ -156,22 +156,72 @@ class Homepage {
         [title, description, id]
       );
 
+      // Add this code inside the update method where deletedImages are processed
       if (deletedImages && deletedImages.length > 0) {
         const { rows } = await client.query(
           `SELECT image_url FROM homepage_carousel WHERE id = ANY($1)`,
           [deletedImages]
         );
 
+        // Delete records from database
         await client.query(`DELETE FROM homepage_carousel WHERE id = ANY($1)`, [
           deletedImages,
         ]);
 
+        // Delete the actual files
         for (const row of rows) {
           try {
-            const fullPath = path.join(process.cwd(), "public", row.image_url);
-            await fs.unlink(fullPath);
+            const imageUrl = row.image_url;
+            // Extract the filename from the image URL
+            const fileName = path.basename(imageUrl);
+
+            // Try multiple approaches to file deletion
+            const deleteFile = async () => {
+              // Try relative path first
+              try {
+                const relativePath = path.join("uploads", "homepage", fileName);
+                await fs.unlink(relativePath);
+                console.log(`Successfully deleted file: ${relativePath}`);
+                return true;
+              } catch (error) {
+                console.log(
+                  `Unable to delete file using relative path: ${error.message}`
+                );
+
+                // Try absolute path based on process.cwd()
+                try {
+                  const absolutePath = path.join(
+                    process.cwd(),
+                    "uploads",
+                    "homepage",
+                    fileName
+                  );
+                  await fs.unlink(absolutePath);
+                  console.log(
+                    `Successfully deleted file using absolute path: ${absolutePath}`
+                  );
+                  return true;
+                } catch (secondError) {
+                  console.log(
+                    `Unable to delete file using absolute path: ${secondError.message}`
+                  );
+                  return false;
+                }
+              }
+            };
+
+            const success = await deleteFile();
+            if (!success) {
+              console.error(
+                `Could not delete file ${fileName}. Manual cleanup may be required.`
+              );
+            }
           } catch (error) {
-            console.error(`Error deleting file ${row.image_url}:`, error);
+            console.error(
+              `Error handling file deletion for ${row.image_url}:`,
+              error
+            );
+            // Continue with the transaction even if file deletion fails
           }
         }
       }
@@ -261,34 +311,67 @@ class Homepage {
 
   static async deleteImage(imageId) {
     return await withTransaction(async (client) => {
-      // First, get the image URL so we can delete the file
-      const { rows } = await client.query(
-        `SELECT image_url FROM homepage_carousel WHERE id = $1`,
-        [imageId]
-      );
-
-      if (rows.length === 0) {
-        throw new Error("Image not found");
-      }
-
-      const imageUrl = rows[0].image_url;
-
-      // Delete the database record
-      await client.query(`DELETE FROM homepage_carousel WHERE id = $1`, [
-        imageId,
-      ]);
-
-      // Delete the file from the filesystem
       try {
-        const filePath = path.join(process.cwd(), "public", imageUrl);
-        await fs.unlink(filePath);
-        console.log(`Successfully deleted file: ${filePath}`);
-      } catch (error) {
-        console.error(`Error deleting file ${imageUrl}:`, error);
-        // Continue with the transaction even if file deletion fails
-      }
+        // First, get the image URL from the database
+        const { rows } = await client.query(
+          `SELECT image_url FROM homepage_carousel WHERE id = $1`,
+          [imageId]
+        );
 
-      return { success: true, deletedImage: imageUrl };
+        if (rows.length === 0) {
+          throw new Error("Image not found");
+        }
+
+        const imageUrl = rows[0].image_url;
+
+        // Delete the record from the database
+        await client.query(`DELETE FROM homepage_carousel WHERE id = $1`, [
+          imageId,
+        ]);
+
+        // Extract the filename from the URL path
+        const fileName = path.basename(imageUrl);
+
+        // Try to delete the file using a relative path from process.cwd()
+        try {
+          // This path is relative to where the application is started
+          const relativePath = path.join("uploads", "homepage", fileName);
+          await fs.unlink(relativePath);
+          console.log(`Successfully deleted file: ${relativePath}`);
+        } catch (error) {
+          console.log(
+            `Unable to delete file using relative path: ${error.message}`
+          );
+
+          // If that fails, try with the absolute path based on process.cwd()
+          try {
+            const absolutePath = path.join(
+              process.cwd(),
+              "uploads",
+              "homepage",
+              fileName
+            );
+            await fs.unlink(absolutePath);
+            console.log(
+              `Successfully deleted file using absolute path: ${absolutePath}`
+            );
+          } catch (secondError) {
+            console.log(
+              `Unable to delete file using absolute path: ${secondError.message}`
+            );
+
+            // If both approaches fail, log the error but don't fail the transaction
+            console.error(
+              `Could not delete file ${fileName}. Manual cleanup may be required.`
+            );
+          }
+        }
+
+        return { success: true, deletedImage: imageUrl };
+      } catch (error) {
+        console.error("Error in deleteImage transaction:", error);
+        throw error;
+      }
     });
   }
 }

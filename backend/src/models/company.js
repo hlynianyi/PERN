@@ -6,13 +6,6 @@ const path = require("path");
 class Company {
   static async initTable() {
     try {
-      // Удаляем существующие таблицы в правильном порядке
-      // await pool.query(`
-      //   DROP TABLE IF EXISTS company_images CASCADE;
-      //   DROP TABLE IF EXISTS company_description_blocks CASCADE;
-      //   DROP TABLE IF EXISTS company CASCADE;
-      // `);
-
       // Создаем основную таблицу компании
       await pool.query(`
         CREATE TABLE IF NOT EXISTS company (
@@ -189,12 +182,14 @@ class Company {
           [deletedImages, id]
         );
 
+        // Используем предоставленный helper для удаления файлов
         for (const row of rows) {
           try {
-            const fullPath = path.join(process.cwd(), "public", row.image_url);
-            await fs.unlink(fullPath);
+            await deleteFile(row.image_url);
+            console.log(`Файл ${row.image_url} успешно удален`);
           } catch (error) {
-            console.error(`Ошибка удаления файла ${row.image_url}:`, error);
+            console.error(`Ошибка при удалении файла ${row.image_url}:`, error);
+            // Продолжаем выполнение даже при ошибке удаления файла
           }
         }
       }
@@ -258,6 +253,36 @@ class Company {
       );
 
       return rows[0] || null;
+    });
+  }
+
+  // Добавляем метод для удаления отдельного изображения
+  static async deleteImage(imageId) {
+    return await withTransaction(async (client) => {
+      const { rows } = await client.query(
+        `SELECT image_url FROM company_images WHERE id = $1`,
+        [imageId]
+      );
+
+      if (rows.length === 0) {
+        throw new Error("Image not found");
+      }
+
+      const imageUrl = rows[0].image_url;
+
+      // Удаляем запись из базы данных
+      await client.query(`DELETE FROM company_images WHERE id = $1`, [imageId]);
+
+      // Используем предоставленный helper для удаления файла
+      try {
+        await deleteFile(imageUrl);
+        console.log(`Файл ${imageUrl} успешно удален`);
+      } catch (error) {
+        console.error(`Ошибка при удалении файла ${imageUrl}:`, error);
+        // Продолжаем выполнение даже при ошибке удаления файла
+      }
+
+      return { success: true, deletedImage: imageUrl };
     });
   }
 }

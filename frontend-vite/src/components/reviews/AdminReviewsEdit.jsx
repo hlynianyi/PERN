@@ -1,29 +1,29 @@
 // frontend/src/pages/reviews/AdminReviewsEdit.jsx
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardContent 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent
 } from '@/components/ui/card';
-import { 
-  Table, 
-  TableHeader, 
-  TableRow, 
-  TableHead, 
-  TableBody, 
-  TableCell 
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
 import { reviewApi } from '@/api/reviews';
-import { 
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -45,12 +45,12 @@ const AdminReviewsEdit = () => {
 
   const fetchReviews = async () => {
     try {
-      const result = await reviewApi.getAllReviews({ 
-        page, 
-        limit: 10, 
-        status 
+      const result = await reviewApi.getAllReviews({
+        page,
+        limit: 10,
+        status
       });
-      
+
       setReviews(result.reviews);
       setTotalPages(result.totalPages);
     } catch (error) {
@@ -82,13 +82,13 @@ const AdminReviewsEdit = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full my-4">
       <CardHeader>
         <CardTitle>Управление отзывами</CardTitle>
         <div className="flex items-center space-x-4 mt-4">
           <span className="font-medium">Статус отзывов:</span>
-          <Select 
-            value={status} 
+          <Select
+            value={status}
             onValueChange={setStatus}
           >
             <SelectTrigger className="w-[180px]">
@@ -124,8 +124,8 @@ const AdminReviewsEdit = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => openReviewDetails(review)}
                     >
@@ -133,15 +133,15 @@ const AdminReviewsEdit = () => {
                     </Button>
                     {status === 'pending' && (
                       <>
-                        <Button 
-                          variant="success" 
+                        <Button
+                          variant="success"
                           size="sm"
                           onClick={() => handleStatusChange(review.id, 'approved')}
                         >
                           Одобрить
                         </Button>
-                        <Button 
-                          variant="destructive" 
+                        <Button
+                          variant="destructive"
                           size="sm"
                           onClick={() => handleStatusChange(review.id, 'rejected')}
                         >
@@ -149,8 +149,8 @@ const AdminReviewsEdit = () => {
                         </Button>
                       </>
                     )}
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleDelete(review.id)}
                     >
@@ -165,7 +165,7 @@ const AdminReviewsEdit = () => {
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4">
-          <Button 
+          <Button
             variant="outline"
             disabled={page === 1}
             onClick={() => setPage(prev => prev - 1)}
@@ -175,7 +175,7 @@ const AdminReviewsEdit = () => {
           <span>
             Страница {page} из {totalPages}
           </span>
-          <Button 
+          <Button
             variant="outline"
             disabled={page === totalPages}
             onClick={() => setPage(prev => prev + 1)}
@@ -186,8 +186,8 @@ const AdminReviewsEdit = () => {
 
         {/* Review Details Dialog */}
         {selectedReview && (
-          <Dialog 
-            open={isDialogOpen} 
+          <Dialog
+            open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
           >
             <DialogContent className="sm:max-w-[600px]">
@@ -223,10 +223,10 @@ const AdminReviewsEdit = () => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <span className="font-medium">Статус:</span>
                   <span className="col-span-3">
-                    {selectedReview.status === 'pending' 
-                      ? 'На модерации' 
-                      : selectedReview.status === 'approved' 
-                        ? 'Одобрен' 
+                    {selectedReview.status === 'pending'
+                      ? 'На модерации'
+                      : selectedReview.status === 'approved'
+                        ? 'Одобрен'
                         : 'Отклонен'}
                   </span>
                 </div>

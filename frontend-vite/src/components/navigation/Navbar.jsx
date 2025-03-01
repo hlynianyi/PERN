@@ -24,7 +24,7 @@ const Navbar = () => {
                   <Logo variant="laptop" />
                 </div>
                 <div className="hidden laptop:flex flex-col  font-semibold leading-[22px] text-[20px]">
-                  <p className="text-muted-foreground">Ножевая </p>
+                  <p className="text-muted-foreground">Ножевая</p>
                   <p className="text-muted-foreground">мастерская</p>
                   <p className="">Поддубного В.В.</p>
                 </div>

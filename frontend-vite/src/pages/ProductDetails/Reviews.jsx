@@ -5,7 +5,7 @@ import { Star, Edit2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useAuth } from "@/context/AuthContext";
-import { CustomPagination } from "../../../subcomponents/CustomPagination";
+import { CustomPagination } from "../../subcomponents/CustomPagination";
 
 export const Reviews = ({
   reviews,
@@ -48,7 +48,12 @@ export const Reviews = ({
             </div>
           )}
         </div>
-        <Button className='dark:text-secondary-foreground' onClick={onNewReview}>Оставить отзыв</Button>
+        <Button
+          className="dark:text-secondary-foreground"
+          onClick={onNewReview}
+        >
+          Оставить отзыв
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

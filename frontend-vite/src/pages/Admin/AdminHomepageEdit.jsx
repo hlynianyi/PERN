@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../components/ui/separator";
 
 export default function AdminHomepageEdit() {
   // Основное состояние формы

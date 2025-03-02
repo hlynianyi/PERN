@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { productsApi } from "../../../api/products";
+import { productsApi } from "../../api/products";
 import { ImageGallery } from "./ImageGallery";
 import { Reviews } from "./Reviews";
 import { ReviewForm } from "./ReviewForm";
 import { Star } from "lucide-react";
-import { addToCart } from "../../../store/slices/cartSlice";
-import store from "../../../store/index";
+import { addToCart } from "../../store/slices/cartSlice";
+import store from "../../store/index";
 import { toast } from "sonner";
 
 export const AdminProductDetails = () => {
@@ -223,20 +223,13 @@ export const AdminProductDetails = () => {
                 <div className="text-sm text-muted-foreground">Нет отзывов</div>
               )}
             </div>
-            {product.notes && (
-              <div className="space-y-2 mt-4 mr-4 laptop:mr-24 grow flex flex-col justify-end mb-4">
-                <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
-                  {product.notes}
-                </p>
-              </div>
-            )}
             <div className="flex flex-col laptop:flex-col  justify-start gap-4 laptop:gap-4 mb-2  laptop:w-2/3">
               <div className=" rounded-md gap-2 py-2 flex flex-row justify-start w-full">
                 <p className="bg-secondary rounded-lg px-4 tablet:w-full laptop:w-full text-[18px] laptop:text-[22px] font-medium text-start text-primary laptop:text-start laptop:hidden laptop:mt-0 tablet:leading-[44px]">
                   {parseFloat(product.price).toLocaleString("ru-RU")} ₽
                 </p>
                 <button
-                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-1/2 laptop:text-[22px] text-primary min-w-[175px]
+                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-1/2 laptop:text-[20px] text-primary min-w-[175px]
                   ${
                     product.status === "in_stock"
                       ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
@@ -249,6 +242,13 @@ export const AdminProductDetails = () => {
                 </button>
               </div>
             </div>
+            {product.notes && (
+              <div className="space-y-2 mt-4 mr-4 laptop:mr-24 grow flex flex-col justify-end mb-4">
+                <p className="text-sm whitespace-pre-wrap  text-muted-foreground text-balance">
+                  {product.notes}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

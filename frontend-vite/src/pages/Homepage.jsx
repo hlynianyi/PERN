@@ -7,11 +7,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import SmallReviews from "../components/reviews/SmallReviews";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLoadHomepage } from "@/hooks/useLoadHomepage";
 import { useLoadProducts } from "@/hooks/useLoadProducts";
-import SmallReviews from "../components/reviews/SmallReviews";
 
 export default function Homepage() {
   const { homepage, isLoading } = useLoadHomepage();

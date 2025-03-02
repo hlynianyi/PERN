@@ -50,16 +50,6 @@ export const homepageApi = {
         );
       }
 
-      // Log FormData contents for debugging
-      console.log("Sending FormData contents:");
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}: File - ${value.name}`);
-        } else {
-          console.log(`${key}: ${value}`);
-        }
-      }
-
       const response = await api.post("/homepage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -69,7 +59,6 @@ export const homepageApi = {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
-          console.log(`Upload progress: ${percentCompleted}%`);
         },
       });
 

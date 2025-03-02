@@ -91,7 +91,7 @@ const CompanyDetails = () => {
                 <CardContent className="p-0">
                   <AspectRatio ratio={1}>
                     <img
-                      src={`http://localhost:5002${image.image_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${image.image_url}`}
                       alt="Company"
                       className="w-full h-full object-cover"
                     />

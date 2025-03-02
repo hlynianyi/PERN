@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5002/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
 const AdminPartnershipEdit = () => {
@@ -39,6 +39,7 @@ const AdminPartnershipEdit = () => {
   const loadPartnership = async () => {
     try {
       const response = await api.get("/partnership");
+      response;
       if (response.data) {
         setFormData({
           id: response.data.id,
@@ -125,7 +126,9 @@ const AdminPartnershipEdit = () => {
       }, 1500);
     } catch (error) {
       toast.error("Ошибка при сохранении", {
-        description: error.response?.data?.error || "Не удалось сохранить информацию о сотрудничестве",
+        description:
+          error.response?.data?.error ||
+          "Не удалось сохранить информацию о сотрудничестве",
         richColors: true,
       });
       console.error("Ошибка сохранения:", error);

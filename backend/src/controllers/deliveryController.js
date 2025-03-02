@@ -17,8 +17,6 @@ const deliveryController = {
 
   async updateDelivery(req, res) {
     try {
-      console.log("Received delivery data:", req.body);
-
       const deliveryData = {
         id: req.body.id,
         subtitle: req.body.subtitle,

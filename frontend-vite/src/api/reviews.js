@@ -28,8 +28,6 @@ export const reviewApi = {
         status: "pending",
       };
 
-      console.log("Отправка данных отзыва:", payload);
-
       const response = await api.post("/reviews", payload, {
         headers: {
           "Content-Type": "application/json",

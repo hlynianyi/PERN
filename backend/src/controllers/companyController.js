@@ -17,9 +17,6 @@ const companyController = {
 
   async createOrUpdateCompany(req, res) {
     try {
-      console.log("Received request body:", req.body);
-      console.log("Received files:", req.files);
-
       // Безопасный парсинг description_blocks
       let descriptionBlocks = [];
       try {

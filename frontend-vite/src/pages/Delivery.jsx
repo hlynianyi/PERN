@@ -13,7 +13,9 @@ const DeliveryServiceItem = ({ service }) => (
       <span className="text-base font-sans text-muted-foreground ">
         {service.service_period}
       </span>
-      <span className="text-base font-sans font-medium">{service.service_cost}</span>
+      <span className="text-base font-sans font-medium">
+        {service.service_cost}
+      </span>
     </div>
   </div>
 );
@@ -57,7 +59,6 @@ const Delivery = () => {
       try {
         const data = await deliveryApi.getDelivery();
         setDeliveryData(data);
-        console.log("🚀 ~ loadDelivery ~ data:", data);
       } catch (err) {
         setError("Не удалось загрузить информацию о доставке");
         console.error("Ошибка загрузки:", err);

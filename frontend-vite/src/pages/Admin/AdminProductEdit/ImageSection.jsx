@@ -27,7 +27,7 @@ export const ImageSection = ({
               .map((image) => (
                 <div key={image.id} className="relative">
                   <img
-                    src={`http://localhost:5002${image.image_url}`}
+                    src={`${import.meta.env.VITE_API_URL}${image.image_url}`}
                     alt="Product"
                     className="h-24 w-24 object-cover rounded"
                   />

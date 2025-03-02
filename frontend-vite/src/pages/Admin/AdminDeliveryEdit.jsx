@@ -47,7 +47,6 @@ const AdminDeliveryEdit = () => {
     e.preventDefault();
     try {
       await deliveryApi.saveDelivery(formData);
-      console.log("🚀 ~ handleSubmit ~ formData:", formData);
 
       toast.success("Данные сохранены", {
         description: "Информация о доставке успешно обновлена",
@@ -183,7 +182,9 @@ const AdminDeliveryEdit = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <h2 className="text-2xl font-bold">Редактирование страницы "Доставка"</h2>
+        <h2 className="text-2xl font-bold">
+          Редактирование страницы "Доставка"
+        </h2>
         <div className="space-y-4">
           <div>
             <Label>Подзаголовок</Label>

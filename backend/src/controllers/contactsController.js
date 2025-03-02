@@ -17,8 +17,6 @@ const contactsController = {
 
   async updateContacts(req, res) {
     try {
-      console.log("Received contacts data:", req.body);
-
       const contactsData = {
         id: req.body.id,
         city: req.body.city,

@@ -17,8 +17,6 @@ export default function ProductGrid({ products, isLoading, error }) {
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = productItems.slice(startIndex, endIndex);
 
-  console.log("🚀 ~ ProductGrid ~ products:", products);
-
   const getStatusBadge = (status) => {
     const statusMap = {
       in_stock: {
@@ -71,7 +69,9 @@ export default function ProductGrid({ products, isLoading, error }) {
                 <div className="relative w-full h-48 flex items-center justify-center">
                   {product.images && product.images.length > 0 ? (
                     <img
-                      src={`http://localhost:5002${product.images[0].image_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${
+                        product.images[0].image_url
+                      }`}
                       alt={product.name}
                       className="object-contain w-full h-full mix-blend-multiply dark:mix-blend-normal"
                     />

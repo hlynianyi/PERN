@@ -41,7 +41,6 @@ const AdminCompanyEdit = () => {
   const loadCompany = async () => {
     try {
       const company = await companyApi.getCompany();
-      console.log("🚀 ~ loadCompany ~ company:", company);
       if (company) {
         setFormData({
           id: company.id,
@@ -223,7 +222,9 @@ const AdminCompanyEdit = () => {
                   <Card key={image.id} className="relative">
                     <CardContent className="p-0 relative">
                       <img
-                        src={`http://localhost:5002${image.image_url}`}
+                        src={`${import.meta.env.VITE_API_URL}${
+                          image.image_url
+                        }`}
                         alt="Company"
                         className="w-full h-52 object-cover rounded-md"
                       />

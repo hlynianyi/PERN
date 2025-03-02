@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:5002/api",
-});
+import { partnershipApi } from "@/api/partnership";
 
 const PartnershipPage = () => {
   const [partnershipData, setPartnershipData] = useState(null);
@@ -15,8 +11,8 @@ const PartnershipPage = () => {
   useEffect(() => {
     const loadPartnership = async () => {
       try {
-        const response = await api.get("/partnership");
-        setPartnershipData(response.data);
+        const response = await partnershipApi.getPartnership();
+        setPartnershipData(response);
       } catch (err) {
         setError("Не удалось загрузить информацию о партнерстве");
         console.error("Ошибка при загрузке:", err);

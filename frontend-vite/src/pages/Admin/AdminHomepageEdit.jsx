@@ -186,7 +186,7 @@ export default function AdminHomepageEdit() {
                 <CardContent className="p-4">
                   <div className="relative aspect-video mb-4">
                     <img
-                      src={`http://localhost:5002${image.image_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${image.image_url}`}
                       alt={image.name}
                       className="w-full h-full object-cover rounded-md"
                     />

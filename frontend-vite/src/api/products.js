@@ -130,16 +130,6 @@ export const productsApi = {
         JSON.stringify(productData.deletedCertificates || [])
       );
 
-      // Логируем содержимое FormData перед отправкой
-      console.log("FormData entries:");
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(key, ":", `File: ${value.name}`);
-        } else {
-          console.log(key, ":", value);
-        }
-      }
-
       const response = await api.put(`/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",

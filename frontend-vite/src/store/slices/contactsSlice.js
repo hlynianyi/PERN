@@ -30,7 +30,9 @@ export const setError = (error) => ({
 export const fetchContacts = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const response = await fetch("http://localhost:5002/api/contacts");
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/contacts`
+    );
     const data = await response.json();
     dispatch(setContacts(data));
   } catch (error) {

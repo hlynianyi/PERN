@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5002/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
 const AdminFaqEdit = () => {
@@ -149,7 +149,9 @@ const AdminFaqEdit = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <h2 className="text-2xl font-bold">Редактирование страницы "Вопрос-ответ"</h2>
+        <h2 className="text-2xl font-bold">
+          Редактирование страницы "Вопрос-ответ"
+        </h2>
         <div>
           <Label>Заголовок</Label>
           <Input

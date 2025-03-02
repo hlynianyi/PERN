@@ -1,31 +1,3 @@
-// // components/products/ProductDetails/ImageGallery.jsx
-// export const ImageGallery = ({ images, selectedImage, setSelectedImage }) => {
-//   return (
-//     <div className="space-y-4 flex">
-//       {selectedImage && (
-//         <img
-//           src={`http://localhost:5002${selectedImage.image_url}`}
-//           alt="Product"
-//           className="w-full h-[400px] object-contain rounded-md"
-//         />
-//       )}
-//       <div className="flex flex-col gap-2">
-//         {images?.map((image) => (
-//           <img
-//             key={image.id}
-//             src={`http://localhost:5002${image.image_url}`}
-//             alt="Product thumbnail"
-//             className={`cursor-pointer rounded-md h-[100px] object-contain
-//                 ${
-//                   selectedImage?.id === image.id ? "opacity-100" : "opacity-60"
-//                 }`}
-//             onClick={() => setSelectedImage(image)}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
 import * as React from "react";
 import {
   Carousel,
@@ -35,7 +7,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const ImageGallery = ({
@@ -65,7 +36,7 @@ export const ImageGallery = ({
                   )}
                 </div>
                 <img
-                  src={`http://localhost:5002${image.image_url}`}
+                  src={`${import.meta.env.VITE_API_URL}${image.image_url}`}
                   alt="Product"
                   className="h-full w-full object-contain rounded-lg dark:mix-blend-normal mix-blend-multiply"
                   onClick={() => setSelectedImage(image)}
@@ -90,7 +61,7 @@ export const ImageGallery = ({
         {selectedImage && (
           <div className="relative">
             <img
-              src={`http://localhost:5002${selectedImage.image_url}`}
+              src={`${import.meta.env.VITE_API_URL}${selectedImage.image_url}`}
               alt="Selected product"
               className="w-full max-w-[580px] object-contain rounded-lg cursor-zoom-in dark:mix-blend-normal mix-blend-multiply"
               onClick={() => setIsModalOpen(true)}
@@ -132,7 +103,7 @@ export const ImageGallery = ({
                 }`}
               >
                 <img
-                  src={`http://localhost:5002${image.image_url}`}
+                  src={`${import.meta.env.VITE_API_URL}${image.image_url}`}
                   alt="Product thumbnail"
                   className="h-full w-full object-cover dark:mix-blend-normal mix-blend-multiply"
                 />
@@ -164,7 +135,7 @@ export const ImageGallery = ({
           )}
         </div>
         <img
-          src={`http://localhost:5002${selectedImage?.image_url}`}
+          src={`${import.meta.env.VITE_API_URL}${selectedImage?.image_url}`}
           alt="Увеличенное изображение"
           className="w-full h-full object-contain"
         />

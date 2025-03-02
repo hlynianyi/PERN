@@ -4,7 +4,6 @@ import { useContacts } from "@/hooks/useContacts";
 const DataAgreement = () => {
   const contacts = useContacts();
   const { data } = contacts;
-  console.log(data);
   return (
     <div className="py-4 tablet:py-8">
       <div className="text-center mb-6 tablet:mb-12">

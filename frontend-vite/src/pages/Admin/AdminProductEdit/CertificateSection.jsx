@@ -32,7 +32,9 @@ export const CertificateSection = ({
                       className="mt-2"
                       onClick={() =>
                         window.open(
-                          `http://localhost:5002${cert.certificate_url}`,
+                          `${import.meta.env.VITE_API_URL}${
+                            cert.certificate_url
+                          }`,
                           "_blank"
                         )
                       }

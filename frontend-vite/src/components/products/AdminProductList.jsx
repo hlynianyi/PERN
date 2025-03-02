@@ -86,7 +86,9 @@ const AdminProductList = () => {
                 <TableCell>
                   {productImage && (
                     <img
-                      src={`http://localhost:5002${productImage.image_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${
+                        productImage.image_url
+                      }`}
                       alt={product.name}
                       className="h-12 w-12 object-cover rounded"
                     />
@@ -100,7 +102,9 @@ const AdminProductList = () => {
                 <TableCell>
                   <div className="h-full flex flex-col gap-2">
                     {product.status === "in_stock" ? (
-                      <Badge className="flex justify-center">В наличии</Badge>
+                      <Badge className="flex justify-center dark:text-secondary-foreground">
+                        В наличии
+                      </Badge>
                     ) : (
                       <Badge
                         variant="secondary"

@@ -147,8 +147,6 @@ class Company {
   static async update(companyData, files) {
     return await withTransaction(async (client) => {
       const { id, title, description_blocks, deletedImages } = companyData;
-      console.log("::: Данные для обновления:", companyData);
-      console.log("::: Файлы:", files);
 
       // Обновляем основную информацию
       await client.query(`UPDATE company SET title = $1 WHERE id = $2`, [
@@ -186,7 +184,6 @@ class Company {
         for (const row of rows) {
           try {
             await deleteFile(row.image_url);
-            console.log(`Файл ${row.image_url} успешно удален`);
           } catch (error) {
             console.error(`Ошибка при удалении файла ${row.image_url}:`, error);
             // Продолжаем выполнение даже при ошибке удаления файла
@@ -276,7 +273,6 @@ class Company {
       // Используем предоставленный helper для удаления файла
       try {
         await deleteFile(imageUrl);
-        console.log(`Файл ${imageUrl} успешно удален`);
       } catch (error) {
         console.error(`Ошибка при удалении файла ${imageUrl}:`, error);
         // Продолжаем выполнение даже при ошибке удаления файла

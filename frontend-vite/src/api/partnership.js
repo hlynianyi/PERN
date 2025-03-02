@@ -15,7 +15,6 @@ export const partnershipApi = {
   savePartnership: async (partnershipData) => {
     try {
       const formData = new FormData();
-
       formData.append("title", partnershipData.title || "");
       formData.append(
         "text_blocks",
@@ -25,12 +24,6 @@ export const partnershipApi = {
       if (partnershipData.id) {
         formData.append("id", partnershipData.id);
       }
-
-      console.log("Отправка данных гарантии:", {
-        title: partnershipData.title,
-        text_blocks: partnershipData.text_blocks,
-        id: partnershipData.id,
-      });
 
       const response = await api.post("/partnership", formData);
       return response.data;

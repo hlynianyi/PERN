@@ -163,7 +163,7 @@ export const AdminProductDetails = () => {
   }
 
   return (
-    <div className="py-4 pb-8  mx-auto">
+    <div className="py-4 pb-8  mx-auto w-full">
       <div className="grid grid-cols-1 laptop:flex laptop:flex-col gap-4 laptop:gap-2">
         <div className=" w-full tablet:flex tablet:flex-row tablet:gap-4 tablet:border-[1px] rounded-md tablet:px-4">
           <ImageGallery
@@ -360,14 +360,14 @@ export const AdminProductDetails = () => {
                     key={cert.id}
                     onClick={() =>
                       window.open(
-                        `http://localhost:5002${cert.certificate_url}`,
+                        `${import.meta.env.VITE_API_URL}${cert.certificate_url}`,
                         "_blank"
                       )
                     }
                     className="max-w-[175px] group relative aspect-[3/4] rounded-lg overflow-hidden border border-border hover:border-primary transition-colors cursor-pointer"
                   >
                     <img
-                      src={`http://localhost:5002${cert.certificate_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${cert.certificate_url}`}
                       alt={`Сертификат ${index + 1}`}
                       className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 "
                     />

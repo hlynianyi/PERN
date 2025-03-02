@@ -113,7 +113,7 @@ export const SearchProducts = () => {
               >
                 {product.images?.[0]?.image_url && (
                   <img
-                    src={`http://localhost:5002${product.images[0].image_url}`}
+                    src={`${import.meta.env.VITE_API_URL}${product.images[0].image_url}`}
                     alt={product.name}
                     className="w-10 h-10 object-cover rounded"
                   />

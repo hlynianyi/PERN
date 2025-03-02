@@ -294,7 +294,10 @@ const Cart = () => {
         <p className="text-muted-foreground mb-6">
           Добавьте товары в корзину, чтобы продолжить покупки
         </p>
-        <Button className='mt-4c dark:text-secondary-foreground' onClick={() => navigate("/products")}>
+        <Button
+          className="mt-4c dark:text-secondary-foreground"
+          onClick={() => navigate("/products")}
+        >
           Вернуться в каталог
         </Button>
       </div>
@@ -319,7 +322,7 @@ const Cart = () => {
                   <div className="my-4 h-[144px] flex-shrink-0">
                     {item.image ? (
                       <img
-                        src={`http://localhost:5002${item.image}`}
+                        src={`${import.meta.env.VITE_API_URL}${item.image}`}
                         alt={item.name}
                         className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal rounded-lg"
                       />

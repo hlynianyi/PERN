@@ -1,15 +1,15 @@
 // src/utils/database.js
-const pool = require('../config/database');
+const pool = require("../config/database");
 
 const withTransaction = async (callback) => {
   const client = await pool.connect();
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
     const result = await callback(client);
-    await client.query('COMMIT');
+    await client.query("COMMIT");
     return result;
   } catch (error) {
-    await client.query('ROLLBACK');
+    await client.query("ROLLBACK");
     throw error;
   } finally {
     client.release();
@@ -20,13 +20,13 @@ const retryConnection = async (maxRetries = 5) => {
   for (let i = 0; i < maxRetries; i++) {
     try {
       const client = await pool.connect();
-      console.log('Успешное подключение к базе данных');
+      console.log("Successful connected to DB.");
       client.release();
       return true;
     } catch (err) {
-      console.log(`Попытка подключения к базе данных ${i + 1}/${maxRetries} не удалась:`, err.message);
+      console.log(`Couldnt connect to DB ${i + 1}/${maxRetries}:`, err.message);
       if (i === maxRetries - 1) throw err;
-      await new Promise(resolve => setTimeout(resolve, 5000 * (i + 1)));
+      await new Promise((resolve) => setTimeout(resolve, 5000 * (i + 1)));
     }
   }
   return false;
@@ -35,5 +35,5 @@ const retryConnection = async (maxRetries = 5) => {
 module.exports = {
   pool,
   withTransaction,
-  retryConnection
+  retryConnection,
 };

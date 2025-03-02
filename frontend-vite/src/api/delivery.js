@@ -29,7 +29,6 @@ export const deliveryApi = {
           },
         }
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Ошибка при сохранении информации о доставке:", error);

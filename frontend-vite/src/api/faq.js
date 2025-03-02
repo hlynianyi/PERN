@@ -28,12 +28,6 @@ export const faqApi = {
         formData.append("id", faqData.id);
       }
 
-      console.log("Sending FAQ data:", {
-        title: faqData.title,
-        description_blocks: faqData.description_blocks,
-        id: faqData.id,
-      });
-
       const response = await api.post("/faqs", formData);
       return response.data;
     } catch (error) {

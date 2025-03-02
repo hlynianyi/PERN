@@ -37,7 +37,7 @@ export default function Homepage() {
   }
 
   return (
-    <div className=" max-w-5xl py-4 tablet:py-8  mx-auto flex flex-col gap-4 tablet:gap-6 laptop:gap">
+    <div className=" py-4 tablet:py-8  mx-auto flex flex-col gap-4 tablet:gap-6 laptop:gap">
       {/* Title and Description Section */}
       <section className="">
         <div className="text-center mb-6 tablet:mb-8">
@@ -46,69 +46,74 @@ export default function Homepage() {
           </h2>
           <div className="mt-4 h-1 w-20 bg-primary mx-auto mb-2"></div>
         </div>
-        <p className=" text-center text-lg text-muted-foreground mb-4 tablet:mb-6">
-          {homepageData.description}
-        </p>
-        <div className="flex justify-center">
-          <Button
-            onClick={() => navigate("/company")}
-            size="lg"
-            className="min-w-[200px] dark:text-secondary-foreground"
-          >
-            Подробнее о компании
-          </Button>
-        </div>
-      </section>
-      {/* Carousel Section */}
-      {Array.isArray(homepageData.carousel_images) &&
-        homepageData.carousel_images.length > 0 && (
-          <section className="w-full mx-auto">
-            <Carousel className="w-full">
-              <CarouselContent>
-                {homepageData.carousel_images.map((image) => (
-                  <CarouselItem key={image.id} className="w-full">
-                    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
-                      <img
-                        src={`${import.meta.env.VITE_API_URL}${
-                          image.image_url
-                        }`}
-                        alt={image.name || "Carousel image"}
-                        className=" w-full h-full object-cover"
-                      />
-                      {(image.name || image.product_link) && (
-                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
-                          <div className="max-w-[1200px] mx-auto">
-                            {image.name && (
-                              <h3 className="text-white text-2xl md:text-3xl font-semibold mb-4">
-                                {image.name}
-                              </h3>
-                            )}
-                            {image.product_link && (
-                              <Button
-                                onClick={() => navigate(image.product_link)}
-                                size="lg"
-                                variant="secondary"
-                                className="hover:scale-105 transition-transform"
-                              >
-                                Подробнее
-                              </Button>
-                            )}
-                          </div>
+        <section className="flex flex-col gap-4 laptop:flex-row laptop:justify-between laptop:gap-6">
+          <aside className="w-full">
+            <p className="text-justify text-lg text-muted-foreground mb-4 tablet:mb-6">
+              {homepageData.description}
+            </p>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => navigate("/company")}
+                size="lg"
+                variant="secondary"
+
+                className=" min-w-[200px] dark:text-secondary-foreground"
+              >
+                Подробнее о компании
+              </Button>
+            </div>
+          </aside>
+          {Array.isArray(homepageData.carousel_images) &&
+            homepageData.carousel_images.length > 0 && (
+              <section className="w-full mx-auto">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {homepageData.carousel_images.map((image) => (
+                      <CarouselItem key={image.id} className="w-full">
+                        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+                          <img
+                            src={`${import.meta.env.VITE_API_URL}${
+                              image.image_url
+                            }`}
+                            alt={image.name || "Carousel image"}
+                            className=" w-full h-full object-cover"
+                          />
+                          {(image.name || image.product_link) && (
+                            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                              <div className="max-w-[1200px] mx-auto">
+                                {image.name && (
+                                  <h3 className="text-white text-2xl md:text-3xl font-semibold mb-4">
+                                    {image.name}
+                                  </h3>
+                                )}
+                                {image.product_link && (
+                                  <Button
+                                    onClick={() => navigate(image.product_link)}
+                                    size="lg"
+                                    variant="secondary"
+                                    className=" hover:scale-105 transition-transform"
+                                  >
+                                    Подробнее
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              {homepageData.carousel_images.length > 1 && (
-                <>
-                  <CarouselPrevious className="left-4" />
-                  <CarouselNext className="right-4" />
-                </>
-              )}
-            </Carousel>
-          </section>
-        )}
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  {homepageData.carousel_images.length > 1 && (
+                    <>
+                      <CarouselPrevious className="left-4" />
+                      <CarouselNext className="right-4" />
+                    </>
+                  )}
+                </Carousel>
+              </section>
+            )}
+        </section>
+      </section>
 
       {/* Popular Products Section */}
       {popularProducts.length > 0 && (

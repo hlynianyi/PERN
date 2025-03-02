@@ -84,9 +84,9 @@ export const ImageGallery = ({
 
   // Tablet and Desktop View
   const DesktopGallery = () => (
-    <div className="hidden tablet:flex tablet:flex-col tablet:space-y-4 max-w-[580px] tablet:max-w-[340px] tablet:justify-between p-4">
+    <div className="hidden tablet:flex tablet:flex-col tablet:space-y-4 max-w-[580px] tablet:max-w-full tablet:justify-between p-4">
       {/* Large Preview Image */}
-      <div className="w-full h-full items-center tablet:flex tablet:justify-center laptop:justify-start bg-background ">
+      <div className="w-full h-full items-center tablet:flex tablet:justify-center laptop:justify-center bg-background ">
         {selectedImage && (
           <div className="relative">
             <img
@@ -117,7 +117,7 @@ export const ImageGallery = ({
           loop: true,
         }}
       >
-        <CarouselContent className="-ml-2 ">
+        <CarouselContent className="-ml-2 flex justify-center">
           {images?.map((image) => (
             <CarouselItem
               key={image.id}
@@ -125,9 +125,9 @@ export const ImageGallery = ({
               onClick={() => setSelectedImage(image)}
             >
               <div
-                className={`bg-background relative aspect-square rounded-md overflow-hidden ${
+                className={`bg-background relative aspect-square rounded overflow-hidden ${
                   selectedImage?.id === image.id
-                    ? "border-2 border-red-500"
+                    ? "border-[1px] border-red-500"
                     : "opacity-70 hover:opacity-100 transition-opacity"
                 }`}
               >
@@ -149,7 +149,7 @@ export const ImageGallery = ({
   // Modal for Large Image View
   const ImageModal = () => (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-      <DialogContent className="max-w-[600px] max-h-[600px] p-0">
+      <DialogContent className="pb-10 w-auto h-screen p-0">
         <DialogClose className="absolute right-4 top-4 z-10">
           {/* <X className="h-6 w-6 text-white hover:text-red-500 transition-colors" /> */}
         </DialogClose>

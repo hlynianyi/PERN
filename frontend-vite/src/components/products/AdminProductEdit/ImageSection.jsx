@@ -39,19 +39,6 @@ export const ImageSection = ({
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                  <Button
-                    size="icon"
-                    variant={image.is_primary ? "default" : "outline"}
-                    className="absolute top-1 left-1 h-6 w-6"
-                    onClick={() => handleSetPrimaryImage(image.id)}
-                  >
-                    <Star className="h-4 w-4" />
-                  </Button>
-                  {image.is_primary && (
-                    <Badge className="absolute bottom-1 left-1/2 -translate-x-1/2">
-                      Основное
-                    </Badge>
-                  )}
                 </div>
               ))}
           </div>
@@ -60,13 +47,15 @@ export const ImageSection = ({
 
       {/* Загрузка новых изображений */}
       <div className="space-y-2">
-        <Label>Добавить изображения (до 10 штук)</Label>
+        <Label>Добавить изображения </Label>
+        <span className="text-primary">(до 10шт.)</span>
         <Input
           type="file"
           accept="image/*"
           multiple
           onChange={(e) => handleFileSelect("images", e)}
         />
+        <span className="text-primary">лимит: загрузки 10шт.</span>
       </div>
 
       {previewUrls.images.length > 0 && (

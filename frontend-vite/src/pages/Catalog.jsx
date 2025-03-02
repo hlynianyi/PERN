@@ -100,7 +100,7 @@ const Catalog = () => {
 
       <div
         className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8
-      desktop:grid-cols-2 desktop:grid-cols-[220px_1fr]"
+       desktop:grid-cols-[220px_1fr]"
       >
         {/* Десктопные фильтры */}
         <div className="hidden desktop:flex desktop:flex-col desktop:p-4  overflow-y-auto bg-card p-0 rounded-lg shadow-sm">

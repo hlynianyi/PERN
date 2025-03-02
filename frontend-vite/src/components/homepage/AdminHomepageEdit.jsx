@@ -464,7 +464,7 @@ export default function AdminHomepageEdit() {
           <Separator />
 
           <div>
-            <Label>Загрузить новые изображения (максимум 5)</Label>
+            <Label>Загрузить новые изображения для карусели (максимум 5)</Label>
             <Input
               key={fileInputKey}
               type="file"
@@ -473,8 +473,11 @@ export default function AdminHomepageEdit() {
               onChange={handleFileSelect}
               className="mt-2"
             />
+            <p className="font-bold text-sm text-red-500 mt-1">
+              * !ВАЖНО!: Соблюдать формат изображений 16:9 (прямоугольник)
+            </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Поддерживаемые форматы: JPG, PNG, GIF, WebP
+              Поддерживаемые форматы: <span className=" font-bold text-red-500">JPG, PNG, GIF, WebP</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               Ограничение по размеру до 10 МБ.

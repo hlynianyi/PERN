@@ -1,63 +1,58 @@
 // src/pages/admin/AdminOrdersEdit.jsx
-import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent
-} from '@/components/ui/card';
+import React, { useState, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableHeader,
   TableRow,
   TableHead,
   TableBody,
-  TableCell
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+  TableCell,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { ordersApi } from '@/api/orders';
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { ordersApi } from "@/api/orders";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter
-} from '@/components/ui/dialog';
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Status labels for display
 const ORDER_STATUS_LABELS = {
-  new: 'Ожидает обработки',
-  shipped: 'Отправлен',
-  completed: 'Выполнен',
-  rejected: 'Отклонен'
+  new: "Ожидает обработки",
+  shipped: "Отправлен",
+  completed: "Выполнен",
+  rejected: "Отклонен",
 };
 
 // Status colors for visual indication
 const STATUS_COLORS = {
-  new: 'bg-yellow-100 text-yellow-800',
-  shipped: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800'
+  new: "bg-yellow-100 text-yellow-800",
+  shipped: "bg-blue-100 text-blue-800",
+  completed: "bg-green-100 text-green-800",
+  rejected: "bg-red-100 text-red-800",
 };
 
 const AdminOrdersEdit = () => {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [status, setStatus] = useState('new');
+  const [status, setStatus] = useState("new");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
-  const [newStatus, setNewStatus] = useState('');
+  const [newStatus, setNewStatus] = useState("");
 
   const { toast } = useToast();
 
@@ -70,17 +65,17 @@ const AdminOrdersEdit = () => {
       const result = await ordersApi.getAllOrders({
         page,
         limit: 10,
-        status: status === 'all' ? null : status
+        status: status === "all" ? null : status,
       });
 
       setOrders(result.orders);
       setTotalPages(result.totalPages);
     } catch (error) {
-      console.error('Ошибка загрузки заказов', error);
+      console.error("Ошибка загрузки заказов", error);
       toast({
-        title: 'Ошибка загрузки',
-        description: 'Не удалось загрузить список заказов',
-        variant: 'destructive'
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить список заказов",
+        variant: "destructive",
       });
     }
   };
@@ -91,34 +86,38 @@ const AdminOrdersEdit = () => {
       setIsStatusDialogOpen(false);
       fetchOrders();
       toast({
-        title: 'Статус обновлен',
+        title: "Статус обновлен",
         description: `Заказ #${id} переведен в статус "${ORDER_STATUS_LABELS[newStatus]}"`,
       });
     } catch (error) {
-      console.error('Ошибка обновления статуса', error);
+      console.error("Ошибка обновления статуса", error);
       toast({
-        title: 'Ошибка',
-        description: error.message || 'Не удалось обновить статус заказа',
-        variant: 'destructive'
+        title: "Ошибка",
+        description: error.message || "Не удалось обновить статус заказа",
+        variant: "destructive",
       });
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот заказ? Это действие нельзя отменить.')) {
+    if (
+      window.confirm(
+        "Вы уверены, что хотите удалить этот заказ? Это действие нельзя отменить."
+      )
+    ) {
       try {
         await ordersApi.deleteOrder(id);
         fetchOrders();
         toast({
-          title: 'Заказ удален',
+          title: "Заказ удален",
           description: `Заказ #${id} успешно удален`,
         });
       } catch (error) {
-        console.error('Ошибка удаления заказа', error);
+        console.error("Ошибка удаления заказа", error);
         toast({
-          title: 'Ошибка',
-          description: error.message || 'Не удалось удалить заказ',
-          variant: 'destructive'
+          title: "Ошибка",
+          description: error.message || "Не удалось удалить заказ",
+          variant: "destructive",
         });
       }
     }
@@ -136,12 +135,12 @@ const AdminOrdersEdit = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('ru-RU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -152,14 +151,11 @@ const AdminOrdersEdit = () => {
 
   return (
     <Card className="w-full my-4">
-      <CardHeader className='space-y-6'>
+      <CardHeader className="space-y-6">
         <CardTitle>Управление заказами</CardTitle>
         <div className="flex items-center space-x-4 mt-4">
           <span className="font-medium">Статус заказов:</span>
-          <Select
-            value={status}
-            onValueChange={setStatus}
-          >
+          <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="w-[220px]">
               <SelectValue placeholder="Выберите статус" />
             </SelectTrigger>
@@ -191,16 +187,18 @@ const AdminOrdersEdit = () => {
               orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell>#{order.id}</TableCell>
-                  <TableCell>
-                    {formatDate(order.created_at)}
-                  </TableCell>
-                  <TableCell>{order.customer_name || 'Не указан'}</TableCell>
+                  <TableCell>{formatDate(order.created_at)}</TableCell>
+                  <TableCell>{order.customer_name || "Не указан"}</TableCell>
                   <TableCell>{order.customer_phone}</TableCell>
                   <TableCell>
-                    {parseFloat(order.total_amount).toLocaleString('ru-RU')} ₽
+                    {parseFloat(order.total_amount).toLocaleString("ru-RU")} ₽
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[order.status]}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        STATUS_COLORS[order.status]
+                      }`}
+                    >
                       {ORDER_STATUS_LABELS[order.status]}
                     </span>
                   </TableCell>
@@ -233,7 +231,10 @@ const AdminOrdersEdit = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   Нет заказов в данной категории
                 </TableCell>
               </TableRow>
@@ -246,7 +247,7 @@ const AdminOrdersEdit = () => {
           <Button
             variant="outline"
             disabled={page === 1}
-            onClick={() => setPage(prev => prev - 1)}
+            onClick={() => setPage((prev) => prev - 1)}
           >
             Предыдущая
           </Button>
@@ -256,7 +257,7 @@ const AdminOrdersEdit = () => {
           <Button
             variant="outline"
             disabled={page === totalPages || totalPages === 0}
-            onClick={() => setPage(prev => prev + 1)}
+            onClick={() => setPage((prev) => prev + 1)}
           >
             Следующая
           </Button>
@@ -264,10 +265,7 @@ const AdminOrdersEdit = () => {
 
         {/* Order Details Dialog */}
         {selectedOrder && (
-          <Dialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-          >
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="max-w-full laptop:max-w-4xl">
               <DialogHeader>
                 <DialogTitle>Заказ #{selectedOrder.id}</DialogTitle>
@@ -280,11 +278,26 @@ const AdminOrdersEdit = () => {
                   <div>
                     <h3 className="font-medium mb-2">Информация о клиенте</h3>
                     <div className="space-y-2">
-                      <p><span className="font-medium">ФИО:</span> {selectedOrder.customer_name || 'Не указан'}</p>
-                      <p><span className="font-medium">Телефон:</span> {selectedOrder.customer_phone}</p>
-                      <p><span className="font-medium">Email:</span> {selectedOrder.customer_email || 'Не указан'}</p>
-                      <p><span className="font-medium">Индекс:</span> {selectedOrder.customer_zip_code || 'Не указан'}</p>
-                      <p><span className="font-medium">Адрес:</span> {selectedOrder.customer_address || 'Не указан'}</p>
+                      <p>
+                        <span className="font-medium">ФИО:</span>{" "}
+                        {selectedOrder.customer_name || "Не указан"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Телефон:</span>{" "}
+                        {selectedOrder.customer_phone}
+                      </p>
+                      <p>
+                        <span className="font-medium">Email:</span>{" "}
+                        {selectedOrder.customer_email || "Не указан"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Индекс:</span>{" "}
+                        {selectedOrder.customer_zip_code || "Не указан"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Адрес:</span>{" "}
+                        {selectedOrder.customer_address || "Не указан"}
+                      </p>
                     </div>
                   </div>
                   <div>
@@ -292,16 +305,31 @@ const AdminOrdersEdit = () => {
                     <div className="space-y-2">
                       <p>
                         <span className="font-medium">Статус:</span>
-                        <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[selectedOrder.status]}`}>
+                        <span
+                          className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
+                            STATUS_COLORS[selectedOrder.status]
+                          }`}
+                        >
                           {ORDER_STATUS_LABELS[selectedOrder.status]}
                         </span>
                       </p>
-                      <p><span className="font-medium">Кол-во товаров:</span> {calculateTotalItems(selectedOrder.items)} шт.</p>
-                      <p><span className="font-medium">Сумма заказа:</span> {parseFloat(selectedOrder.total_amount).toLocaleString('ru-RU')} ₽</p>
+                      <p>
+                        <span className="font-medium">Кол-во товаров:</span>{" "}
+                        {calculateTotalItems(selectedOrder.items)} шт.
+                      </p>
+                      <p>
+                        <span className="font-medium">Сумма заказа:</span>{" "}
+                        {parseFloat(selectedOrder.total_amount).toLocaleString(
+                          "ru-RU"
+                        )}{" "}
+                        ₽
+                      </p>
                       {selectedOrder.customer_comment && (
                         <>
                           <p className="font-medium">Комментарий:</p>
-                          <p className="bg-gray-50 p-2 rounded text-sm">{selectedOrder.customer_comment}</p>
+                          <p className="bg-secondary p-2 rounded text-sm">
+                            {selectedOrder.customer_comment}
+                          </p>
                         </>
                       )}
                     </div>
@@ -321,15 +349,23 @@ const AdminOrdersEdit = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedOrder.items && selectedOrder.items.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.product_name}</TableCell>
-                          <TableCell>{parseFloat(item.price).toLocaleString('ru-RU')} ₽</TableCell>
-                          <TableCell>{item.quantity}</TableCell>
-                          <TableCell>{item.engraving || 'Нет'}</TableCell>
-                          <TableCell>{parseFloat(item.price * item.quantity).toLocaleString('ru-RU')} ₽</TableCell>
-                        </TableRow>
-                      ))}
+                      {selectedOrder.items &&
+                        selectedOrder.items.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell>{item.product_name}</TableCell>
+                            <TableCell>
+                              {parseFloat(item.price).toLocaleString("ru-RU")} ₽
+                            </TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>{item.engraving || "Нет"}</TableCell>
+                            <TableCell>
+                              {parseFloat(
+                                item.price * item.quantity
+                              ).toLocaleString("ru-RU")}{" "}
+                              ₽
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -346,16 +382,15 @@ const AdminOrdersEdit = () => {
           >
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>Изменить статус заказа #{selectedOrder.id}</DialogTitle>
+                <DialogTitle>
+                  Изменить статус заказа #{selectedOrder.id}
+                </DialogTitle>
                 <DialogDescription>
                   Выберите новый статус для заказа
                 </DialogDescription>
               </DialogHeader>
               <div className="py-4">
-                <Select
-                  value={newStatus}
-                  onValueChange={setNewStatus}
-                >
+                <Select value={newStatus} onValueChange={setNewStatus}>
                   <SelectTrigger>
                     <SelectValue placeholder="Выберите статус" />
                   </SelectTrigger>
@@ -368,10 +403,17 @@ const AdminOrdersEdit = () => {
                 </Select>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsStatusDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsStatusDialogOpen(false)}
+                >
                   Отмена
                 </Button>
-                <Button onClick={() => handleStatusChange(selectedOrder.id, newStatus)}>
+                <Button
+                  onClick={() =>
+                    handleStatusChange(selectedOrder.id, newStatus)
+                  }
+                >
                   Сохранить
                 </Button>
               </DialogFooter>

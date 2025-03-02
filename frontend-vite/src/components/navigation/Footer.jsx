@@ -53,7 +53,7 @@ const Footer = () => {
 
   return (
     <footer
-      className=" relative px-4  py-2 tablet:py-4"
+      className=" relative   py-2 tablet:py-4"
       style={{
         backgroundImage: `url(${footerBg})`,
         backgroundSize: "cover",
@@ -65,7 +65,7 @@ const Footer = () => {
       <div className="absolute inset-0 bg-background/85 dark:bg-background/65"></div>
 
       {/* Content with z-index to appear above the background */}
-      <div className="max-w-5xl mx-auto relative z-10 grid grid-cols-1 gap-x-8 gap-y-6 tablet:grid-cols-3 tablet:gap-x-2 laptop:gap-x-8">
+      <div className="container mx-auto relative z-10 grid grid-cols-1  gap-y-6 tablet:grid-cols-3 tablet:gap-x-2 laptop:gap-x-6">
         <div className="">
           <h3 className="font-exo font-bold text-lg mb-4">
             <Link
@@ -182,11 +182,16 @@ const Footer = () => {
       </div>
 
       {/* Copyright section (optional) */}
-      <div className="relative z-10 mt-4 pt-2 border-t   dark:text-muted-foreground flex flex-col tablet:flex-row gap-1 justify-between text-xs">
-        <p className="text-muted-foreground">© {new Date().getFullYear()} Ножевая мастерская Поддубного В.В.</p>
+      <div className="container relative z-10 mt-4 pt-2 border-t   dark:text-muted-foreground flex flex-col tablet:flex-row gap-1 justify-between text-xs">
+        <p className="text-muted-foreground">
+          © {new Date().getFullYear()} Ножевая мастерская Поддубного В.В.
+        </p>
         <p className="text-muted-foreground">
           Разработка сайтов -{" "}
-          <a className="underline underline-offset-2" href="malto:hlynianyi.vladyslav@gmail.com">
+          <a
+            className="underline underline-offset-2"
+            href="malto:hlynianyi.vladyslav@gmail.com"
+          >
             hlynianyi.vladyslav@gmail.com
           </a>
         </p>

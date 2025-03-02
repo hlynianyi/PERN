@@ -58,7 +58,8 @@ export const CertificateSection = ({
 
       {/* Загрузка новых сертификатов */}
       <div className="space-y-2">
-        <Label>Добавить сертификаты (до 5 штук)</Label>
+        <Label>Добавить сертификаты </Label>
+        <span className="text-primary">(до 5шт.)</span>
         <Input
           type="file"
           accept=".pdf,image/*"

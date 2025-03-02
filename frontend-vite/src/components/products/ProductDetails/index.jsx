@@ -169,7 +169,7 @@ export const AdminProductDetails = () => {
   }
 
   return (
-    <div className="py-4 pb-8 max-w-5xl mx-auto">
+    <div className="py-4 pb-8  mx-auto">
       <div className="grid grid-cols-1 laptop:flex laptop:flex-col gap-4 laptop:gap-2">
         <div className=" w-full tablet:flex tablet:flex-row tablet:gap-4 tablet:border-[1px] rounded-md tablet:px-4">
           <ImageGallery
@@ -178,11 +178,14 @@ export const AdminProductDetails = () => {
             setSelectedImage={setSelectedImage}
             product={product}
           />
-          <div className="hidden tablet:flex tablet:flex-col w-full my-0 tablet:border-l-[1px]  tablet:p-4  tablet:pr-0 laptop:pr-4">
-            <div className="flex justify-between items-start flex-wrap gap-2">
+          <div className="hidden tablet:flex tablet:flex-col w- my-0 tablet:border-l-[1px]  tablet:p-4 tablet:pb-2  tablet:pr-0 laptop:pr-4">
+            <div className="flex flex-row justify-between items-start  gap-2 align-bottom">
               <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-1">
                 {product.name}
               </h1>
+              <span className="hidden laptop:block rounded-lg pl-4 tablet:w- laptop:w- text-[18px] laptop:text-3xl font-medium text-start text-primary laptop:text-end laptop:mt-0 tablet:leading-[44px] h-10">
+                {parseFloat(product.price).toLocaleString("ru-RU")} ₽
+              </span>
             </div>
             <div>
               <span
@@ -233,13 +236,13 @@ export const AdminProductDetails = () => {
                 </p>
               </div>
             )}
-            <div className="flex flex-col laptop:flex-col  justify-start gap-4 laptop:gap-4 mb-2">
-              <div className="border-[1px] rounded-md px-4 py-2 flex flex-row justify-between">
-                <p className="tablet:w-full laptop:w-auto text-2xl font-medium text-start text-primary laptop:text-3xl laptop:text-start laptop:mt-0 tablet:leading-[44px]">
+            <div className="flex flex-col laptop:flex-col  justify-start gap-4 laptop:gap-4 mb-2  laptop:w-2/3">
+              <div className=" rounded-md gap-2 py-2 flex flex-row justify-start w-full">
+                <p className="bg-secondary rounded-lg px-4 tablet:w-full laptop:w-full text-[18px] laptop:text-[22px] font-medium text-start text-primary laptop:text-start laptop:hidden laptop:mt-0 tablet:leading-[44px]">
                   {parseFloat(product.price).toLocaleString("ru-RU")} ₽
                 </p>
                 <button
-                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-[150px]
+                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-1/2 laptop:text-[22px] text-primary
                   ${
                     product.status === "in_stock"
                       ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
@@ -393,7 +396,7 @@ export const AdminProductDetails = () => {
           )}
         </div>
       </div>
-      <Separator />
+      {/* <Separator /> */}
 
       <div className="mt-4">
         <Reviews

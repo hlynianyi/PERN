@@ -118,7 +118,7 @@ const FilterContent = ({
       </Select>
     </div>
 
-    <Separator />
+    {/* <Separator /> */}
 
     <div className="flex gap-4">
       <Button
@@ -126,7 +126,7 @@ const FilterContent = ({
           onFilterChange("apply", filters);
           onClose();
         }}
-        className="flex-1 desktop:hidden"
+        className="flex-1 desktop:hidden dark:text-white"
       >
         Закрыть
       </Button>
@@ -135,8 +135,8 @@ const FilterContent = ({
           handleReset();
           onClose();
         }}
-        variant="outline"
-        className="flex-1"
+        // variant="outline"
+        className="flex-1 dark:text-white"
       >
         Сбросить
       </Button>
@@ -215,10 +215,7 @@ const ProductFilters = ({
         </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              className="desktop:hidden flex gap-2 items-center"
-            >
+            <Button className="desktop:hidden flex gap-2 items-center dark:text-white">
               <Menu className="h-4 w-4" />
               Фильтры
             </Button>
@@ -237,7 +234,7 @@ const ProductFilters = ({
         </Sheet>
       </div>
       <div className={`hidden desktop:block ${className}`}>
-        <div className="bg-card py-2 rounded-lg shadow-sm">
+        <div className="bg-card py-2 rounded-lg ">
           <FilterContent {...filterProps} />
         </div>
       </div>

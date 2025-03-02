@@ -65,43 +65,47 @@ export default function ProductGrid({ products, isLoading, error }) {
     <>
       <div className="mb-2 tablet:mb-4 grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 qhd:grid-cols-4 gap-4">
         {currentProducts.map((product) => (
-          <Card key={product.id} className="flex flex-col">
-            <CardHeader className="flex-none">
-              <div className="relative overflow-hidden">
-                {product.images && product.images.length > 0 ? (
-                  <img
-                    src={`http://localhost:5002${product.images[0].image_url}`}
-                    alt={product.name}
-                    className="rounded-md max-w-[100%] max-h-[100%] m-auto"
-                  />
-                ) : (
-                  <Skeleton className="h-48 w-full" />
-                )}
-                <div className="absolute top-2 left-2 flex gap-2 flex-col">
-                  {product.is_new && (
-                    <Badge
-                      variant="secondary"
-                      className="flex justify-center text-white bg-blue-600 hover:bg-blue-800"
-                    >
-                      Новинка
-                    </Badge>
+          <Card key={product.id} className="flex flex-col h-full">
+            <div className="h-64 overflow-hidden">
+              <CardHeader className="p-4 pb-0">
+                <div className="relative w-full h-48 flex items-center justify-center">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={`http://localhost:5002${product.images[0].image_url}`}
+                      alt={product.name}
+                      className="object-contain w-full h-full mix-blend-multiply dark:mix-blend-normal"
+                    />
+                  ) : (
+                    <Skeleton className="w-full h-full" />
                   )}
+                  <div className="absolute top-2 left-2 flex gap-2 flex-col">
+                    {product.is_new && (
+                      <Badge
+                        variant="secondary"
+                        className="flex justify-center text-white bg-blue-600 hover:bg-blue-800"
+                      >
+                        Новинка
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
+              </CardHeader>
+            </div>
 
-            <CardContent className="flex-1 flex flex-col">
-              <CardTitle className="mb-2 text-base font-sans">
+            <CardContent className="flex-1 flex flex-col p-4 pt-2">
+              <CardTitle className="mb-2 text-base font-sans line-clamp-2 ">
                 {product.name}
               </CardTitle>
 
               <div className="flex-1 space-y-2 text-sm text-muted-foreground mb-2">
-                {product.category && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <Package className="h-4 w-4" />
-                    {product.category}
-                  </div>
-                )}
+                <div className="h-10">
+                  {product.category && (
+                    <div className="flex items-center gap-2 mb-4">
+                      <Package className="h-4 w-4" />
+                      {product.category}
+                    </div>
+                  )}
+                </div>
                 {product.handle && (
                   <div className="flex items-center justify-between">
                     <span>Рукоять:</span>
@@ -126,9 +130,24 @@ export default function ProductGrid({ products, isLoading, error }) {
                     </span>
                   </div>
                 )}
+                {product.status && (
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`font-medium ${
+                        product.status === "in_stock"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {product.status === "in_stock"
+                        ? "В наличии"
+                        : "Нет в наличии"}
+                    </span>
+                  </div>
+                )}
                 {product.average_rating && product.average_rating !== "0" && (
-                  <div className="flex justify-between  gap-1">
-                    <div className="flex flex-row items-center gap-[8px]">
+                  <div className="flex justify-between gap-1">
+                    <div className="flex flex-row items-center gap-2">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span>{Number(product.average_rating).toFixed(1)}</span>
                     </div>
@@ -158,27 +177,13 @@ export default function ProductGrid({ products, isLoading, error }) {
                     )}
                   </div>
                 )}
-                {product.status && (
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`font-medium ${
-                        product.status === "in_stock"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {product.status === "in_stock"
-                        ? "В наличии"
-                        : "Нет в наличии"}
-                    </span>
-                  </div>
-                )}
               </div>
 
               <div className="flex justify-between items-center mt-auto pt-4 border-t font-sans">
                 <span className="font-bold text-lg">{product.price} ₽</span>
                 <Button
                   onClick={() => navigate(`/products/details/${product.id}`)}
+                  className="dark:text-secondary-foreground"
                 >
                   Подробнее
                 </Button>

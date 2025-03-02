@@ -402,7 +402,7 @@ const Cart = () => {
               ))}
             </CardContent>
             <CardFooter className="flex flex-col-reverse justify-between items-start gap-2 tablet:flex-row tablet:justify-between">
-              <Button variant="outline" onClick={() => navigate("/catalog")}>
+              <Button variant="outline" onClick={() => navigate("/products")}>
                 Продолжить покупки
               </Button>
 

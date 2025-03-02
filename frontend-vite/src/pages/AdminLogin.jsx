@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -15,7 +15,6 @@ const AdminLogin = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,17 +22,16 @@ const AdminLogin = () => {
 
     if (isSuccess) {
       const from = location.state?.from?.pathname || "/admin/products";
-      toast({
-        title: "Успешная авторизация",
-        duration: "800",
+      toast.success("Успешная авторизация", {
+        duration: 800,
+        richColors: true,
       });
       navigate(from, { replace: true });
     } else {
-      toast({
-        title: "Ошибка авторизации",
+      toast.error("Ошибка авторизации", {
         description: "Неверный логин или пароль",
-        variant: "destructive",
-        duration: "1000",
+        duration: 1000,
+        richColors: true,
       });
     }
   };

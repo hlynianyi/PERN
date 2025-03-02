@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Trash2, PlusCircle, Edit } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 import axios from "axios";
 
 const api = axios.create({
@@ -25,7 +25,6 @@ const AdminFaqEdit = () => {
     description_blocks: [],
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
   const [editingBlock, setEditingBlock] = useState({
@@ -49,7 +48,10 @@ const AdminFaqEdit = () => {
         });
       }
     } catch (error) {
-      setError("Failed to load FAQ data");
+      toast.error("Ошибка загрузки данных", {
+        description: "Не удалось загрузить информацию FAQ",
+        richColors: true,
+      });
       console.error("Error loading FAQ:", error);
     }
   };
@@ -118,7 +120,6 @@ const AdminFaqEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     try {
       const response = await api.post("/faqs", {
@@ -126,10 +127,19 @@ const AdminFaqEdit = () => {
         description_blocks: JSON.stringify(formData.description_blocks),
       });
 
-      console.log("FAQ updated successfully:", response.data);
-      window.location.href = "/admin/faq/edit";
+      toast.success("FAQ обновлен", {
+        description: "Информация FAQ успешно сохранена",
+        richColors: true,
+      });
+
+      setTimeout(() => {
+        window.location.href = "/admin/faq/edit";
+      }, 1500);
     } catch (error) {
-      setError(error.response?.data?.error || "Failed to save FAQ");
+      toast.error("Ошибка сохранения", {
+        description: error.response?.data?.error || "Не удалось сохранить FAQ",
+        richColors: true,
+      });
       console.error("Error saving FAQ:", error);
     } finally {
       setIsLoading(false);
@@ -138,12 +148,6 @@ const AdminFaqEdit = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">Редактирование страницы "Вопрос-ответ"</h2>
         <div>

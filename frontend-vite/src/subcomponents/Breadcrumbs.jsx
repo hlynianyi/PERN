@@ -27,21 +27,27 @@ const breadcrumbNameMap = {
   partnership: "Сотрудничество",
   delivery: "Доставка",
   warranty: "Гарантия",
-  homepage: 'Главная страница',
-  cart: 'Корзина',
+  homepage: "Главная страница",
+  cart: "Корзина",
   orders: "Заказы",
-  orderSuccess: "",
+  agreement: "Персональные данные",
 };
 
 export default function Breadcrumbs() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { products, isLoading } = useLoadProducts();
+  const { products } = useLoadProducts();
 
   const pathnames = location.pathname.split("/").filter((segment) => segment);
-  const isProductDetailsPage = pathnames.includes("products") && pathnames.includes("details");
-  const productId = isProductDetailsPage ? pathnames[pathnames.indexOf("details") + 1] : null;
-  const currentProduct = productId && products ? products.find(p => p.id.toString() === productId) : null;
+  const isProductDetailsPage =
+    pathnames.includes("products") && pathnames.includes("details");
+  const productId = isProductDetailsPage
+    ? pathnames[pathnames.indexOf("details") + 1]
+    : null;
+  const currentProduct =
+    productId && products
+      ? products.find((p) => p.id.toString() === productId)
+      : null;
 
   const crumbs = [
     {
@@ -66,7 +72,9 @@ export default function Breadcrumbs() {
       if (currentProduct.category) {
         crumbs.push({
           name: currentProduct.category,
-          path: `/products?category=${encodeURIComponent(currentProduct.category)}`,
+          path: `/products?category=${encodeURIComponent(
+            currentProduct.category
+          )}`,
           disabled: true,
         });
       }
@@ -80,8 +88,13 @@ export default function Breadcrumbs() {
     }
 
     // Handle regular segments
-    if (!isProductDetailsPage || (segment !== "details" && segment !== productId)) {
-      const displayName = breadcrumbNameMap[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+    if (
+      !isProductDetailsPage ||
+      (segment !== "details" && segment !== productId)
+    ) {
+      const displayName =
+        breadcrumbNameMap[segment] ||
+        segment.charAt(0).toUpperCase() + segment.slice(1);
       crumbs.push({
         name: displayName,
         path: cumulativePath,

@@ -32,8 +32,9 @@ import Delivery from "@/pages/Delivery";
 import AdminDeliveryEdit from "./delivery/AdminDeliveryEdit";
 import Homepage from "@/pages/Homepage";
 import AdminHomepageEdit from "@/components/homepage/AdminHomepageEdit";
+import DataAgreement from "@/pages/DataAgreement";
 import { Separator } from "@/components/ui/separator";
-import { Toaster } from "./ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "../context/AuthContext";
 import store from "../store";
 import { fetchContacts } from "../store/slices/contactsSlice";
@@ -95,6 +96,7 @@ function App() {
                 <Route path="/delivery" element={<Delivery />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/" element={<Homepage />} />
+                <Route path="/agreement" element={<DataAgreement />} />
                 <Route
                   path="products/details/:id"
                   element={<AdminProductDetails />}
@@ -135,7 +137,6 @@ function App() {
                   <Route path="payment/edit" element={<AdminPaymentEdit />} />
                   <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
                   <Route path="orders/edit" element={<AdminOrdersEdit />} />
-
                 </Route>
               </Routes>
             </main>

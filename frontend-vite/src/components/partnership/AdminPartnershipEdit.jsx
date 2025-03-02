@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Trash2, PlusCircle, Edit, Bold } from "lucide-react";
+import { toast } from "sonner";
 import axios from "axios";
 
 const api = axios.create({
@@ -25,7 +25,6 @@ const AdminPartnershipEdit = () => {
     text_blocks: [],
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
   const [editingBlock, setEditingBlock] = useState({
@@ -48,7 +47,10 @@ const AdminPartnershipEdit = () => {
         });
       }
     } catch (error) {
-      setError("Ошибка при загрузке данных о сотрудничестве");
+      toast.error("Ошибка при загрузке данных", {
+        description: "Не удалось загрузить информацию о сотрудничестве",
+        richColors: true,
+      });
       console.error("Ошибка загрузки:", error);
     }
   };
@@ -105,7 +107,6 @@ const AdminPartnershipEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     try {
       await api.post("/partnership", {
@@ -113,12 +114,20 @@ const AdminPartnershipEdit = () => {
         text_blocks: JSON.stringify(formData.text_blocks),
       });
 
-      window.location.href = "/partnership";
+      toast.success("Данные сохранены", {
+        description: "Информация о сотрудничестве успешно обновлена",
+        richColors: true,
+      });
+
+      // Перенаправление после успешного сохранения
+      setTimeout(() => {
+        window.location.href = "/partnership";
+      }, 1500);
     } catch (error) {
-      setError(
-        error.response?.data?.error ||
-          "Не удалось сохранить информацию о сотрудничестве"
-      );
+      toast.error("Ошибка при сохранении", {
+        description: error.response?.data?.error || "Не удалось сохранить информацию о сотрудничестве",
+        richColors: true,
+      });
       console.error("Ошибка сохранения:", error);
     } finally {
       setIsLoading(false);
@@ -127,12 +136,6 @@ const AdminPartnershipEdit = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">
           Редактирование страницы "Сотрудничество"

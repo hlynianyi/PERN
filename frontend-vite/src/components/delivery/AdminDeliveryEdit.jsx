@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const AdminDeliveryEdit = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,6 @@ const AdminDeliveryEdit = () => {
     regions: [],
   });
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDelivery = async () => {
@@ -32,10 +31,9 @@ const AdminDeliveryEdit = () => {
           });
         }
       } catch (error) {
-        toast({
-          title: "Ошибка",
-          description: "Не удалось загрузить данные о доставке",
-          variant: "destructive",
+        toast.error("Ошибка загрузки данных", {
+          description: "Не удалось загрузить информацию о доставке",
+          richColors: true,
         });
       } finally {
         setLoading(false);
@@ -51,15 +49,14 @@ const AdminDeliveryEdit = () => {
       await deliveryApi.saveDelivery(formData);
       console.log("🚀 ~ handleSubmit ~ formData:", formData);
 
-      toast({
-        title: "Успешно",
-        description: "Данные о доставке обновлены",
+      toast.success("Данные сохранены", {
+        description: "Информация о доставке успешно обновлена",
+        richColors: true,
       });
     } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось сохранить данные",
-        variant: "destructive",
+      toast.error("Ошибка сохранения", {
+        description: "Не удалось сохранить информацию о доставке",
+        richColors: true,
       });
     }
   };

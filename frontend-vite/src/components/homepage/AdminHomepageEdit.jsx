@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { Trash2, Edit2, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -40,7 +40,6 @@ export default function AdminHomepageEdit() {
 
   const { products } = useLoadProducts();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   // Загрузка данных при монтировании
   useEffect(() => {
@@ -62,10 +61,9 @@ export default function AdminHomepageEdit() {
         setCurrentImages(homepage.carousel_images || []);
       }
     } catch (error) {
-      toast({
-        title: "Ошибка при загрузке данных",
+      toast.error("Ошибка при загрузке данных", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -82,11 +80,10 @@ export default function AdminHomepageEdit() {
     );
 
     if (!isValid) {
-      toast({
-        title: "Заполните обязательные поля",
+      toast.error("Заполните обязательные поля", {
         description:
           "У всех добавленных изображений должны быть указаны название и ссылка на товар",
-        variant: "destructive",
+        richColors: true,
       });
       return false;
     }
@@ -110,10 +107,9 @@ export default function AdminHomepageEdit() {
       selectedFiles.length;
 
     if (totalImages > 5) {
-      toast({
-        title: "Ошибка",
+      toast.error("Ошибка", {
         description: "Максимальное количество изображений - 5",
-        variant: "destructive",
+        richColors: true,
       });
       setFileInputKey(Date.now());
       return;
@@ -161,9 +157,9 @@ export default function AdminHomepageEdit() {
     setDeletedImageIds((prev) => [...prev, imageId]);
 
     // Visually hide the image in the UI
-    toast({
-      title: "Изображение отмечено для удаления",
+    toast.info("Изображение отмечено для удаления", {
       description: "Изображение будет удалено при сохранении",
+      richColors: true,
     });
   };
 
@@ -355,9 +351,9 @@ export default function AdminHomepageEdit() {
 
       await homepageApi.saveHomepage(dataToSend);
 
-      toast({
-        title: "Успешно сохранено",
+      toast.success("Успешно сохранено", {
         description: "Данные главной страницы обновлены",
+        richColors: true,
       });
 
       // Очищаем состояние
@@ -370,10 +366,9 @@ export default function AdminHomepageEdit() {
       // Перезагружаем данные
       await loadHomepage();
     } catch (error) {
-      toast({
-        title: "Ошибка при сохранении",
+      toast.error("Ошибка при сохранении", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     } finally {
       setIsLoading(false);

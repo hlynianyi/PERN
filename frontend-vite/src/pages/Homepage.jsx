@@ -48,7 +48,7 @@ export default function Homepage() {
         </div>
         <section className="flex flex-col gap-4 laptop:flex-row laptop:justify-between laptop:gap-6">
           <aside className="w-full">
-            <p className="text-justify text-lg text-muted-foreground mb-4 tablet:mb-6">
+            <p className="text-justify text-lg text-muted-foreground mb-2 tablet:mb-3 laptop:mb-4">
               {homepageData.description}
             </p>
             <div className="flex justify-center">
@@ -56,7 +56,6 @@ export default function Homepage() {
                 onClick={() => navigate("/company")}
                 size="lg"
                 variant="secondary"
-
                 className=" min-w-[200px] dark:text-secondary-foreground"
               >
                 Подробнее о компании

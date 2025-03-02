@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { ordersApi } from "@/api/orders";
 import {
   Dialog,
@@ -27,6 +26,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 // Status labels for display
 const ORDER_STATUS_LABELS = {
@@ -54,8 +54,6 @@ const AdminOrdersEdit = () => {
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("");
 
-  const { toast } = useToast();
-
   useEffect(() => {
     fetchOrders();
   }, [page, status]);
@@ -72,10 +70,9 @@ const AdminOrdersEdit = () => {
       setTotalPages(result.totalPages);
     } catch (error) {
       console.error("Ошибка загрузки заказов", error);
-      toast({
-        title: "Ошибка загрузки",
+      toast.error("Ошибка загрузки", {
         description: "Не удалось загрузить список заказов",
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -85,16 +82,15 @@ const AdminOrdersEdit = () => {
       await ordersApi.updateOrderStatus(id, newStatus);
       setIsStatusDialogOpen(false);
       fetchOrders();
-      toast({
-        title: "Статус обновлен",
+      toast.success("Статус обновлен", {
         description: `Заказ #${id} переведен в статус "${ORDER_STATUS_LABELS[newStatus]}"`,
+        richColors: true,
       });
     } catch (error) {
       console.error("Ошибка обновления статуса", error);
-      toast({
-        title: "Ошибка",
+      toast.error("Ошибка", {
         description: error.message || "Не удалось обновить статус заказа",
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -108,16 +104,15 @@ const AdminOrdersEdit = () => {
       try {
         await ordersApi.deleteOrder(id);
         fetchOrders();
-        toast({
-          title: "Заказ удален",
+        toast.success("Заказ удален", {
           description: `Заказ #${id} успешно удален`,
+          richColors: true,
         });
       } catch (error) {
         console.error("Ошибка удаления заказа", error);
-        toast({
-          title: "Ошибка",
+        toast.error("Ошибка", {
           description: error.message || "Не удалось удалить заказ",
-          variant: "destructive",
+          richColors: true,
         });
       }
     }

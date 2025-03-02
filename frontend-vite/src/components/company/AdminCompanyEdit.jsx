@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Trash2, PlusCircle, Edit } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const AdminCompanyEdit = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +33,6 @@ const AdminCompanyEdit = () => {
   const [editingBlockContent, setEditingBlockContent] = useState("");
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     loadCompany();
@@ -61,10 +60,9 @@ const AdminCompanyEdit = () => {
         setCurrentImages([]);
       }
     } catch (error) {
-      toast({
-        title: "Ошибка при загрузке данных",
+      toast.error("Ошибка при загрузке данных", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
       // Установка дефолтных значений в случае ошибки
       setFormData({
@@ -133,17 +131,16 @@ const AdminCompanyEdit = () => {
         deletedImages: deletedImageIds,
       });
 
-      toast({
-        title: "Успешно сохранено",
+      toast.success("Успешно сохранено", {
         description: "Информация о компании обновлена",
+        richColors: true,
       });
 
       navigate("/company");
     } catch (error) {
-      toast({
-        title: "Ошибка при сохранении",
+      toast.error("Ошибка при сохранении", {
         description: error.message || "Не удалось сохранить данные",
-        variant: "destructive",
+        richColors: true,
       });
     } finally {
       setIsLoading(false);
@@ -155,7 +152,6 @@ const AdminCompanyEdit = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">
           Редактирование страницы "О компании"
-
         </h2>
 
         <div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +14,7 @@ import {
 import { X } from "lucide-react";
 import { useLoadCategories } from "@/hooks/useLoadCategories";
 import { productsApi, PRODUCT_STATUSES } from "../../api/products";
+import { toast } from "sonner";
 
 const MarkRequired = () => <span className="text-lg text-red-600">*</span>;
 
@@ -46,7 +46,6 @@ const AdminProductCreate = () => {
   });
 
   const navigate = useNavigate();
-  const { toast } = useToast();
   const categories = useLoadCategories();
 
   const handleFileSelect = (type, e) => {
@@ -54,12 +53,11 @@ const AdminProductCreate = () => {
     const maxFiles = type === "images" ? 10 : 5;
 
     if (files.length + selectedFiles[type].length > maxFiles) {
-      toast({
-        title: "Ошибка",
+      toast.error("Ошибка", {
         description: `Можно загрузить максимум ${maxFiles} ${
           type === "images" ? "изображений" : "сертификатов"
         }`,
-        variant: "destructive",
+        richColors: true,
       });
       return;
     }
@@ -99,15 +97,14 @@ const AdminProductCreate = () => {
       };
 
       await productsApi.create(dataToSend);
-      toast({
-        title: "Продукт создан",
+      toast.success("Продукт создан", {
+        richColors: true,
       });
       navigate("/admin/products");
     } catch (error) {
-      toast({
-        title: "Ошибка при создании продукта",
+      toast.error("Ошибка при создании продукта", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };

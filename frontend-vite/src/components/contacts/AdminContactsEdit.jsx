@@ -3,12 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Trash2, PlusCircle } from "lucide-react";
 import { contactsApi } from "@/api/contacts";
 import { fetchContacts } from "../../store/slices/contactsSlice";
-
 import store from "../../store";
+import { toast } from "sonner";
 
 const AdminContactsEdit = () => {
   const [formData, setFormData] = useState({
@@ -27,8 +26,6 @@ const AdminContactsEdit = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     loadContacts();
@@ -54,7 +51,10 @@ const AdminContactsEdit = () => {
         });
       }
     } catch (error) {
-      setError("Ошибка при загрузке контактов");
+      toast.error("Ошибка при загрузке контактов", {
+        description: error.message || "Не удалось загрузить контактную информацию",
+        richColors: true,
+      });
       console.error("Ошибка загрузки:", error);
     }
   };
@@ -83,8 +83,6 @@ const AdminContactsEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       await contactsApi.saveContacts({
@@ -92,12 +90,21 @@ const AdminContactsEdit = () => {
         phones: formData.phones.filter((phone) => phone.trim() !== ""),
       });
       store.dispatch(fetchContacts());
-      setSuccess(true);
+      
+      toast.success("Контактная информация сохранена", {
+        description: "Информация успешно обновлена",
+        richColors: true,
+      });
+      
+      // Перенаправление на страницу контактов
       setTimeout(() => {
         window.location.href = "/contacts";
       }, 2000);
     } catch (error) {
-      setError(error.response?.data?.error || "Не удалось сохранить контакты");
+      toast.error("Ошибка при сохранении контактов", {
+        description: error.response?.data?.error || "Не удалось сохранить контактную информацию",
+        richColors: true,
+      });
       console.error("Ошибка сохранения:", error);
     } finally {
       setIsLoading(false);
@@ -106,20 +113,6 @@ const AdminContactsEdit = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {success && (
-        <Alert className="mb-6">
-          <AlertDescription>
-            Контактная информация успешно сохранена! Перенаправление...
-          </AlertDescription>
-        </Alert>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">
           Редактирование контактной информации

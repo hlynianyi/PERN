@@ -1,7 +1,6 @@
 // components/products/ProductDetails/index.jsx
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { productsApi } from "../../../api/products";
@@ -11,6 +10,7 @@ import { ReviewForm } from "./ReviewForm";
 import { Star } from "lucide-react";
 import { addToCart } from "../../../store/slices/cartSlice";
 import store from "../../../store/index";
+import { toast } from "sonner";
 
 export const AdminProductDetails = () => {
   const { id } = useParams();
@@ -24,8 +24,6 @@ export const AdminProductDetails = () => {
   const [editingReview, setEditingReview] = useState(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  const { toast } = useToast();
-
   useEffect(() => {
     loadProduct();
   }, [id]);
@@ -38,10 +36,9 @@ export const AdminProductDetails = () => {
         data.images?.find((img) => img.is_primary) || data.images?.[0];
       setSelectedImage(primaryImage);
     } catch (error) {
-      toast({
-        title: "Ошибка при загрузке продукта",
+      toast.error("Ошибка при загрузке продукта", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -106,10 +103,9 @@ export const AdminProductDetails = () => {
   const handleAddToCart = () => {
     if (product.status === "in_stock") {
       store.dispatch(addToCart(product));
-      toast({
-        className: " ",
-        title: "Товар добавлен в корзину",
+      toast.success("Товар добавлен в корзину", {
         description: `${product.name} был добавлен в корзину`,
+        richColors: true,
       });
     }
   };
@@ -136,14 +132,13 @@ export const AdminProductDetails = () => {
       setEditingReview(null);
       setIsReviewModalOpen(false);
       loadProduct();
-      toast({
-        title: editingReview ? "Отзыв обновлен" : "Отзыв добавлен",
+      toast.success(editingReview ? "Отзыв обновлен" : "Отзыв добавлен", {
+        richColors: true,
       });
     } catch (error) {
-      toast({
-        title: "Ошибка",
+      toast.error("Ошибка", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -152,14 +147,13 @@ export const AdminProductDetails = () => {
     try {
       await productsApi.deleteReview(reviewId);
       loadProduct();
-      toast({
-        title: "Отзыв удален",
+      toast.success("Отзыв удален", {
+        richColors: true,
       });
     } catch (error) {
-      toast({
-        title: "Ошибка при удалении отзыва",
+      toast.error("Ошибка при удалении отзыва", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -183,7 +177,7 @@ export const AdminProductDetails = () => {
               <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-1">
                 {product.name}
               </h1>
-              <span className="hidden laptop:block rounded-lg pl-4 tablet:w- laptop:w- text-[18px] laptop:text-3xl font-medium text-start text-primary laptop:text-end laptop:mt-0 tablet:leading-[44px] h-10">
+              <span className="no-wrap hidden laptop:flex text-nowrap rounded-lg pl-4 tablet:w- laptop:w- text-[18px] laptop:text-3xl font-medium text-start text-primary laptop:text-end laptop:mt-0 tablet:leading-[44px] h-10">
                 {parseFloat(product.price).toLocaleString("ru-RU")} ₽
               </span>
             </div>
@@ -242,7 +236,7 @@ export const AdminProductDetails = () => {
                   {parseFloat(product.price).toLocaleString("ru-RU")} ₽
                 </p>
                 <button
-                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-1/2 laptop:text-[22px] text-primary
+                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-1/2 laptop:text-[22px] text-primary min-w-[175px]
                   ${
                     product.status === "in_stock"
                       ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
@@ -396,7 +390,6 @@ export const AdminProductDetails = () => {
           )}
         </div>
       </div>
-      {/* <Separator /> */}
 
       <div className="mt-4">
         <Reviews

@@ -1,7 +1,6 @@
 // src/components/cart/Cart.jsx
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate, Link } from "react-router-dom";
 import store from "@/store";
 import {
   updateQuantity,
@@ -13,6 +12,7 @@ import { ordersApi } from "@/api/orders";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -28,6 +28,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const Cart = () => {
   const [, forceUpdate] = useState({});
@@ -35,11 +36,11 @@ const Cart = () => {
   const { items, totalAmount } = cartState;
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const [showEngravingDialog, setShowEngravingDialog] = useState(false);
   const [currentItemId, setCurrentItemId] = useState(null);
   const [engravingText, setEngravingText] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const [orderForm, setOrderForm] = useState({
     customerName: "",
@@ -121,8 +122,8 @@ const Cart = () => {
 
   const handleRemoveItem = (productId) => {
     store.dispatch(removeFromCart(productId));
-    toast({
-      title: "Товар удален из корзины",
+    toast.success("Товар удален из корзины", {
+      richColors: true,
     });
   };
 
@@ -136,8 +137,8 @@ const Cart = () => {
   const handleSaveEngraving = () => {
     store.dispatch(updateEngraving(currentItemId, engravingText));
     setShowEngravingDialog(false);
-    toast({
-      title: "Гравировка сохранена",
+    toast.success("Гравировка сохранена", {
+      richColors: true,
     });
   };
 
@@ -201,47 +202,50 @@ const Cart = () => {
     try {
       // Validate form
       if (!orderForm.customerName) {
-        toast({
-          title: "Ошибка",
+        toast.error("Ошибка", {
           description: "Пожалуйста, укажите Ф.И.О",
-          variant: "destructive",
+          richColors: true,
         });
         return;
       }
 
       if (!orderForm.customerPhone) {
-        toast({
-          title: "Ошибка",
+        toast.error("Ошибка", {
           description: "Пожалуйста, укажите контактный телефон",
-          variant: "destructive",
+          richColors: true,
         });
         return;
       }
 
       if (!orderForm.customerEmail) {
-        toast({
-          title: "Ошибка",
+        toast.error("Ошибка", {
           description: "Пожалуйста, укажите email",
-          variant: "destructive",
+          richColors: true,
         });
         return;
       }
 
       if (!orderForm.customerZipCode || !orderForm.customerAddress) {
-        toast({
-          title: "Ошибка",
+        toast.error("Ошибка", {
           description: "Пожалуйста, укажите почтовый индекс и адрес доставки",
-          variant: "destructive",
+          richColors: true,
+        });
+        return;
+      }
+
+      if (!agreeToTerms) {
+        toast.error("Ошибка", {
+          description: "Необходимо согласие на обработку персональных данных",
+          richColors: true,
         });
         return;
       }
 
       // Validate phone and email
       if (!validateForm()) {
-        toast({
-          title: "Ошибка валидации",
+        toast.error("Ошибка валидации", {
           description: "Пожалуйста, исправьте ошибки в форме",
-          variant: "destructive",
+          richColors: true,
         });
         return;
       }
@@ -264,18 +268,21 @@ const Cart = () => {
       // Clear cart after successful order
       store.dispatch(clearCart());
 
-      toast({
-        title: "Заказ успешно создан",
-        description: `Мы свяжемся с вами для уточнения дальнейших действий`,
+      // Show success toast with action
+      toast.success("Заказ успешно создан", {
+        description: "Мы свяжемся с вами для уточнения дальнейших действий",
+        richColors: true,
+        action: {
+          label: "Вернуться в каталог",
+          onClick: () => navigate("/products"),
+        },
+        duration: 5000,
+        onAutoClose: () => navigate("/products"),
       });
-
-      // Redirect to success page or order status page
-      navigate(`/`);
     } catch (error) {
-      toast({
-        title: "Ошибка при оформлении заказа",
-        description: error.message,
-        variant: "destructive",
+      toast.error("Ошибка при оформлении заказа", {
+        description: error.message || "Произошла ошибка",
+        richColors: true,
       });
     }
   };
@@ -287,7 +294,7 @@ const Cart = () => {
         <p className="text-muted-foreground mb-6">
           Добавьте товары в корзину, чтобы продолжить покупки
         </p>
-        <Button onClick={() => navigate("/products")}>
+        <Button className='mt-4c dark:text-secondary-foreground' onClick={() => navigate("/products")}>
           Вернуться в каталог
         </Button>
       </div>
@@ -478,7 +485,7 @@ const Cart = () => {
                     name="customerZipCode"
                     value={orderForm.customerZipCode}
                     onChange={handleInputChange}
-                    placeholder="123456"
+                    placeholder=""
                     required
                   />
                 </div>
@@ -496,6 +503,27 @@ const Cart = () => {
                   />
                 </div>
 
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="terms"
+                    checked={agreeToTerms}
+                    onCheckedChange={setAgreeToTerms}
+                    required
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Я согласен на{" "}
+                    <Link
+                      to="/agreement"
+                      className="text-blue-600 underline hover:text-blue-800"
+                    >
+                      обработку персональных данных
+                    </Link>
+                  </label>
+                </div>
+
                 <div>
                   <label className="block mb-1">Комментарий к заказу</label>
                   <Textarea
@@ -510,7 +538,9 @@ const Cart = () => {
                   type="submit"
                   className="w-full"
                   disabled={
-                    !!formErrors.customerPhone || !!formErrors.customerEmail
+                    !!formErrors.customerPhone ||
+                    !!formErrors.customerEmail ||
+                    !agreeToTerms
                   }
                 >
                   Оформить заказ

@@ -1,7 +1,6 @@
 // index.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -18,6 +17,7 @@ import { productsApi } from "../../../api/products";
 import { ImageSection } from "./ImageSection";
 import { CertificateSection } from "./CertificateSection";
 import { ProductForm } from "./ProductForm";
+import { toast } from "sonner";
 
 const AdminProductEdit = () => {
   const { id } = useParams();
@@ -51,7 +51,6 @@ const AdminProductEdit = () => {
   const [deletedCertificateIds, setDeletedCertificateIds] = useState([]);
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     loadProduct();
@@ -78,10 +77,9 @@ const AdminProductEdit = () => {
       setCurrentImages(product.images || []);
       setCurrentCertificates(product.certificates || []);
     } catch (error) {
-      toast({
-        title: "Ошибка при загрузке продукта",
+      toast.error("Ошибка при загрузке продукта", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -101,12 +99,11 @@ const AdminProductEdit = () => {
         files.length >
       maxFiles
     ) {
-      toast({
-        title: "Ошибка",
+      toast.error("Ошибка", {
         description: `Можно загрузить максимум ${maxFiles} ${
           type === "images" ? "изображений" : "сертификатов"
         }`,
-        variant: "destructive",
+        richColors: true,
       });
       return;
     }
@@ -148,14 +145,13 @@ const AdminProductEdit = () => {
     try {
       await productsApi.setPrimaryImage(id, imageId);
       loadProduct();
-      toast({
-        title: "Основное изображение обновлено",
+      toast.success("Основное изображение обновлено", {
+        richColors: true,
       });
     } catch (error) {
-      toast({
-        title: "Ошибка при обновлении основного изображения",
+      toast.error("Ошибка при обновлении основного изображения", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };
@@ -173,15 +169,14 @@ const AdminProductEdit = () => {
 
       await productsApi.update(id, updateData);
 
-      toast({
-        title: "Продукт обновлен",
+      toast.success("Продукт обновлен", {
+        richColors: true,
       });
       navigate("/admin/products");
     } catch (error) {
-      toast({
-        title: "Ошибка при обновлении продукта",
+      toast.error("Ошибка при обновлении продукта", {
         description: error.message,
-        variant: "destructive",
+        richColors: true,
       });
     }
   };

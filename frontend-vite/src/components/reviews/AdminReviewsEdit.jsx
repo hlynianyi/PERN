@@ -30,6 +30,7 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 const AdminReviewsEdit = () => {
   const [reviews, setReviews] = useState([]);
@@ -55,6 +56,10 @@ const AdminReviewsEdit = () => {
       setTotalPages(result.totalPages);
     } catch (error) {
       console.error('Ошибка загрузки отзывов', error);
+      toast.error('Ошибка загрузки отзывов', {
+        description: error.message || 'Не удалось загрузить список отзывов',
+        richColors: true,
+      });
     }
   };
 
@@ -62,8 +67,21 @@ const AdminReviewsEdit = () => {
     try {
       await reviewApi.updateReviewStatus(id, newStatus);
       fetchReviews();
+      
+      const statusText = 
+        newStatus === 'approved' ? 'одобрен' : 
+        newStatus === 'rejected' ? 'отклонен' : 'изменен';
+      
+      toast.success('Статус отзыва обновлен', {
+        description: `Отзыв #${id} успешно ${statusText}`,
+        richColors: true,
+      });
     } catch (error) {
       console.error('Ошибка обновления статуса', error);
+      toast.error('Ошибка обновления статуса', {
+        description: error.message || 'Не удалось обновить статус отзыва',
+        richColors: true,
+      });
     }
   };
 
@@ -71,8 +89,16 @@ const AdminReviewsEdit = () => {
     try {
       await reviewApi.deleteReview(id);
       fetchReviews();
+      toast.success('Отзыв удален', {
+        description: `Отзыв #${id} успешно удален`,
+        richColors: true,
+      });
     } catch (error) {
       console.error('Ошибка удаления отзыва', error);
+      toast.error('Ошибка удаления отзыва', {
+        description: error.message || 'Не удалось удалить отзыв',
+        richColors: true,
+      });
     }
   };
 

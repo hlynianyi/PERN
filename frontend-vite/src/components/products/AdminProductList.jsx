@@ -1,7 +1,6 @@
 // ProductList.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,11 +12,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { productsApi } from "../../api/products";
+import { toast } from "sonner";
 
 const AdminProductList = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     loadProducts();
@@ -28,9 +27,8 @@ const AdminProductList = () => {
       const data = await productsApi.getAll();
       setProducts(data);
     } catch (error) {
-      toast({
-        title: "Ошибка при загрузке продуктов",
-        variant: "destructive",
+      toast.error("Ошибка при загрузке продуктов", {
+        richColors: true,
         duration: 3000,
       });
     }
@@ -40,14 +38,13 @@ const AdminProductList = () => {
     try {
       await productsApi.delete(id);
       loadProducts();
-      toast({
-        title: "Продукт удален",
+      toast.success("Продукт удален", {
+        richColors: true,
         duration: 3000,
       });
     } catch (error) {
-      toast({
-        title: "Ошибка при удалении продукта",
-        variant: "destructive",
+      toast.error("Ошибка при удалении продукта", {
+        richColors: true,
         duration: 3000,
       });
     }

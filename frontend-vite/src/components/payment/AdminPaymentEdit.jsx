@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const AdminPaymentEdit = () => {
   const [payment, setPayment] = useState({
@@ -16,7 +16,6 @@ const AdminPaymentEdit = () => {
     },
   });
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -34,10 +33,9 @@ const AdminPaymentEdit = () => {
         }
       } catch (error) {
         console.error("Failed to fetch payment data:", error);
-        toast({
-          title: "Ошибка",
-          description: "Не удалось загрузить данные",
-          variant: "destructive",
+        toast.error("Ошибка загрузки", {
+          description: "Не удалось загрузить данные о способах оплаты",
+          richColors: true,
         });
       } finally {
         setLoading(false);
@@ -69,16 +67,15 @@ const AdminPaymentEdit = () => {
       };
 
       await PaymentAPI.updatePayment(paymentData);
-      toast({
-        title: "Успешно",
-        description: "Данные успешно сохранены",
+      toast.success("Данные сохранены", {
+        description: "Информация о способах оплаты успешно обновлена",
+        richColors: true,
       });
     } catch (error) {
       console.error("Failed to update payment:", error);
-      toast({
-        title: "Ошибка",
-        description: "Не удалось сохранить данные",
-        variant: "destructive",
+      toast.error("Ошибка сохранения", {
+        description: error.message || "Не удалось сохранить данные о способах оплаты",
+        richColors: true,
       });
     }
   };

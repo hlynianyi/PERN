@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useLoadCategories } from "@/hooks/useLoadCategories";
 import { useLoadProducts } from "@/hooks/useLoadProducts";
 
 const breadcrumbNameMap = {
@@ -29,16 +28,17 @@ const breadcrumbNameMap = {
   delivery: "Доставка",
   warranty: "Гарантия",
   homepage: 'Главная страница',
+  cart: 'Корзина',
+  orders: "Заказы",
+  orderSuccess: "",
 };
 
 export default function Breadcrumbs() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const categories = useLoadCategories();
   const { products, isLoading } = useLoadProducts();
-  
+
   const pathnames = location.pathname.split("/").filter((segment) => segment);
-  
   const isProductDetailsPage = pathnames.includes("products") && pathnames.includes("details");
   const productId = isProductDetailsPage ? pathnames[pathnames.indexOf("details") + 1] : null;
   const currentProduct = productId && products ? products.find(p => p.id.toString() === productId) : null;

@@ -145,8 +145,7 @@ const AdminFaqEdit = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <h2 className="text-2xl font-bold">Редактирование FAQ</h2>
-
+        <h2 className="text-2xl font-bold">Редактирование страницы "Вопрос-ответ"</h2>
         <div>
           <Label>Заголовок</Label>
           <Input

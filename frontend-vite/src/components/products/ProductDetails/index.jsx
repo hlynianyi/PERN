@@ -2,14 +2,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { productsApi, PRODUCT_STATUSES } from "../../../api/products";
+import { productsApi } from "../../../api/products";
 import { ImageGallery } from "./ImageGallery";
 import { Reviews } from "./Reviews";
 import { ReviewForm } from "./ReviewForm";
 import { Star } from "lucide-react";
+import { addToCart } from "../../../store/slices/cartSlice";
+import store from "../../../store/index";
 
 export const AdminProductDetails = () => {
   const { id } = useParams();
@@ -100,6 +101,17 @@ export const AdminProductDetails = () => {
     });
 
     return stats;
+  };
+
+  const handleAddToCart = () => {
+    if (product.status === "in_stock") {
+      store.dispatch(addToCart(product));
+      toast({
+        className: " ",
+        title: "Товар добавлен в корзину",
+        description: `${product.name} был добавлен в корзину`,
+      });
+    }
   };
 
   const handleEditReview = (review) => {
@@ -227,13 +239,14 @@ export const AdminProductDetails = () => {
                   {parseFloat(product.price).toLocaleString("ru-RU")} ₽
                 </p>
                 <button
-                  className={`rounded-lg tablet:w-full  py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-[150px]
-          ${
-            product.status === "in_stock"
-              ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
-              : "bg-gray-400 cursor-not-allowed"
-          }`}
+                  className={`rounded-lg tablet:w-full py-2 px-4 font-medium text-lg laptop:text-xl laptop:h-[44px] laptop:w-[150px]
+                  ${
+                    product.status === "in_stock"
+                      ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
                   disabled={product.status !== "in_stock"}
+                  onClick={handleAddToCart}
                 >
                   В корзину
                 </button>
@@ -291,13 +304,14 @@ export const AdminProductDetails = () => {
 
               <div>
                 <button
-                  className={`w-full py-2 px-4 rounded-lg  font-medium text-lg laptop:text-xl
-          ${
-            product.status === "in_stock"
-              ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
-              : "bg-gray-400 cursor-not-allowed"
-          }`}
+                  className={`w-full py-2 px-4 rounded-lg font-medium text-lg laptop:text-xl
+                  ${
+                    product.status === "in_stock"
+                      ? "bg-secondary hover:bg-primary hover:text-secondary dark:hover:text-secondary-foreground"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
                   disabled={product.status !== "in_stock"}
+                  onClick={handleAddToCart}
                 >
                   В корзину
                 </button>

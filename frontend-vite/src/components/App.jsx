@@ -41,6 +41,8 @@ import { AuthProvider } from "../context/AuthContext";
 import { ThemeProvider } from "../context/ThemeProvider";
 import Footer from "./navigation/Footer";
 import ScrollToTop from "@/subcomponents/ScrollToTop";
+import Cart from "@/pages/Cart";
+import AdminOrdersEdit from "@/pages/Admin/AdminOrdersEdit";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -91,6 +93,7 @@ function App() {
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/delivery" element={<Delivery />} />
+                <Route path="/cart" element={<Cart />} />
                 <Route path="/" element={<Homepage />} />
                 <Route
                   path="products/details/:id"
@@ -131,6 +134,8 @@ function App() {
                   <Route path="reviews/edit" element={<AdminReviewsEdit />} />
                   <Route path="payment/edit" element={<AdminPaymentEdit />} />
                   <Route path="delivery/edit" element={<AdminDeliveryEdit />} />
+                  <Route path="orders/edit" element={<AdminOrdersEdit />} />
+
                 </Route>
               </Routes>
             </main>

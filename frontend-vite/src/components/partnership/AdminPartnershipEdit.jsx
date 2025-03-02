@@ -135,7 +135,7 @@ const AdminPartnershipEdit = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">
-          Редактирование информации о сотрудничестве
+          Редактирование страницы "Сотрудничество"
         </h2>
 
         <div>

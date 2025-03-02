@@ -383,6 +383,9 @@ export default function AdminHomepageEdit() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
+        <h2 className="text-2xl font-bold">
+          Редактирование контента на главной странице
+        </h2>
         <div className="space-y-8">
           <div>
             <Label>Заголовок</Label>
@@ -471,10 +474,10 @@ export default function AdminHomepageEdit() {
               className="mt-2"
             />
             <p className="text-sm text-muted-foreground mt-1">
-              Поддерживаемые форматы: JPG, PNG, GIF, WebP 
+              Поддерживаемые форматы: JPG, PNG, GIF, WebP
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Ограничение по размеру до 10 МБ. 
+              Ограничение по размеру до 10 МБ.
             </p>
             <p className="text-sm text-red-500 mt-1">
               * Для каждой фотографии необходимо указать название и выбрать

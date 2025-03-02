@@ -10,6 +10,7 @@ const contactsRoutes = require("./contactsRoutes");
 const paymentRoutes = require("./paymentRoutes");
 const deliveryRoutes = require("./deliveryRoutes");
 const homepageRoutes = require("./homepageRoutes");
+const ordersRoutes = require("./ordersRoutes");
 
 // using routes
 router.use("/products", productRoutes);
@@ -21,5 +22,6 @@ router.use("/contacts", contactsRoutes);
 router.use("/payment", paymentRoutes);
 router.use("/delivery", deliveryRoutes);
 router.use("/homepage", homepageRoutes);
+router.use("/orders", ordersRoutes);
 
 module.exports = router;

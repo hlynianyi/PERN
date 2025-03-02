@@ -28,11 +28,17 @@ export default function AdminMenuButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => navigate("/admin/homepage/edit")}>
-            Главная
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/products")}>
             Товары
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/admin/orders/edit")}>
+            Заказы
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/admin/reviews/edit")}>
+            Отзывы
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/admin/homepage/edit")}>
+            Главная страница
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/company/edit")}>
             О компании
@@ -42,9 +48,6 @@ export default function AdminMenuButton() {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/partnership/edit")}>
             Сотрудничество
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/admin/reviews/edit")}>
-            Отзывы
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/admin/payment/edit")}>
             Оплата

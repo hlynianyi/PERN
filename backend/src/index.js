@@ -12,6 +12,7 @@ const Contacts = require("./models/contacts");
 const Payment = require("./models/payment");
 const Delivery = require("./models/delivery");
 const Homepage = require("./models/homepage");
+const Order = require("./models/order");
 
 const app = express();
 const port = process.env.PORT || 5002;
@@ -23,7 +24,7 @@ app.use(
       "http://localhost:80",
       "http://localhost",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
   })
@@ -51,7 +52,8 @@ async function initDB() {
     await Payment.initTable();
     await Delivery.initTable();
     await Homepage.initTable();
-    
+    await Order.initTable();
+
     console.log("База данных успешно инициализирована");
   } catch (error) {
     console.error("Ошибка при инициализации базы данных:", error.message);

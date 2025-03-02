@@ -5,6 +5,7 @@ import NavbarContacts from "./NavbarContacts";
 import { SearchProducts } from "../../subcomponents/SearchProducts";
 import Breadcrumbs from "@/subcomponents/Breadcrumbs";
 import Logo from "../Logo";
+import { CartButton } from "@/subcomponents/CartButton";
 
 const Navbar = () => {
   return (
@@ -36,8 +37,9 @@ const Navbar = () => {
                 <SearchProducts />
               </div>
             </div>
-            <div className=" tablet:block ">
+            <div className="flex flex-col gap-3 tablet:flex-row">
               <ThemeToggle />
+              <CartButton />
             </div>
           </div>
           <div className="flex flex-row justify-between w-full mt-2 text-muted-foreground">

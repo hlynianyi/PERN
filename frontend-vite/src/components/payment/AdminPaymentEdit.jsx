@@ -137,9 +137,9 @@ const AdminPaymentEdit = () => {
   };
 
   return (
-    <div className=" py-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Редактирование страницы оплаты
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">
+        Редактирование страницы "Оплата"
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">

@@ -1,14 +1,17 @@
+// src/store/index.js
 import { categoriesReducer } from "./slices/categoriesSlice";
 import { productsReducer } from "./slices/productsSlice";
 import { contactsReducer } from "./slices/contactsSlice";
 import { homepageReducer } from "./slices/homepageSlice";
+import { cartReducer } from "./slices/cartSlice";
 
 function rootReducer(state = {}, action) {
   return {
     categories: categoriesReducer(state.categories, action),
     products: productsReducer(state.products, action),
     contacts: contactsReducer(state.contacts, action),
-    homepage: homepageReducer(state.homepage, action), // Добавляем homepage reducer
+    homepage: homepageReducer(state.homepage, action),
+    cart: cartReducer(state.cart, action),
   };
 }
 
@@ -33,6 +36,10 @@ const initialState = {
     error: null,
     timestamp: null,
   },
+  cart: {
+    items: [],
+    totalAmount: 0
+  }
 };
 
 class Store {

@@ -83,7 +83,7 @@ const AdminReviewsEdit = () => {
 
   return (
     <Card className="w-full my-4">
-      <CardHeader>
+      <CardHeader className='space-y-6'>
         <CardTitle>Управление отзывами</CardTitle>
         <div className="flex items-center space-x-4 mt-4">
           <span className="font-medium">Статус отзывов:</span>

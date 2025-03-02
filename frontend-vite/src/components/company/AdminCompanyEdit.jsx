@@ -154,7 +154,8 @@ const AdminCompanyEdit = () => {
     <div className="p-6 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
         <h2 className="text-2xl font-bold">
-          Редактирование информации о компании
+          Редактирование страницы "О компании"
+
         </h2>
 
         <div>

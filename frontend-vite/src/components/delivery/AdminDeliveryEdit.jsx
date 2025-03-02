@@ -184,10 +184,9 @@ const AdminDeliveryEdit = () => {
   };
 
   return (
-    <div className=" py-8">
-      <h1 className="text-3xl font-bold mb-8">Редактирование доставки</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-8">
+    <div className="p-6 max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <h2 className="text-2xl font-bold">Редактирование страницы "Доставка"</h2>
         <div className="space-y-4">
           <div>
             <Label>Подзаголовок</Label>

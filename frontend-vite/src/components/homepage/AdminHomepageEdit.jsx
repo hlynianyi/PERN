@@ -208,7 +208,7 @@ export default function AdminHomepageEdit() {
                     <Input
                       value={image.name || ""}
                       disabled
-                      className="bg-gray-100"
+                      className=""
                       placeholder="Название изображения"
                     />
                     <Label>Ссылка на товар</Label>
@@ -220,7 +220,7 @@ export default function AdminHomepageEdit() {
                         )?.name || "Товар не найден"
                       }
                       disabled
-                      className="bg-gray-100"
+                      className=""
                     />
                   </div>
                 </CardContent>
@@ -445,7 +445,7 @@ export default function AdminHomepageEdit() {
                       return prev;
                     });
                   }}
-                  className="transition-colors"
+                  className="transition-colors "
                 >
                   {product.name}
                 </Button>
@@ -476,8 +476,14 @@ export default function AdminHomepageEdit() {
             <p className="font-bold text-sm text-red-500 mt-1">
               * !ВАЖНО!: Соблюдать формат изображений 16:9 (прямоугольник)
             </p>
+            <p className="font-bold text-sm text-red-500 mt-1">
+              * !ВАЖНО!: Соблюдать формат изображений 16:9 (прямоугольник)
+            </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Поддерживаемые форматы: <span className=" font-bold text-red-500">JPG, PNG, GIF, WebP</span>
+              Поддерживаемые форматы:{" "}
+              <span className=" font-bold text-red-500">
+                JPG, PNG, GIF, WebP
+              </span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               Ограничение по размеру до 10 МБ.

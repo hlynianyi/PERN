@@ -316,7 +316,27 @@ const AdminProductCreate = () => {
               </SelectContent>
             </Select>
           </div>
-
+          <div>
+            <p className="font-bold text-sm text-red-500 mt-1">
+              * !ВАЖНО!: Соблюдать формат изображений 4:4 (квадрат) при загрузке
+              фото продуктов
+            </p>
+            <p className="font-bold text-sm text-red-500 mt-1">
+              * !ВАЖНО!: Очень желательно сделать прозрачным задний фон у
+              загружаемых фотографий, чтобы они не выпадали из темной темы.
+              Можно сделать на любом сайте онлайн. (Прим.:
+              https://www.remove.bg/ru)
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Поддерживаемые форматы:{" "}
+              <span className=" font-bold text-red-500">
+                JPG, PNG, GIF, WebP
+              </span>
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Ограничение по размеру до 10 МБ.
+            </p>
+          </div>
           <div className="space-y-2">
             <Label>Изображения (до 10 штук)</Label>
             <Input

@@ -1,0 +1,24 @@
+# robots.txt 
+
+# Allow all search engines to access the site
+User-agent: *
+Allow: /
+
+# Prevent crawling of admin pages
+Disallow: /admin/
+Disallow: /login/
+Disallow: /cart/
+
+
+# Exclude API calls 
+Disallow: /api/
+
+# Exclude any temporary content
+Disallow: /temp/
+Disallow: /test/
+
+# Allow access to product images
+Allow: /uploads/images/
+
+# Specify the sitemap location
+Sitemap: https://poddknife.ru/sitemap.xml

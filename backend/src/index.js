@@ -1,6 +1,8 @@
-// src/index.js
+// backend/src/index.js
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+const dotenv = require("dotenv");
 const routes = require("./routes");
 const { retryConnection } = require("./utils/database");
 const Product = require("./models/product");
@@ -14,21 +16,37 @@ const Delivery = require("./models/delivery");
 const Homepage = require("./models/homepage");
 const Order = require("./models/order");
 
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+
+dotenv.config({ path: path.resolve(__dirname, envFile) });
+console.log(`Loading environment from ${envFile}`);
+
 const app = express();
 const port = process.env.PORT || 5002;
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3002",
-      "http://localhost:80",
-      "http://localhost",
-    ],
+    origin: process.env.CORS_ORIGIN.split(","),
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
   })
 );
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:3002",
+//       "http://localhost:80",
+//       "http://localhost",
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     optionsSuccessStatus: 200,
+//   })
+// );
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));

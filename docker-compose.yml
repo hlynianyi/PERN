@@ -1,59 +1,137 @@
 version: "3.8"
 
 services:
-  frontend-vite: # Изменено название сервиса
-    build: ./frontend-vite # Изменен путь к директории
+  frontend-vite:
+    build: 
+      context: ./frontend-vite
+      dockerfile: Dockerfile
+    container_name: shop-frontend
     ports:
-      - "3002:3002"
+      - "${FRONTEND_PORT:-3002}:3002"
     volumes:
-      - ./frontend-vite:/app # Изменен путь к директории
+      - ./frontend-vite:/app
+      # Use an anonymous volume to prevent overwriting node_modules
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:5002
+      - NODE_ENV=${NODE_ENV:-development}
+    env_file:
+      - ./frontend-vite/.env.${NODE_ENV:-development}
+    restart: unless-stopped
     depends_on:
       - backend
 
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shop-backend
     ports:
-      - "5002:5002"
+      - "${BACKEND_PORT:-5002}:5002"
     volumes:
       - ./backend:/app
+      # Use an anonymous volume to prevent overwriting node_modules
       - /app/node_modules
       - ./backend/uploads:/app/uploads
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/shop_db
-      - PORT=5002
+      - NODE_ENV=${NODE_ENV:-development}
+    env_file:
+      - ./backend/.env.${NODE_ENV:-development}
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
 
   postgres:
     image: postgres:17-alpine
+    container_name: shop-postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=shop_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${POSTGRES_DB:-shop_db}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
+    container_name: shop-nginx
     ports:
-      - "80:80"
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./backend/uploads:/uploads
+      - ./nginx/certificates:/etc/nginx/certificates
     depends_on:
-      - frontend-vite # Изменено название сервиса в зависимостях
+      - frontend-vite
       - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+# version: "3.8"
+
+# services:
+#   frontend-vite:
+#     build: ./frontend-vite
+#     ports:
+#       - "3002:3002"
+#     volumes:
+#       - ./frontend-vite:/app
+#       - /app/node_modules
+#     environment:
+#       - VITE_API_URL=http://localhost:5002
+#     depends_on:
+#       - backend
+
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "5002:5002"
+#     volumes:
+#       - ./backend:/app
+#       - /app/node_modules
+#       - ./backend/uploads:/app/uploads
+#     environment:
+#       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/shop_db
+#       - PORT=5002
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+
+#   postgres:
+#     image: postgres:17-alpine
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     environment:
+#       - POSTGRES_DB=shop_db
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+
+#   nginx:
+#     image: nginx:alpine
+#     ports:
+#       - "80:80"
+#     volumes:
+#       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#       - ./backend/uploads:/uploads
+#     depends_on:
+#       - frontend-vite
+#       - backend
+
+# volumes:
+#   postgres_data:

@@ -172,7 +172,7 @@ export const AdminProductDetails = () => {
             setSelectedImage={setSelectedImage}
             product={product}
           />
-          <div className="hidden tablet:flex tablet:flex-col w- my-0 tablet:border-l-[1px]  tablet:p-4 tablet:pb-2  tablet:pr-0 laptop:pr-4">
+          <div className="hidden tablet:flex tablet:flex-col w-full my-0 tablet:border-l-[1px] tablet:p-4 tablet:pb-2  tablet:pr-0 laptop:pr-4">
             <div className="flex flex-row justify-between items-start  gap-2 align-bottom">
               <h1 className="text-2xl font-medium laptop:text-4xl laptop:mb-1">
                 {product.name}
@@ -360,14 +360,18 @@ export const AdminProductDetails = () => {
                     key={cert.id}
                     onClick={() =>
                       window.open(
-                        `${import.meta.env.VITE_API_URL}${cert.certificate_url}`,
+                        `${import.meta.env.VITE_API_URL}${
+                          cert.certificate_url
+                        }`,
                         "_blank"
                       )
                     }
                     className="max-w-[175px] group relative aspect-[3/4] rounded-lg overflow-hidden border border-border hover:border-primary transition-colors cursor-pointer"
                   >
                     <img
-                      src={`${import.meta.env.VITE_API_URL}${cert.certificate_url}`}
+                      src={`${import.meta.env.VITE_API_URL}${
+                        cert.certificate_url
+                      }`}
                       alt={`Сертификат ${index + 1}`}
                       className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 "
                     />

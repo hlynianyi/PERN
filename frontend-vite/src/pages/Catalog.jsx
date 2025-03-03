@@ -1,9 +1,9 @@
 // src/pages/Catalog.jsx
 import React, { useState, useMemo } from "react";
 import { useLoadProducts } from "@/hooks/useLoadProducts";
+import { useSearchParams } from "react-router-dom";
 import ProductGrid from "../subcomponents/ProductGrid";
 import ProductFilters from "../subcomponents/ProductFilters";
-import { useSearchParams } from "react-router-dom";
 
 const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +16,7 @@ const Catalog = () => {
     handle: "all",
     steel: "all",
   });
-  // Получаем уникальные значения для фильтров из продуктов
+
   const filterOptions = useMemo(() => {
     if (!products) return { categories: [], handleTypes: [], steelTypes: [] };
 
@@ -35,7 +35,6 @@ const Catalog = () => {
     };
   }, [products]);
 
-  // Фильтрация продуктов
   const filteredProducts = useMemo(() => {
     if (!products) return [];
 
@@ -102,7 +101,6 @@ const Catalog = () => {
         className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8
        desktop:grid-cols-[220px_1fr]"
       >
-        {/* Десктопные фильтры */}
         <div className="hidden desktop:flex desktop:flex-col desktop:p-4  overflow-y-auto bg-card p-0 rounded-lg shadow-sm">
           <ProductFilters
             categories={filterOptions.categories}
@@ -113,7 +111,6 @@ const Catalog = () => {
           />
         </div>
 
-        {/* Сетка товаров для десктопа */}
         <div className="">
           <ProductGrid
             products={filteredProducts}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useContacts } from "@/hooks/useContacts";
 import { Link } from "react-router-dom";
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
@@ -182,7 +182,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright section (optional) */}
-      <div className="container relative z-10 mt-4 pt-2 border-t   dark:text-muted-foreground flex flex-col tablet:flex-row gap-1 justify-between text-xs">
+      <div className="container mt-4 pt-2 border-t dark:text-muted-foreground flex flex-col tablet:flex-row gap-1 justify-between text-xs">
         <p className="text-muted-foreground">
           © {new Date().getFullYear()} Ножевая мастерская Поддубного В.В.
         </p>
@@ -200,4 +200,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default memo(Footer);

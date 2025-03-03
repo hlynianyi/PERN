@@ -23,6 +23,7 @@ export default defineConfig({
       },
     },
     rollupOptions: {
+      sourcemap: process.env.NODE_ENV !== "production",
       output: {
         manualChunks: {
           "react-vendor": ["react", "react-dom"],
